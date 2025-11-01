@@ -28,6 +28,21 @@
             scroll-behavior: smooth;
             overflow-x: hidden; /* Prevent horizontal scroll issues */
         }
+        /* Fix for infinite loading: Use DOMContentLoaded instead of window.load */
+        body.loading {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        body.loading::after {
+            content: 'Đang tải...';
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            color: var(--primary);
+            z-index: 9999;
+        }
         .dark-mode { background: linear-gradient(135deg, var(--bg-dark) 0%, #1e293b 100%); color: var(--text-light); }
         .dark-mode .card { background: #1e293b; border-color: #334155; }
         .dark-mode .package-card { background: #1e293b; border-color: #475569; }
@@ -110,7 +125,7 @@
         .dark-toggle { cursor: pointer; font-size: 1.2rem; transition: transform 0.3s ease; }
         .dark-toggle:hover { transform: rotate(180deg); }
         .hidden { display: none !important; }
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 1050; animation: fadeIn 0.3s ease; }
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1050; animation: fadeIn 0.3s ease; display: flex; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .modal-content { background: white; padding: 2rem; border-radius: 15px; text-align: center; max-width: 80%; max-height: 80%; overflow-y: auto; transform: scale(0.9); animation: scaleIn 0.3s ease forwards; }
         @keyframes scaleIn { to { transform: scale(1); } }
@@ -314,9 +329,28 @@
         .login-toggle:hover {
             color: var(--accent);
         }
+        /* Zalo Support Button */
+        .zalo-btn {
+            background: #0068ff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+        }
+        .zalo-btn:hover {
+            background: #0056cc;
+            transform: scale(1.05);
+            color: white;
+            text-decoration: none;
+        }
     </style>
 </head>
-<body>
+<body class="loading"> <!-- Add loading class, remove on DOMContentLoaded -->
     <!-- Notification Toast Container -->
     <div class="toast-container">
         <div id="notificationToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
@@ -331,7 +365,7 @@
     </div>
 
     <!-- Login Modal -->
-    <div id="loginModal" class="modal">
+    <div id="loginModal" class="modal hidden">
         <div class="modal-content">
             <h2>Đăng Nhập Limore Cloud</h2>
             <p id="loginError" style="color: red;"></p>
@@ -416,7 +450,7 @@
         </div>
     </section>
 
-    <!-- Featured Games Carousel (Home & Games) - Updated with real images -->
+    <!-- Featured Games Carousel (Home & Games) - Expanded with more games -->
     <section id="featuredGames" class="py-5 hidden" data-aos="fade-up">
         <div class="container">
             <h2 class="text-center mb-5">Game Nổi Bật</h2>
@@ -426,7 +460,7 @@
                         <div class="row">
                             <div class="col-md-3"><img src="https://wallpapers.com/images/high/pubg-mobile-4k-8k.jpg" class="d-block w-100" alt="PUBG" onerror="this.src='https://via.placeholder.com/300x200?text=PUBG+Mobile'"></div>
                             <div class="col-md-3"><img src="https://images6.alphacoders.com/128/thumb-350-1289015.jpg" class="d-block w-100" alt="Genshin" onerror="this.src='https://via.placeholder.com/300x200?text=Genshin+Impact'"></div>
-                            <div class="col-md-3"><img src="https://wallpapercave.com/wp/wp18232095.jpg" class="d-block w-100" alt="COD" onerror="this.src='https://via.placeholder.com/300x200?text=Call+of+Duty'"></div>
+                            <div class="col-md-3"><img src="https://wallpapercave.com/wp/wp18232095.jpg" class="d-block w-100" alt="COD" onerror="this.src='https://via.placeholder.com/300x200?text=Call+of+Duty+Mobile'"></div>
                             <div class="col-md-3"><img src="https://wallpapers.com/images/featured-full/among-us-cb21ldue3llceiua.jpg" class="d-block w-100" alt="Among Us" onerror="this.src='https://via.placeholder.com/300x200?text=Among+Us'"></div>
                         </div>
                     </div>
@@ -436,6 +470,22 @@
                             <div class="col-md-3"><img src="https://images7.alphacoders.com/135/thumb-350-1357961.jpeg" class="d-block w-100" alt="ML" onerror="this.src='https://via.placeholder.com/300x200?text=Mobile+Legends'"></div>
                             <div class="col-md-3"><img src="https://via.placeholder.com/300x200?text=Clash+of+Clans" class="d-block w-100" alt="COC"></div>
                             <div class="col-md-3"><img src="https://via.placeholder.com/300x200?text=Roblox" class="d-block w-100" alt="Roblox"></div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="row">
+                            <div class="col-md-3"><img src="https://alphacoders.com/battlefield-2042-wallpapers" class="d-block w-100" alt="Battlefield" onerror="this.src='https://via.placeholder.com/300x200?text=Battlefield+2042'"></div>
+                            <div class="col-md-3"><img src="https://wallpapercave.com/wp/wp18232095.jpg" class="d-block w-100" alt="GTA 5" onerror="this.src='https://via.placeholder.com/300x200?text=GTA+5'"></div>
+                            <div class="col-md-3"><img src="https://wallpapercg.com/wp-content/uploads/2024/08/Black-Myth-Wukong-Gameplay-Wallpaper.jpg" class="d-block w-100" alt="Black Myth Wukong" onerror="this.src='https://via.placeholder.com/300x200?text=Black+Myth+Wukong'"></div>
+                            <div class="col-md-3"><img src="https://alphacoders.com/planet-of-lana-wallpapers" class="d-block w-100" alt="Planet of Lana" onerror="this.src='https://via.placeholder.com/300x200?text=Planet+of+Lana'"></div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="row">
+                            <div class="col-md-3"><img src="https://wallpapercave.com/ghost-of-yotei-wallpapers" class="d-block w-100" alt="Ghost of Yotei" onerror="this.src='https://via.placeholder.com/300x200?text=Ghost+of+Yotei'"></div>
+                            <div class="col-md-3"><img src="https://via.placeholder.com/300x200?text=Legend+of+Ymir" class="d-block w-100" alt="Legend of Ymir"></div>
+                            <div class="col-md-3"><img src="https://via.placeholder.com/300x200?text=Thrasher" class="d-block w-100" alt="Thrasher"></div>
+                            <div class="col-md-3"><img src="https://via.placeholder.com/300x200?text=Duet+Night" class="d-block w-100" alt="Duet Night"></div>
                         </div>
                     </div>
                 </div>
@@ -519,7 +569,7 @@
                 <h3>Nạp Tiền Qua QR Ngân Hàng (Vietinbank)</h3>
                 <p>Quét mã QR dưới đây bằng app ngân hàng của bạn (Momo, VNPAY, Vietinbank...), nhập số tiền nạp và chuyển khoản. Số dư sẽ cập nhật tự động sau 1-2 phút.</p>
                 <div class="qr-section">
-                    <img src="https://i.imgur.com/ZwdZgr9.png" alt="VietQR Code for Recharge" />
+                    <img src="https://i.imgur.com/ZwdZgr9.png" alt="VietQR Code for Recharge" onerror="this.src='https://via.placeholder.com/200x200?text=QR+Code'"/>
                     <p><strong>Số TK: 106882688024</strong> (Vietinbank - Limore Cloud)</p>
                     <h5>Hướng Dẫn:</h5>
                     <ol>
@@ -578,10 +628,15 @@
         </div>
     </section>
 
-    <!-- Support Section -->
+    <!-- Support Section - Added Zalo Support -->
     <section id="support" class="py-5 hidden" data-aos="fade-up">
         <div class="container">
             <h2 class="text-center mb-4">Hỗ Trợ Khách Hàng</h2>
+            <!-- Zalo Support Addition -->
+            <div class="text-center mb-4">
+                <p><strong>Cần hỗ trợ nhanh? Chat trực tiếp qua Zalo!</strong></p>
+                <a href="https://zalo.me/0355761396" target="_blank" class="zalo-btn"><i class="fab fa-zalo me-2"></i>Hỗ Trợ Zalo: 0355761396</a>
+            </div>
             <div class="row">
                 <div class="col-md-8">
                     <div class="chat-box" id="chatBox">
@@ -602,7 +657,7 @@
                     </div>
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFAQ(this)">Game hot tháng 11/2025 là gì?</div>
-                        <div class="faq-answer">PUBG Mobile, Genshin Impact, Battlefield 6, Ghost of Yotei, GTA 5, Black Myth: Wukong, và nhiều hơn nữa!</div>
+                        <div class="faq-answer">PUBG Mobile, Genshin Impact, Battlefield 6, Ghost of Yotei, GTA 5, Black Myth: Wukong, Legend of Ymir, Thrasher, và nhiều hơn nữa!</div>
                     </div>
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFAQ(this)">Lưu trữ tài khoản hoạt động thế nào?</div>
@@ -613,19 +668,40 @@
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- Footer - Added Zalo link -->
     <footer class="hidden">
         <div class="container">
-            <p>&copy; 2025 Limore Cloud. <i class="fas fa-heart text-danger mx-1"></i> Tất cả quyền được bảo lưu. | <a href="#" style="color: inherit;" onclick="showPage('support')">Liên hệ: support@limorecloud.vn</a></p>
+            <p>&copy; 2025 Limore Cloud. <i class="fas fa-heart text-danger mx-1"></i> Tất cả quyền được bảo lưu. | <a href="#" style="color: inherit;" onclick="showPage('support')">Liên hệ: support@limorecloud.vn</a> | <a href="https://zalo.me/0355761396" target="_blank" style="color: inherit;" class="zalo-btn">Hỗ trợ Zalo: 0355761396</a></p>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        AOS.init({ duration: 800, easing: 'ease-in-out' });
+        // Fix for infinite loading: Remove loading class and init on DOMContentLoaded (fires earlier than window.load)
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.classList.remove('loading');
+            AOS.init({ duration: 800, easing: 'ease-in-out' });
 
-        // Updated Mock Games
+            // Enter key handlers
+            const loginPassword = document.getElementById('loginPassword');
+            loginPassword.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleLogin();
+                }
+            });
+            const registerPassword = document.getElementById('registerPassword');
+            if (registerPassword) registerPassword.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleRegister();
+                }
+            });
+
+            // Init app
+            loadState();
+        });
+
+        // Updated Mock Games with more games and fixed images
         const mockGames = [
             { id: 1, name: 'PUBG Mobile', genre: 'Action', image: 'https://wallpapers.com/images/high/pubg-mobile-4k-8k.jpg', desc: 'Battle royale game with intense multiplayer action.', rating: 4.7, reviews: 'Hàng triệu người chơi yêu thích!' },
             { id: 2, name: 'Genshin Impact', genre: 'RPG', image: 'https://images6.alphacoders.com/128/thumb-350-1289015.jpg', desc: 'Open-world adventure with stunning graphics.', rating: 4.8, reviews: 'Khám phá thế giới rộng lớn!' },
@@ -633,12 +709,15 @@
             { id: 4, name: 'Among Us', genre: 'RPG', image: 'https://wallpapers.com/images/featured-full/among-us-cb21ldue3llceiua.jpg', desc: 'Social deduction game with crewmates and impostors.', rating: 4.5, reviews: 'Vui nhộn với bạn bè!' },
             { id: 5, name: 'Fortnite', genre: 'Action', image: 'https://wallpapers.com/images/high/fortnite-battle-royale-4k-5k-7k.jpg', desc: 'Build and battle in epic royale.', rating: 4.4, reviews: 'Sáng tạo không giới hạn!' },
             { id: 6, name: 'Mobile Legends', genre: 'RPG', image: 'https://images7.alphacoders.com/135/thumb-350-1357961.jpeg', desc: 'MOBA with heroes and team fights.', rating: 4.6, reviews: 'Đấu trường huyền thoại!' },
-            { id: 7, name: 'Battlefield 6', genre: 'Action', image: 'https://via.placeholder.com/200?text=Battlefield+6', desc: 'Epic multiplayer shooter with massive battles.', rating: 4.9, reviews: 'Bom tấn FPS 2025!' },
-            { id: 8, name: 'Ghost of Yotei', genre: 'Action', image: 'https://via.placeholder.com/200?text=Ghost+of+Yotei', desc: 'Samurai adventure sequel with beautiful open world.', rating: 4.8, reviews: 'Hot nhất tháng 11!' },
-            { id: 9, name: 'Planet of Lana', genre: 'RPG', image: 'https://via.placeholder.com/200?text=Planet+of+Lana', desc: 'Puzzle-adventure with stunning visuals.', rating: 4.7, reviews: 'Trò chơi indie đỉnh cao.' },
-            { id: 10, name: 'Chaos Zero Nightmare', genre: 'Action', image: 'https://via.placeholder.com/200?text=Chaos+Zero', desc: 'Horror survival with intense gameplay.', rating: 4.6, reviews: 'Sợ hãi và hấp dẫn!' },
-            { id: 11, name: 'GTA 5', genre: 'Action', image: 'https://wallpapercave.com/wp/wp18232095.jpg', desc: 'Open-world crime saga in Los Santos with endless possibilities.', rating: 4.9, reviews: 'Iconic open-world adventure!' },
-            { id: 12, name: 'Black Myth: Wukong', genre: 'Action', image: 'https://wallpapercg.com/wp-content/uploads/2024/08/Black-Myth-Wukong-Gameplay-Wallpaper.jpg', desc: 'Epic action RPG inspired by Journey to the West mythology.', rating: 4.8, reviews: 'Stunning visuals and combat!' }
+            { id: 7, name: 'Battlefield 2042', genre: 'Action', image: 'https://alphacoders.com/Battlefield-2042-wallpapers/download/110-thum', desc: 'Epic multiplayer shooter with massive battles.', rating: 4.9, reviews: 'Bom tấn FPS 2025!' },
+            { id: 8, name: 'Ghost of Yotei', genre: 'Action', image: 'https://wallpapercave.com/wp/wp18232095.jpg', desc: 'Samurai adventure sequel with beautiful open world.', rating: 4.8, reviews: 'Hot nhất tháng 11!' },
+            { id: 9, name: 'Planet of Lana', genre: 'RPG', image: 'https://alphacoders.com/Planet-of-Lana-wallpapers/download/20-thum', desc: 'Puzzle-adventure with stunning visuals.', rating: 4.7, reviews: 'Trò chơi indie đỉnh cao.' },
+            { id: 10, name: 'GTA 5', genre: 'Action', image: 'https://wallpapercave.com/wp/wp18232095.jpg', desc: 'Open-world crime saga in Los Santos with endless possibilities.', rating: 4.9, reviews: 'Iconic open-world adventure!' },
+            { id: 11, name: 'Black Myth: Wukong', genre: 'Action', image: 'https://wallpapercg.com/wp-content/uploads/2024/08/Black-Myth-Wukong-Gameplay-Wallpaper.jpg', desc: 'Epic action RPG inspired by Journey to the West mythology.', rating: 4.8, reviews: 'Stunning visuals and combat!' },
+            { id: 12, name: 'Legend of Ymir', genre: 'RPG', image: 'https://via.placeholder.com/300x200?text=Legend+of+Ymir', desc: 'Mythical RPG adventure in ancient worlds.', rating: 4.7, reviews: 'New hit of 2025!' },
+            { id: 13, name: 'Thrasher', genre: 'Action', image: 'https://via.placeholder.com/300x200?text=Thrasher', desc: 'Extreme action racing with high-speed thrills.', rating: 4.6, reviews: 'Adrenaline rush!' },
+            { id: 14, name: 'Duet Night', genre: 'RPG', image: 'https://via.placeholder.com/300x200?text=Duet+Night', desc: 'Co-op RPG with dual protagonists.', rating: 4.5, reviews: 'Perfect for couples!' },
+            { id: 15, name: 'Hyrule Warriors', genre: 'Action', image: 'https://via.placeholder.com/300x200?text=Hyrule+Warriors', desc: 'Zelda spin-off with massive battles.', rating: 4.8, reviews: 'Legendary combat!' }
         ];
 
         // Enhanced Packages with Detailed Configs
@@ -709,15 +788,16 @@
 
         // Load from localStorage
         function loadState() {
-            user = JSON.parse(localStorage.getItem('user')) || null;
-            balance = parseInt(localStorage.getItem('balance')) || 0;
-            wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-            achievements = JSON.parse(localStorage.getItem('achievements')) || [];
-            transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-            favoriteGenre = localStorage.getItem('favoriteGenre') || 'Action';
-            currentPackage = localStorage.getItem('package') || 'Basic';
-            storageUsed = parseInt(localStorage.getItem('storageUsed')) || 5;
-            if (user) {
+            const savedUser = JSON.parse(localStorage.getItem('user')) || null;
+            if (savedUser) {
+                user = savedUser;
+                balance = parseInt(localStorage.getItem('balance')) || 0;
+                wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+                achievements = JSON.parse(localStorage.getItem('achievements')) || [];
+                transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+                favoriteGenre = localStorage.getItem('favoriteGenre') || 'Action';
+                currentPackage = localStorage.getItem('package') || 'Basic';
+                storageUsed = parseInt(localStorage.getItem('storageUsed')) || 5;
                 document.getElementById('navbar').classList.remove('hidden');
                 document.getElementById('userInfo').innerHTML = `${user.name} - ${balance}k`;
                 document.getElementById('currentBalance').textContent = balance;
@@ -730,9 +810,17 @@
                 updateStorageBar();
                 document.getElementById('packageRec').innerHTML = `Gói của bạn: ${currentPackage} – Khuyến nghị: ${mockGames.find(g => g.genre === favoriteGenre)?.name || mockGames[0].name} cho fans ${favoriteGenre}!`;
                 showPage('home');
+                // Ensure modals are hidden when logged in
+                document.getElementById('loginModal').classList.add('hidden');
+                document.getElementById('registerModal').classList.add('hidden');
             } else {
-                document.getElementById('loginModal').style.display = 'flex';
                 document.getElementById('loginModal').classList.remove('hidden');
+                // Hide all content sections
+                ['home', 'games', 'packages', 'profile', 'support', 'featuredGames', 'hotGames'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.add('hidden');
+                });
+                document.querySelector('footer').classList.add('hidden');
             }
             renderWishlist();
             renderAchievements();
@@ -758,17 +846,15 @@
             toast.show();
         }
 
-        // Show/Hide Modals
+        // Show/Hide Modals using hidden class
         function showRegisterModal() {
-            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('loginModal').classList.add('hidden');
             document.getElementById('registerModal').classList.remove('hidden');
-            document.getElementById('registerModal').style.display = 'flex';
         }
 
         function showLoginModal() {
-            document.getElementById('registerModal').style.display = 'none';
+            document.getElementById('registerModal').classList.add('hidden');
             document.getElementById('loginModal').classList.remove('hidden');
-            document.getElementById('loginModal').style.display = 'flex';
         }
 
         // Navigation
@@ -788,7 +874,7 @@
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         }
 
-        // Registration Handler
+        // Registration Handler - Save password and auto-login
         function handleRegister() {
             const name = document.getElementById('registerName').value.trim();
             const email = document.getElementById('registerEmail').value.trim();
@@ -814,18 +900,18 @@
                 return;
             }
 
-            // Mock registration - Save to localStorage
-            user = { name, email, package: selectedPackage };
+            // Mock registration - Save to localStorage including password
+            user = { name, email, password, package: selectedPackage };
             localStorage.setItem('user', JSON.stringify(user));
             currentPackage = selectedPackage;
             localStorage.setItem('package', currentPackage);
             error.textContent = '';
-            document.getElementById('registerModal').style.display = 'none';
-            showNotification('Đăng ký thành công! Chào mừng bạn đến với Limore Cloud.', 'success');
+            document.getElementById('registerModal').classList.add('hidden');
+            showNotification('Đăng ký thành công! Bạn đã được đăng nhập tự động.', 'success');
             loadState();
         }
 
-        // Login with Validation
+        // Login with Validation - Check against saved user
         function handleLogin() {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
@@ -838,14 +924,13 @@
                 error.textContent = 'Email không hợp lệ!';
                 return;
             }
-            // Hidden test account - Only developer knows: email = 'dev@limore.com', password = 'dev123'
-            if (email === 'dev@limore.com' && password === 'dev123') {
-                user = { email, name: 'Developer User' };
+            // Check dev account or saved user
+            const savedUser = JSON.parse(localStorage.getItem('user'));
+            if ((email === 'dev@limore.com' && password === 'dev123') || (savedUser && email === savedUser.email && password === savedUser.password)) {
+                user = savedUser || { email, name: 'Developer User', password };
                 localStorage.setItem('user', JSON.stringify(user));
                 error.textContent = '';
-                const modal = document.getElementById('loginModal');
-                modal.style.display = 'none';
-                modal.classList.add('hidden');
+                document.getElementById('loginModal').classList.add('hidden');
                 showNotification('Đăng nhập thành công!', 'success');
                 loadState();
             } else {
@@ -864,7 +949,13 @@
                 transactions = [];
                 document.getElementById('navbar').classList.add('hidden');
                 document.getElementById('loginModal').classList.remove('hidden');
-                document.getElementById('loginModal').style.display = 'flex';
+                document.getElementById('registerModal').classList.add('hidden');
+                // Hide all content sections
+                ['home', 'games', 'packages', 'profile', 'support', 'featuredGames', 'hotGames'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.add('hidden');
+                });
+                document.querySelector('footer').classList.add('hidden');
                 showNotification('Đăng xuất thành công!', 'info');
             }
         }
@@ -940,13 +1031,13 @@
             }).join('');
         }
 
-        // Render Hot Games
+        // Render Hot Games with placeholders
         function renderHotGames() {
             const hotList = document.getElementById('hotGamesList');
             const hotGames = mockGames.slice(6, 12);
             hotList.innerHTML = hotGames.map(game => `
                 <div class="hot-game-item">
-                    <img src="${game.image}" alt="${game.name}" onerror="this.src='https://via.placeholder.com/100?text=${game.name}'" />
+                    <img src="${game.image}" alt="${game.name}" onerror="this.src='https://via.placeholder.com/100x100?text=${game.name.replace(/ /g, '+')}'" />
                     <p>${game.name}</p>
                 </div>
             `).join('');
@@ -959,7 +1050,7 @@
                 const isInWishlist = wishlist.some(g => g.id === game.id);
                 return `
                     <div class="game-card" data-aos="fade-up" data-aos-delay="${game.id * 50}">
-                        <img src="${game.image}" alt="${game.name}" onerror="this.src='https://via.placeholder.com/280x250?text=${game.name}'" />
+                        <img src="${game.image}" alt="${game.name}" onerror="this.src='https://via.placeholder.com/280x250?text=${game.name.replace(/ /g, '+')}'" />
                         <div class="game-overlay">
                             <div>
                                 <h3>${game.name}</h3>
@@ -996,8 +1087,12 @@
         function showGameDetails(id) {
             const game = mockGames.find(g => g.id === id);
             document.getElementById('detailTitle').textContent = game.name;
-            document.getElementById('detailImage').src = game.image;
-            document.getElementById('detailImage').onerror = () => { this.src = 'https://via.placeholder.com/600x400?text=' + game.name; };
+            const detailImg = document.getElementById('detailImage');
+            detailImg.src = game.image;
+            // Fix for onerror in detail modal: use regular function instead of arrow to preserve 'this'
+            detailImg.onerror = function() { 
+                this.src = 'https://via.placeholder.com/600x400?text=' + game.name.replace(/ /g, '+'); 
+            };
             document.getElementById('detailDesc').textContent = game.desc;
             document.getElementById('detailGenre').textContent = game.genre;
             document.getElementById('detailRating').innerHTML = `<i class="fas fa-star"></i> ${game.rating}/5`;
@@ -1062,7 +1157,7 @@
             div.innerHTML = recGames.map(g => {
                 return `
                     <div class="game-card" style="height: auto;">
-                        <img src="${g.image}" alt="${g.name}" style="height: 150px;" onerror="this.src='https://via.placeholder.com/200?text=${g.name}'" />
+                        <img src="${g.image}" alt="${g.name}" style="height: 150px;" onerror="this.src='https://via.placeholder.com/200x150?text=${g.name.replace(/ /g, '+')}'" />
                         <div class="game-content">
                             <h3>${g.name}</h3>
                             <p>${g.genre}</p>
@@ -1108,15 +1203,15 @@
             } else if (message.includes('gói') || message.includes('package')) {
                 botResponse = 'Các gói: Basic (100k/10h, 720p), Standard (150k/30h, 1080p), Pro (250k/unlimited, 4K), Family (400k/4 users, 500GB lưu trữ). Vào Gói Dịch Vụ để mua!';
             } else if (message.includes('hot') || message.includes('mới') || message.includes('2025')) {
-                botResponse = 'Game hot tháng 11/2025: Battlefield 6 (Action), Ghost of Yotei (Samurai), GTA 5 (Open-world), Black Myth: Wukong (RPG). Xem chi tiết trong Thư Viện!';
+                botResponse = 'Game hot tháng 11/2025: Battlefield 2042 (Action), Ghost of Yotei (Samurai), GTA 5 (Open-world), Black Myth: Wukong (RPG), Legend of Ymir, Thrasher. Xem chi tiết trong Thư Viện!';
                 showImage = true;
                 gameImage = 'https://via.placeholder.com/100?text=Hot+Games+2025';
             } else if (message.includes('lag') || message.includes('chậm')) {
                 botResponse = 'Cloud gaming không lag với server Việt Nam. Kiểm tra kết nối WiFi > 10Mbps và cập nhật app!';
             } else if (message.includes('lưu') || message.includes('storage')) {
                 botResponse = 'Lưu trữ tài khoản: 50GB miễn phí, tự động sao lưu. Nâng cấp trong Hồ Sơ để có thêm dung lượng!';
-            } else if (message.includes('pubg') || message.includes('genshin') || message.includes('battlefield') || message.includes('ghost') || message.includes('gta') || message.includes('wukong')) {
-                const keyword = message.includes('pubg') ? 'pubg' : message.includes('genshin') ? 'genshin' : message.includes('battlefield') ? 'battlefield' : message.includes('ghost') ? 'ghost' : message.includes('gta') ? 'gta' : 'wukong';
+            } else if (message.includes('pubg') || message.includes('genshin') || message.includes('battlefield') || message.includes('ghost') || message.includes('gta') || message.includes('wukong') || message.includes('ymir') || message.includes('thrasher') || message.includes('duet')) {
+                const keyword = message.includes('pubg') ? 'pubg' : message.includes('genshin') ? 'genshin' : message.includes('battlefield') ? 'battlefield' : message.includes('ghost') ? 'ghost' : message.includes('gta') ? 'gta' : message.includes('wukong') ? 'wukong' : message.includes('ymir') ? 'ymir' : message.includes('thrasher') ? 'thrasher' : 'duet';
                 const game = mockGames.find(g => g.name.toLowerCase().includes(keyword));
                 botResponse = `${game.name}: ${game.desc} Rating: ${game.rating}/5. Chơi ngay với gói ${currentPackage}!`;
                 showImage = true;
@@ -1180,25 +1275,6 @@
                 localStorage.setItem('storageUsed', storageUsed);
             }
         });
-
-        // Enter key for login and chat
-        document.addEventListener('DOMContentLoaded', function() {
-            const loginPassword = document.getElementById('loginPassword');
-            loginPassword.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    handleLogin();
-                }
-            });
-            const registerPassword = document.getElementById('registerPassword');
-            if (registerPassword) registerPassword.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    handleRegister();
-                }
-            });
-        });
-
-        // Init
-        loadState();
     </script>
 </body>
 </html>
