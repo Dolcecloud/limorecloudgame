@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limore Cloud - Cloud Gaming Hiện Đại Trên Mobile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1; /* Indigo */
+            --accent: #f59e0b; /* Amber */
+            --bg-light: #f8fafc;
+            --bg-dark: #0f172a;
+            --text-dark: #1e293b;
+            --text-light: #f1f5f9;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+        }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, var(--bg-light) 0%, #e2e8f0 100%);
+            color: var(--text-dark);
+            transition: all 0.4s ease-in-out;
+            scroll-behavior: smooth;
+            overflow-x: hidden; /* Prevent horizontal scroll issues */
+        }
+        .dark-mode { background: linear-gradient(135deg, var(--bg-dark) 0%, #1e293b 100%); color: var(--text-light); }
+        .dark-mode .card { background: #1e293b; border-color: #334155; }
+        .dark-mode .package-card { background: #1e293b; border-color: #475569; }
+        .dark-mode .storage-card { background: #1e293b; border-color: #475569; }
+        .dark-mode .game-card { background: #1e293b; color: var(--text-light); }
+        .dark-mode .game-card .game-overlay { background: rgba(30, 41, 59, 0.8); }
+        .dark-mode .toast { background: #1e293b; color: var(--text-light); }
+        .navbar { 
+            background: rgba(255,255,255,0.95); 
+            backdrop-filter: blur(10px); 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.4s ease-in-out;
+            z-index: 1030; /* Ensure navbar is above other elements */
+        }
+        .dark-mode .navbar { background: rgba(15,23,42,0.95); }
+        .hero { 
+            background: linear-gradient(rgba(99,102,241,0.8), rgba(99,102,241,0.8)), url('https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center/cover; 
+            color: white; 
+            padding: 120px 0; 
+            text-align: center; 
+            margin-top: 0 !important; /* Ensure no margin top overlap */
+        }
+        .hero h1 { font-size: 4rem; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .hero p { font-size: 1.2rem; opacity: 0.95; }
+        .btn-modern { 
+            background: linear-gradient(45deg, var(--primary), var(--accent)); 
+            border: none; 
+            padding: 15px 40px; 
+            border-radius: 50px; 
+            font-weight: 600; 
+            color: white; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-modern:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 20px rgba(99,102,241,0.3); }
+        .feature-card, .package-card, .game-card, .storage-card { 
+            background: white; 
+            border-radius: 20px; 
+            padding: 30px; 
+            text-align: center; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+        .feature-card::before, .package-card::before, .storage-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s ease-in-out;
+        }
+        .feature-card:hover::before, .package-card:hover::before, .storage-card:hover::before { left: 100%; }
+        .feature-card:hover, .package-card:hover, .storage-card:hover { 
+            transform: translateY(-5px) scale(1.02); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15); 
+        }
+        .feature-card i, .package-card i, .storage-card i { font-size: 3rem; color: var(--primary); margin-bottom: 15px; transition: transform 0.3s ease; }
+        .feature-card:hover i, .storage-card:hover i { transform: scale(1.1) rotate(5deg); }
+        .package-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(45deg, var(--primary), var(--accent)); }
+        .package-card h5 { color: var(--accent); font-weight: 700; }
+        .storage-card { margin: 1rem 0; }
+        .storage-bar { background: #e5e7eb; height: 20px; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+        .storage-progress { height: 100%; background: linear-gradient(45deg, var(--primary), var(--success)); transition: width 0.5s ease; border-radius: 10px; }
+        .config-list { list-style: none; padding: 0; text-align: left; }
+        .config-list li { padding: 5px 0; border-bottom: 1px solid #f1f5f9; }
+        .config-list li:last-child { border-bottom: none; }
+        .config-icon { color: var(--info); margin-right: 10px; }
+        footer { 
+            background: linear-gradient(135deg, var(--primary), var(--accent)); 
+            color: white; 
+            padding: 40px 0; 
+            text-align: center; 
+        }
+        .carousel-item img { height: 300px; object-fit: cover; border-radius: 15px; transition: transform 0.3s ease; }
+        .carousel-item img:hover { transform: scale(1.05); }
+        .dark-toggle { cursor: pointer; font-size: 1.2rem; transition: transform 0.3s ease; }
+        .dark-toggle:hover { transform: rotate(180deg); }
+        .hidden { display: none !important; }
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 1050; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal-content { background: white; padding: 2rem; border-radius: 15px; text-align: center; max-width: 80%; max-height: 80%; overflow-y: auto; transform: scale(0.9); animation: scaleIn 0.3s ease forwards; }
+        @keyframes scaleIn { to { transform: scale(1); } }
+        .dark-mode .modal-content { background: #1e293b; color: var(--text-light); }
+        .chat-box { height: 300px; overflow-y: scroll; background: white; border-radius: 15px; padding: 1rem; margin-bottom: 1rem; }
+        .chat-message img { max-width: 100px; border-radius: 10px; margin: 5px 0; transition: transform 0.3s ease; }
+        .chat-message img:hover { transform: scale(1.1); }
+        .grid-games { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+        .grid-packages { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+        input, select, button { margin: 0.5rem 0; padding: 0.5rem; border-radius: 10px; border: 1px solid #ccc; transition: border-color 0.3s ease; }
+        input:focus, select:focus { border-color: var(--primary); outline: none; }
+        .profile-section { background: white; border-radius: 15px; padding: 1rem; margin: 1rem 0; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: all 0.3s ease; }
+        .profile-section:hover { box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        .loading { opacity: 0.7; pointer-events: none; position: relative; }
+        .loading::after { content: ''; position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; border: 2px solid var(--primary); border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; transform: translate(-50%, -50%); }
+        @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+        .rating { color: #f59e0b; }
+        .game-details { text-align: left; }
+        .recommendations { background: #f0f8ff; padding: 2rem; border-radius: 15px; margin: 1rem 0; }
+        .recommendations .grid-games { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+        .history-list { max-height: 200px; overflow-y: auto; }
+        .faq-item { margin-bottom: 1rem; }
+        .faq-question { cursor: pointer; font-weight: bold; color: var(--primary); transition: color 0.3s ease; }
+        .faq-question:hover { color: var(--accent); }
+        .faq-answer { display: none; margin-top: 0.5rem; color: #666; animation: slideDown 0.3s ease; }
+        @keyframes slideDown { from { opacity: 0; max-height: 0; } to { opacity: 1; max-height: 200px; } }
+        .hot-games { background: #fff3cd; padding: 1rem; border-radius: 10px; margin: 1rem 0; }
+        .hot-game-item { display: inline-block; margin: 0 1rem 1rem 0; text-align: center; transition: transform 0.3s ease; }
+        .hot-game-item:hover { transform: translateY(-3px); }
+        .hot-game-item img { width: 100px; height: 100px; object-fit: cover; border-radius: 10px; }
+        .qr-section { text-align: center; margin: 1rem 0; }
+        .qr-section img { max-width: 200px; border: 2px solid #ddd; border-radius: 10px; transition: border-color 0.3s ease; }
+        .qr-section img:hover { border-color: var(--primary); }
+        .qr-instructions { background: #f8f9fa; padding: 1rem; border-radius: 10px; margin-top: 1rem; }
+        .storage-section { background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 2rem; border-radius: 20px; margin: 1rem 0; text-align: center; }
+        .storage-section h3 { color: white; }
+        .upgrade-btn { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 25px; font-weight: 600; transition: all 0.3s ease; }
+        .upgrade-btn:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(245, 158, 11, 0.4); }
+        /* Enhanced Game Card Styles */
+        .game-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            height: 400px; /* Fixed height for uniformity */
+            display: flex;
+            flex-direction: column;
+        }
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+        }
+        .game-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .game-card:hover img {
+            transform: scale(1.05);
+        }
+        .game-card .game-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .game-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+        .dark-mode .game-card h3 { color: var(--text-light); }
+        .game-card p {
+            color: #64748b;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .dark-mode .game-card p { color: #94a3b8; }
+        .game-card .game-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .game-card .btn {
+            flex: 1;
+            padding: 0.75rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+        .game-card .btn:hover {
+            transform: translateY(-2px);
+        }
+        .game-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: flex-end;
+            padding: 1rem;
+            color: white;
+        }
+        .game-card:hover .game-overlay {
+            opacity: 1;
+        }
+        .game-overlay h3, .game-overlay p {
+            color: white !important;
+            margin: 0;
+        }
+        .game-overlay p {
+            opacity: 0.9;
+        }
+        /* Full Image Modal Enhancement */
+        #gameDetailsModal .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+        }
+        #detailImage {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+        }
+        /* Notification Toast */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1060; /* Higher z-index to avoid overlap */
+        }
+        .toast {
+            min-width: 300px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+            max-width: 90vw; /* Responsive width */
+        }
+        .toast.show {
+            transform: translateX(0);
+        }
+        .toast.hide {
+            transform: translateX(100%);
+        }
+        /* Responsive Enhancements */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .grid-games {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .grid-packages {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .game-card {
+                height: 350px;
+            }
+            .game-card img {
+                height: 200px;
+            }
+            .carousel-item img { height: 200px; }
+            .navbar-nav { text-align: center; }
+            .game-actions { flex-direction: column; gap: 0.5rem; }
+            .game-card .btn { flex: none; }
+            .toast-container { top: 10px; right: 10px; left: 10px; }
+            .toast { min-width: auto; max-width: none; }
+            .modal { padding: 20px; }
+            .modal-content { max-width: 95%; max-height: 95%; padding: 1rem; }
+            #detailImage { height: 300px; }
+            .hero { padding: 80px 0; }
+        }
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 2rem; }
+            .navbar-brand { font-size: 1.5rem; }
+        }
+        /* Registration Modal */
+        #registerModal .modal-content {
+            text-align: left;
+        }
+        #registerModal input, #registerModal select {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        .login-toggle {
+            cursor: pointer;
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .login-toggle:hover {
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <!-- Notification Toast Container -->
+    <div class="toast-container">
+        <div id="notificationToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span id="toastMessage"></span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h2>Đăng Nhập Limore Cloud</h2>
+            <p id="loginError" style="color: red;"></p>
+            <input type="email" id="loginEmail" placeholder="Email" />
+            <input type="password" id="loginPassword" placeholder="Mật khẩu" />
+            <button class="btn-modern w-100" onclick="handleLogin()">Đăng Nhập</button>
+            <p class="mt-3">Chưa có tài khoản? <span class="login-toggle" onclick="showRegisterModal()">Đăng ký ngay</span></p>
+        </div>
+    </div>
+
+    <!-- Registration Modal -->
+    <div id="registerModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Đăng Ký Tài Khoản Mới</h2>
+            <p id="registerError" style="color: red;"></p>
+            <input type="text" id="registerName" placeholder="Họ và tên" />
+            <input type="email" id="registerEmail" placeholder="Email" />
+            <input type="password" id="registerPassword" placeholder="Mật khẩu (ít nhất 6 ký tự)" />
+            <input type="password" id="registerConfirmPassword" placeholder="Xác nhận mật khẩu" />
+            <select id="registerPackage">
+                <option value="Basic">Gói Basic (Miễn phí thử nghiệm)</option>
+                <option value="Standard">Gói Standard</option>
+                <option value="Pro">Gói Pro</option>
+                <option value="Family">Gói Family</option>
+            </select>
+            <button class="btn-modern w-100" onclick="handleRegister()">Đăng Ký</button>
+            <p class="mt-3">Đã có tài khoản? <span class="login-toggle" onclick="showLoginModal()">Đăng nhập</span></p>
+        </div>
+    </div>
+
+    <!-- Game Details Modal -->
+    <div id="gameDetailsModal" class="modal hidden">
+        <div class="modal-content">
+            <h2 id="detailTitle"></h2>
+            <img id="detailImage" style="width:100%; border-radius:10px; margin-bottom:1rem;" />
+            <div class="game-details">
+                <p><strong>Mô Tả:</strong> <span id="detailDesc"></span></p>
+                <p><strong>Genre:</strong> <span id="detailGenre"></span></p>
+                <p><strong>Rating:</strong> <span id="detailRating" class="rating"><i class="fas fa-star"></i> 4.5/5</span></p>
+                <p><strong>Reviews:</strong> <span id="detailReviews"></span></p>
+            </div>
+            <button class="btn btn-modern" onclick="closeGameDetails()">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Navbar (Hidden until login) -->
+    <nav id="navbar" class="navbar navbar-expand-lg fixed-top hidden">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-3" href="#" onclick="showPage('home')"><i class="fas fa-cloud me-2"></i>Limore Cloud</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('home')">Trang Chủ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('games')">Games</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('packages')">Gói Dịch Vụ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('profile')">Hồ Sơ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('support')">Hỗ Trợ</a></li>
+                    <li class="nav-item"><span id="userInfo" class="nav-link"></span></li>
+                    <li class="nav-item"><i class="nav-link dark-toggle fas fa-moon" onclick="toggleDarkMode()" title="Chế độ tối"></i></li>
+                    <li class="nav-item"><button class="btn btn-modern ms-2" onclick="handleLogout()">Đăng Xuất</button></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section (Home) -->
+    <section id="home" class="hero hidden" data-aos="fade-down">
+        <div class="container">
+            <h1 class="mb-4">Chơi Game Cloud Mọi Lúc, Mọi Nơi</h1>
+            <p class="lead mb-5" id="packageRec">Trải nghiệm gaming đỉnh cao trên điện thoại – Không lag, không tải!</p>
+            <a href="#" class="btn btn-modern btn-lg" onclick="showPage('games')"><i class="fas fa-rocket me-2"></i>Bắt Đầu Ngay</a>
+        </div>
+    </section>
+
+    <!-- Hot Games Section on Home -->
+    <section id="hotGames" class="py-5 hidden" data-aos="fade-up">
+        <div class="container">
+            <h2 class="text-center mb-5">Game Hot Tháng 11/2025</h2>
+            <div id="hotGamesList" class="hot-games"></div>
+        </div>
+    </section>
+
+    <!-- Featured Games Carousel (Home & Games) - Updated with real images -->
+    <section id="featuredGames" class="py-5 hidden" data-aos="fade-up">
+        <div class="container">
+            <h2 class="text-center mb-5">Game Nổi Bật</h2>
+            <div id="gameCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="row">
+                            <div class="col-md-3"><img src="https://wallpapers.com/images/high/pubg-mobile-4k-8k.jpg" class="d-block w-100" alt="PUBG" onerror="this.src='https://via.placeholder.com/300x200?text=PUBG+Mobile'"></div>
+                            <div class="col-md-3"><img src="https://images6.alphacoders.com/128/thumb-350-1289015.jpg" class="d-block w-100" alt="Genshin" onerror="this.src='https://via.placeholder.com/300x200?text=Genshin+Impact'"></div>
+                            <div class="col-md-3"><img src="https://wallpapercave.com/wp/wp18232095.jpg" class="d-block w-100" alt="COD" onerror="this.src='https://via.placeholder.com/300x200?text=Call+of+Duty'"></div>
+                            <div class="col-md-3"><img src="https://wallpapers.com/images/featured-full/among-us-cb21ldue3llceiua.jpg" class="d-block w-100" alt="Among Us" onerror="this.src='https://via.placeholder.com/300x200?text=Among+Us'"></div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="row">
+                            <div class="col-md-3"><img src="https://wallpapers.com/images/high/fortnite-battle-royale-4k-5k-7k.jpg" class="d-block w-100" alt="Fortnite" onerror="this.src='https://via.placeholder.com/300x200?text=Fortnite'"></div>
+                            <div class="col-md-3"><img src="https://images7.alphacoders.com/135/thumb-350-1357961.jpeg" class="d-block w-100" alt="ML" onerror="this.src='https://via.placeholder.com/300x200?text=Mobile+Legends'"></div>
+                            <div class="col-md-3"><img src="https://via.placeholder.com/300x200?text=Clash+of+Clans" class="d-block w-100" alt="COC"></div>
+                            <div class="col-md-3"><img src="https://via.placeholder.com/300x200?text=Roblox" class="d-block w-100" alt="Roblox"></div>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#gameCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+                <button class="carousel-control-next" type="button" data-bs-target="#gameCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5 bg-white hidden" data-aos="fade-up">
+        <div class="container">
+            <h2 class="text-center mb-5">Tính Năng Đỉnh Cao</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card" data-aos="zoom-in" data-aos-delay="100">
+                        <i class="fas fa-user-lock"></i>
+                        <h4 class="mt-3">Đăng Nhập An Toàn</h4>
+                        <p>Email/Google/FB với 2FA bảo mật.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card" data-aos="zoom-in" data-aos-delay="200">
+                        <i class="fas fa-wallet"></i>
+                        <h4 class="mt-3">Nạp Tiền Nhanh</h4>
+                        <p>Momo/VNPAY/ZaloPay, cập nhật realtime.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card" data-aos="zoom-in" data-aos-delay="300">
+                        <i class="fas fa-gamepad"></i>
+                        <h4 class="mt-3">Thư Viện Game</h4>
+                        <p>Hàng trăm tựa game cloud-ready, filter dễ dàng.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Games Section - Enhanced Beautiful Design -->
+    <section id="games" class="py-5 hidden" data-aos="fade-up">
+        <div class="container">
+            <h2 class="text-center mb-4">Thư Viện Games</h2>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <input type="text" id="searchGame" class="form-control" placeholder="Tìm game..." oninput="filterGames()" />
+                </div>
+                <div class="col-md-6">
+                    <select id="filterGenre" class="form-select" onchange="filterGames()">
+                        <option value="All">Tất Cả Thể Loại</option>
+                        <option value="Action">Action</option>
+                        <option value="RPG">RPG</option>
+                    </select>
+                </div>
+            </div>
+            <div id="gamesGrid" class="grid-games"></div>
+            <div id="recommendations" class="recommendations hidden">
+                <h3>Gợi Ý Cá Nhân Hóa</h3>
+                <div id="recGames" class="grid-games"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Packages Section - Redesigned with Detailed Configs -->
+    <section id="packages" class="py-5 hidden" style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);" data-aos="fade-up">
+        <div class="container">
+            <h2 class="text-center mb-5">Chọn Gói Gaming Chi Tiết Của Bạn</h2>
+            <p class="text-center mb-4">Khám phá các gói với cấu hình cao cấp, hỗ trợ lưu trữ tài khoản không giới hạn và giao diện mượt mà.</p>
+            <div id="packagesGrid" class="grid-packages"></div>
+        </div>
+    </section>
+
+    <!-- Profile Section with QR Recharge Form and Storage -->
+    <section id="profile" class="py-5 hidden" data-aos="fade-up">
+        <div class="container">
+            <h2 class="text-center mb-4">Dashboard Hồ Sơ</h2>
+            <div class="profile-section">
+                <h3>Số Dư: <span id="currentBalance">0</span>k</h3>
+            </div>
+            <div class="profile-section">
+                <h3>Nạp Tiền Qua QR Ngân Hàng (Vietinbank)</h3>
+                <p>Quét mã QR dưới đây bằng app ngân hàng của bạn (Momo, VNPAY, Vietinbank...), nhập số tiền nạp và chuyển khoản. Số dư sẽ cập nhật tự động sau 1-2 phút.</p>
+                <div class="qr-section">
+                    <img src="https://i.imgur.com/ZwdZgr9.png" alt="VietQR Code for Recharge" />
+                    <p><strong>Số TK: 106882688024</strong> (Vietinbank - Limore Cloud)</p>
+                    <h5>Hướng Dẫn:</h5>
+                    <ol>
+                        <li>Quét QR bằng app ngân hàng.</li>
+                        <li>Nhập số tiền (ví dụ: 100000 VND cho 100k).</li>
+                        <li>Ghi chú: "Nạp Limore Cloud - [Email của bạn]".</li>
+                        <li>Chuyển khoản và chờ xác nhận.</li>
+                    </ol>
+                    <p><em>Lưu ý: Giao dịch an toàn, hỗ trợ 24/7.</em></p>
+                </div>
+            </div>
+            <!-- New Storage Section -->
+            <div class="storage-section" data-aos="zoom-in">
+                <h3><i class="fas fa-cloud-upload-alt me-2"></i>Lưu Trữ Tài Khoản Cloud</h3>
+                <p>Sao lưu tự động tiến trình game, save data và profile. Dung lượng hiện tại: <span id="currentStorage">5</span>GB / 50GB</p>
+                <div class="storage-bar">
+                    <div class="storage-progress" style="width: 10%;"></div>
+                </div>
+                <button class="upgrade-btn mt-3" onclick="upgradeStorage()">Nâng Cấp Lưu Trữ</button>
+                <div class="storage-card mt-3" id="storageDetails" style="display: none;">
+                    <h5>Chi Tiết Lưu Trữ</h5>
+                    <ul class="config-list">
+                        <li><i class="fas fa-hdd config-icon"></i>Dung lượng: 50GB (Tự động mở rộng với gói Pro+)</li>
+                        <li><i class="fas fa-sync-alt config-icon"></i>Sao lưu: Tự động hàng ngày, mã hóa end-to-end</li>
+                        <li><i class="fas fa-download config-icon"></i>Tải về: Không giới hạn tốc độ</li>
+                        <li><i class="fas fa-lock config-icon"></i>Bảo mật: 2FA cho truy cập dữ liệu</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="profile-section">
+                <h3>Thông Tin Cá Nhân</h3>
+                <p>Tên: <span id="userName">Test User</span></p>
+                <p>Email: <span id="userEmail">test@test.com</span></p>
+                <button class="btn btn-modern" onclick="alert('Chỉnh sửa profile đang cập nhật!')">Chỉnh Sửa</button>
+            </div>
+            <div class="profile-section">
+                <h3>Lịch Sử Giao Dịch</h3>
+                <ul id="transactionHistory" class="history-list"></ul>
+            </div>
+            <div class="profile-section">
+                <h3>Wishlist (<span id="wishlistCount">0</span>)</h3>
+                <ul id="wishlistList"></ul>
+            </div>
+            <div class="profile-section">
+                <h3>Achievements (<span id="achievementsCount">0</span>)</h3>
+                <ul id="achievementsList"></ul>
+            </div>
+            <div class="profile-section">
+                <h3>Referral</h3>
+                <p>Mã: LIMORE123 – Giới thiệu bạn nhận 50k!</p>
+                <button class="btn-modern" onclick="shareReferral()">Chia Sẻ</button>
+            </div>
+            <div class="profile-section">
+                <h3>Gói Hiện Tại: <span id="currentPackage">Basic</span></h3>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support Section -->
+    <section id="support" class="py-5 hidden" data-aos="fade-up">
+        <div class="container">
+            <h2 class="text-center mb-4">Hỗ Trợ Khách Hàng</h2>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="chat-box" id="chatBox">
+                        <p><strong>Bot:</strong> Chào mừng đến với Limore Cloud! Tôi có thể giúp gì cho bạn? (Hỏi về nạp tiền, game hot, gói dịch vụ...)</p>
+                    </div>
+                    <input type="text" id="chatInput" placeholder="Nhập tin nhắn..." onkeypress="if(event.key==='Enter') sendChatMessage()" />
+                    <button class="btn-modern" onclick="sendChatMessage()">Gửi</button>
+                </div>
+                <div class="col-md-4">
+                    <h4>FAQ</h4>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">Làm thế nào để nạp tiền?</div>
+                        <div class="faq-answer">Quét QR VietQR trong Hồ Sơ, nhập số tiền và chuyển khoản. Cập nhật tự động!</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">Cloud gaming có lag không?</div>
+                        <div class="faq-answer">Không, với server mạnh và kết nối ổn định, trải nghiệm mượt mà.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">Game hot tháng 11/2025 là gì?</div>
+                        <div class="faq-answer">PUBG Mobile, Genshin Impact, Battlefield 6, Ghost of Yotei, GTA 5, Black Myth: Wukong, và nhiều hơn nữa!</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">Lưu trữ tài khoản hoạt động thế nào?</div>
+                        <div class="faq-answer">Tự động sao lưu save game và profile, với 50GB miễn phí. Nâng cấp để có thêm dung lượng!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="hidden">
+        <div class="container">
+            <p>&copy; 2025 Limore Cloud. <i class="fas fa-heart text-danger mx-1"></i> Tất cả quyền được bảo lưu. | <a href="#" style="color: inherit;" onclick="showPage('support')">Liên hệ: support@limorecloud.vn</a></p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 800, easing: 'ease-in-out' });
+
+        // Updated Mock Games
+        const mockGames = [
+            { id: 1, name: 'PUBG Mobile', genre: 'Action', image: 'https://wallpapers.com/images/high/pubg-mobile-4k-8k.jpg', desc: 'Battle royale game with intense multiplayer action.', rating: 4.7, reviews: 'Hàng triệu người chơi yêu thích!' },
+            { id: 2, name: 'Genshin Impact', genre: 'RPG', image: 'https://images6.alphacoders.com/128/thumb-350-1289015.jpg', desc: 'Open-world adventure with stunning graphics.', rating: 4.8, reviews: 'Khám phá thế giới rộng lớn!' },
+            { id: 3, name: 'Call of Duty Mobile', genre: 'Action', image: 'https://wallpapercave.com/wp/wp18232095.jpg', desc: 'Fast-paced FPS shooter on mobile.', rating: 4.6, reviews: 'Chiến đấu đỉnh cao!' },
+            { id: 4, name: 'Among Us', genre: 'RPG', image: 'https://wallpapers.com/images/featured-full/among-us-cb21ldue3llceiua.jpg', desc: 'Social deduction game with crewmates and impostors.', rating: 4.5, reviews: 'Vui nhộn với bạn bè!' },
+            { id: 5, name: 'Fortnite', genre: 'Action', image: 'https://wallpapers.com/images/high/fortnite-battle-royale-4k-5k-7k.jpg', desc: 'Build and battle in epic royale.', rating: 4.4, reviews: 'Sáng tạo không giới hạn!' },
+            { id: 6, name: 'Mobile Legends', genre: 'RPG', image: 'https://images7.alphacoders.com/135/thumb-350-1357961.jpeg', desc: 'MOBA with heroes and team fights.', rating: 4.6, reviews: 'Đấu trường huyền thoại!' },
+            { id: 7, name: 'Battlefield 6', genre: 'Action', image: 'https://via.placeholder.com/200?text=Battlefield+6', desc: 'Epic multiplayer shooter with massive battles.', rating: 4.9, reviews: 'Bom tấn FPS 2025!' },
+            { id: 8, name: 'Ghost of Yotei', genre: 'Action', image: 'https://via.placeholder.com/200?text=Ghost+of+Yotei', desc: 'Samurai adventure sequel with beautiful open world.', rating: 4.8, reviews: 'Hot nhất tháng 11!' },
+            { id: 9, name: 'Planet of Lana', genre: 'RPG', image: 'https://via.placeholder.com/200?text=Planet+of+Lana', desc: 'Puzzle-adventure with stunning visuals.', rating: 4.7, reviews: 'Trò chơi indie đỉnh cao.' },
+            { id: 10, name: 'Chaos Zero Nightmare', genre: 'Action', image: 'https://via.placeholder.com/200?text=Chaos+Zero', desc: 'Horror survival with intense gameplay.', rating: 4.6, reviews: 'Sợ hãi và hấp dẫn!' },
+            { id: 11, name: 'GTA 5', genre: 'Action', image: 'https://wallpapercave.com/wp/wp18232095.jpg', desc: 'Open-world crime saga in Los Santos with endless possibilities.', rating: 4.9, reviews: 'Iconic open-world adventure!' },
+            { id: 12, name: 'Black Myth: Wukong', genre: 'Action', image: 'https://wallpapercg.com/wp-content/uploads/2024/08/Black-Myth-Wukong-Gameplay-Wallpaper.jpg', desc: 'Epic action RPG inspired by Journey to the West mythology.', rating: 4.8, reviews: 'Stunning visuals and combat!' }
+        ];
+
+        // Enhanced Packages with Detailed Configs
+        const packages = [
+            { 
+                name: 'Basic', 
+                price: 100, 
+                hours: '10 giờ/tháng', 
+                rec: 'Người mới', 
+                configs: [
+                    { icon: 'fas fa-tv', label: 'Độ phân giải', value: '720p' },
+                    { icon: 'fas fa-tachometer-alt', label: 'FPS', value: '30 FPS' },
+                    { icon: 'fas fa-hdd', label: 'Lưu trữ', value: '5GB' },
+                    { icon: 'fas fa-users', label: 'Người dùng', value: '1' },
+                    { icon: 'fas fa-download', label: 'Tốc độ tải', value: '50 Mbps' }
+                ]
+            },
+            { 
+                name: 'Standard', 
+                price: 150, 
+                hours: '30 giờ/tháng', 
+                rec: 'Casual', 
+                configs: [
+                    { icon: 'fas fa-tv', label: 'Độ phân giải', value: '1080p' },
+                    { icon: 'fas fa-tachometer-alt', label: 'FPS', value: '60 FPS' },
+                    { icon: 'fas fa-hdd', label: 'Lưu trữ', value: '20GB' },
+                    { icon: 'fas fa-users', label: 'Người dùng', value: '1' },
+                    { icon: 'fas fa-download', label: 'Tốc độ tải', value: '100 Mbps' }
+                ]
+            },
+            { 
+                name: 'Pro', 
+                price: 250, 
+                hours: 'Không giới hạn', 
+                rec: 'Hardcore', 
+                configs: [
+                    { icon: 'fas fa-tv', label: 'Độ phân giải', value: '4K' },
+                    { icon: 'fas fa-tachometer-alt', label: 'FPS', value: '120 FPS' },
+                    { icon: 'fas fa-hdd', label: 'Lưu trữ', value: '100GB' },
+                    { icon: 'fas fa-users', label: 'Người dùng', value: '2' },
+                    { icon: 'fas fa-download', label: 'Tốc độ tải', value: '500 Mbps' }
+                ]
+            },
+            { 
+                name: 'Family', 
+                price: 400, 
+                hours: 'Không giới hạn', 
+                rec: 'Gia đình', 
+                configs: [
+                    { icon: 'fas fa-tv', label: 'Độ phân giải', value: '4K' },
+                    { icon: 'fas fa-tachometer-alt', label: 'FPS', value: '120 FPS' },
+                    { icon: 'fas fa-hdd', label: 'Lưu trữ', value: '500GB' },
+                    { icon: 'fas fa-users', label: 'Người dùng', value: '4' },
+                    { icon: 'fas fa-download', label: 'Tốc độ tải', value: '1 Gbps' }
+                ]
+            }
+        ];
+
+        // State
+        let user = null;
+        let balance = 0;
+        let wishlist = [];
+        let achievements = [];
+        let transactions = [];
+        let favoriteGenre = 'Action';
+        let currentPackage = 'Basic';
+        let storageUsed = 5; // GB
+
+        // Load from localStorage
+        function loadState() {
+            user = JSON.parse(localStorage.getItem('user')) || null;
+            balance = parseInt(localStorage.getItem('balance')) || 0;
+            wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+            achievements = JSON.parse(localStorage.getItem('achievements')) || [];
+            transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+            favoriteGenre = localStorage.getItem('favoriteGenre') || 'Action';
+            currentPackage = localStorage.getItem('package') || 'Basic';
+            storageUsed = parseInt(localStorage.getItem('storageUsed')) || 5;
+            if (user) {
+                document.getElementById('navbar').classList.remove('hidden');
+                document.getElementById('userInfo').innerHTML = `${user.name} - ${balance}k`;
+                document.getElementById('currentBalance').textContent = balance;
+                document.getElementById('userName').textContent = user.name;
+                document.getElementById('userEmail').textContent = user.email;
+                document.getElementById('wishlistCount').textContent = wishlist.length;
+                document.getElementById('achievementsCount').textContent = achievements.length;
+                document.getElementById('currentPackage').textContent = currentPackage;
+                document.getElementById('currentStorage').textContent = `${storageUsed}`;
+                updateStorageBar();
+                document.getElementById('packageRec').innerHTML = `Gói của bạn: ${currentPackage} – Khuyến nghị: ${mockGames.find(g => g.genre === favoriteGenre)?.name || mockGames[0].name} cho fans ${favoriteGenre}!`;
+                showPage('home');
+            } else {
+                document.getElementById('loginModal').style.display = 'flex';
+                document.getElementById('loginModal').classList.remove('hidden');
+            }
+            renderWishlist();
+            renderAchievements();
+            renderTransactions();
+            renderGames();
+            renderPackages();
+            renderRecommendations();
+            renderHotGames();
+        }
+
+        function updateStorageBar() {
+            const progress = (storageUsed / 50) * 100;
+            document.querySelector('.storage-progress').style.width = `${Math.min(progress, 100)}%`;
+        }
+
+        // Show Notification Toast
+        function showNotification(message, type = 'danger') {
+            const toastEl = document.getElementById('notificationToast');
+            const toastBody = document.getElementById('toastMessage');
+            toastBody.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'info' ? 'info-circle' : type === 'warning' ? 'exclamation-triangle' : 'exclamation-triangle'} me-2"></i>${message}`;
+            toastEl.className = `toast align-items-center text-white bg-${type} border-0`;
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        }
+
+        // Show/Hide Modals
+        function showRegisterModal() {
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('registerModal').classList.remove('hidden');
+            document.getElementById('registerModal').style.display = 'flex';
+        }
+
+        function showLoginModal() {
+            document.getElementById('registerModal').style.display = 'none';
+            document.getElementById('loginModal').classList.remove('hidden');
+            document.getElementById('loginModal').style.display = 'flex';
+        }
+
+        // Navigation
+        function showPage(page) {
+            document.querySelectorAll('section, #featuredGames, #hotGames, footer').forEach(el => el.classList.add('hidden'));
+            document.getElementById(page)?.classList.remove('hidden');
+            if (page === 'home') {
+                document.getElementById('featuredGames').classList.remove('hidden');
+                document.getElementById('hotGames').classList.remove('hidden');
+            }
+            document.querySelector('footer').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Validation
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        // Registration Handler
+        function handleRegister() {
+            const name = document.getElementById('registerName').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+            const selectedPackage = document.getElementById('registerPackage').value;
+            const error = document.getElementById('registerError');
+
+            if (!name || !email || !password || !confirmPassword) {
+                error.textContent = 'Vui lòng nhập đầy đủ thông tin!';
+                return;
+            }
+            if (!validateEmail(email)) {
+                error.textContent = 'Email không hợp lệ!';
+                return;
+            }
+            if (password.length < 6) {
+                error.textContent = 'Mật khẩu phải ít nhất 6 ký tự!';
+                return;
+            }
+            if (password !== confirmPassword) {
+                error.textContent = 'Mật khẩu xác nhận không khớp!';
+                return;
+            }
+
+            // Mock registration - Save to localStorage
+            user = { name, email, package: selectedPackage };
+            localStorage.setItem('user', JSON.stringify(user));
+            currentPackage = selectedPackage;
+            localStorage.setItem('package', currentPackage);
+            error.textContent = '';
+            document.getElementById('registerModal').style.display = 'none';
+            showNotification('Đăng ký thành công! Chào mừng bạn đến với Limore Cloud.', 'success');
+            loadState();
+        }
+
+        // Login with Validation
+        function handleLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const error = document.getElementById('loginError');
+            if (!email || !password) {
+                error.textContent = 'Vui lòng nhập đầy đủ!';
+                return;
+            }
+            if (!validateEmail(email)) {
+                error.textContent = 'Email không hợp lệ!';
+                return;
+            }
+            // Hidden test account - Only developer knows: email = 'dev@limore.com', password = 'dev123'
+            if (email === 'dev@limore.com' && password === 'dev123') {
+                user = { email, name: 'Developer User' };
+                localStorage.setItem('user', JSON.stringify(user));
+                error.textContent = '';
+                const modal = document.getElementById('loginModal');
+                modal.style.display = 'none';
+                modal.classList.add('hidden');
+                showNotification('Đăng nhập thành công!', 'success');
+                loadState();
+            } else {
+                error.textContent = 'Sai email/mật khẩu! Vui lòng kiểm tra lại.';
+            }
+        }
+
+        // Logout
+        function handleLogout() {
+            if (confirm('Bạn có chắc muốn đăng xuất?')) {
+                localStorage.clear();
+                user = null;
+                balance = 0;
+                wishlist = [];
+                achievements = [];
+                transactions = [];
+                document.getElementById('navbar').classList.add('hidden');
+                document.getElementById('loginModal').classList.remove('hidden');
+                document.getElementById('loginModal').style.display = 'flex';
+                showNotification('Đăng xuất thành công!', 'info');
+            }
+        }
+
+        // Recharge with QR Mock
+        function handleRecharge() {
+            const amount = prompt('Nhập số tiền nạp (tối thiểu 50k):');
+            if (!amount || parseInt(amount) < 50) {
+                showNotification('Số tiền tối thiểu 50k!', 'warning');
+                return;
+            }
+            setTimeout(() => {
+                balance += parseInt(amount);
+                localStorage.setItem('balance', balance);
+                transactions.unshift({ type: 'Nạp QR', amount: parseInt(amount), date: new Date().toLocaleString(), method: 'VietQR Vietinbank' });
+                localStorage.setItem('transactions', JSON.stringify(transactions));
+                document.getElementById('currentBalance').textContent = balance;
+                document.getElementById('userInfo').innerHTML = `${user.name} - ${balance}k`;
+                renderTransactions();
+                showNotification(`Nạp thành công ${amount}k qua QR! Số dư đã cập nhật.`, 'success');
+            }, 3000);
+        }
+
+        // Buy Package with History and Notification
+        function buyPackage(pkgStr) {
+            const pkg = JSON.parse(pkgStr);
+            if (balance >= pkg.price) {
+                const btn = event.target;
+                btn.classList.add('loading');
+                btn.textContent = 'Đang mua...';
+                setTimeout(() => {
+                    balance -= pkg.price;
+                    currentPackage = pkg.name;
+                    localStorage.setItem('balance', balance);
+                    localStorage.setItem('package', currentPackage);
+                    transactions.unshift({ type: `Mua ${pkg.name}`, amount: -pkg.price, date: new Date().toLocaleString() });
+                    localStorage.setItem('transactions', JSON.stringify(transactions));
+                    document.getElementById('currentBalance').textContent = balance;
+                    document.getElementById('currentPackage').textContent = currentPackage;
+                    document.getElementById('packageRec').innerHTML = `Gói của bạn: ${currentPackage} – Khuyến nghị: ${pkg.rec} games!`;
+                    document.getElementById('userInfo').innerHTML = `${user.name} - ${balance}k`;
+                    btn.classList.remove('loading');
+                    btn.textContent = 'Mua Ngay';
+                    renderTransactions();
+                    showNotification(`Mua ${pkg.name} thành công! Bạn sẽ nhận được cập nhật trong email.`, 'success');
+                }, 1500);
+            } else {
+                showNotification(`Số dư không đủ! Cần thêm ${pkg.price - balance}k để mua ${pkg.name}. Vui lòng nạp thêm tiền.`, 'danger');
+            }
+        }
+
+        // Render Packages with Detailed Configs
+        function renderPackages() {
+            const grid = document.getElementById('packagesGrid');
+            grid.innerHTML = packages.map(pkg => {
+                const pkgStr = JSON.stringify(pkg);
+                return `
+                    <div class="package-card" data-aos="flip-left">
+                        <i class="fas fa-crown" style="font-size: 4rem; color: ${pkg.name === 'Pro' || pkg.name === 'Family' ? 'gold' : 'var(--primary)'} ;"></i>
+                        <h4>${pkg.name}</h4>
+                        <h5>${pkg.price}k / tháng</h5>
+                        <ul class="list-unstyled mb-4">
+                            <li><i class="fas fa-check text-success me-2"></i>${pkg.hours}</li>
+                            <li><i class="fas fa-user-check text-info me-2"></i>${pkg.rec}</li>
+                        </ul>
+                        <h6>Cấu Hình Chi Tiết:</h6>
+                        <ul class="config-list">
+                            ${pkg.configs.map(config => `<li><i class="${config.icon} config-icon"></i><strong>${config.label}:</strong> ${config.value}</li>`).join('')}
+                        </ul>
+                        <button class="btn btn-modern w-100 mt-3" onclick="buyPackage('${pkgStr.replace(/'/g, "\\'")}')">Mua Ngay</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render Hot Games
+        function renderHotGames() {
+            const hotList = document.getElementById('hotGamesList');
+            const hotGames = mockGames.slice(6, 12);
+            hotList.innerHTML = hotGames.map(game => `
+                <div class="hot-game-item">
+                    <img src="${game.image}" alt="${game.name}" onerror="this.src='https://via.placeholder.com/100?text=${game.name}'" />
+                    <p>${game.name}</p>
+                </div>
+            `).join('');
+        }
+
+        // Enhanced Games Rendering with Beautiful Design and Full Images
+        function renderGames(games = mockGames) {
+            const grid = document.getElementById('gamesGrid');
+            grid.innerHTML = games.map(game => {
+                const isInWishlist = wishlist.some(g => g.id === game.id);
+                return `
+                    <div class="game-card" data-aos="fade-up" data-aos-delay="${game.id * 50}">
+                        <img src="${game.image}" alt="${game.name}" onerror="this.src='https://via.placeholder.com/280x250?text=${game.name}'" />
+                        <div class="game-overlay">
+                            <div>
+                                <h3>${game.name}</h3>
+                                <p>${game.genre} • ${game.rating}/5 ⭐</p>
+                            </div>
+                        </div>
+                        <div class="game-content">
+                            <div>
+                                <h3>${game.name}</h3>
+                                <p>${game.genre}</p>
+                            </div>
+                            <div class="game-actions">
+                                <button onclick="toggleWishlist(${game.id})" style="background:#f59e0b; color:white; border:none; padding:0.5rem; border-radius:5px; font-size:0.8rem;">
+                                    ${isInWishlist ? '❤️ Đã thêm' : 'Add Wishlist'}
+                                </button>
+                                <button class="btn btn-modern" onclick="showGameDetails(${game.id})" style="flex: 2;">Chi Tiết</button>
+                                <button onclick="shareGame(${game.id})" style="background:#00bfff; color:white; border:none; padding:0.5rem; border-radius:5px; font-size:0.8rem;"><i class="fas fa-share"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterGames() {
+            const search = document.getElementById('searchGame').value.toLowerCase();
+            const filter = document.getElementById('filterGenre').value;
+            const filtered = mockGames.filter(game => 
+                game.name.toLowerCase().includes(search) && (filter === 'All' || game.genre === filter)
+            );
+            renderGames(filtered);
+        }
+
+        function showGameDetails(id) {
+            const game = mockGames.find(g => g.id === id);
+            document.getElementById('detailTitle').textContent = game.name;
+            document.getElementById('detailImage').src = game.image;
+            document.getElementById('detailImage').onerror = () => { this.src = 'https://via.placeholder.com/600x400?text=' + game.name; };
+            document.getElementById('detailDesc').textContent = game.desc;
+            document.getElementById('detailGenre').textContent = game.genre;
+            document.getElementById('detailRating').innerHTML = `<i class="fas fa-star"></i> ${game.rating}/5`;
+            document.getElementById('detailReviews').textContent = game.reviews;
+            document.getElementById('gameDetailsModal').classList.remove('hidden');
+        }
+
+        function closeGameDetails() {
+            document.getElementById('gameDetailsModal').classList.add('hidden');
+        }
+
+        function shareGame(id) {
+            const game = mockGames.find(g => g.id === id);
+            if (navigator.share) {
+                navigator.share({ title: game.name, url: window.location.href });
+            } else {
+                showNotification(`Chia sẻ: ${game.name} trên Limore Cloud!`, 'info');
+            }
+        }
+
+        function toggleWishlist(id) {
+            const index = wishlist.findIndex(g => g.id === id);
+            if (index > -1) {
+                wishlist.splice(index, 1);
+                showNotification('Xóa khỏi wishlist thành công!', 'info');
+            } else {
+                const game = mockGames.find(g => g.id === id);
+                wishlist.push(game);
+                favoriteGenre = game.genre;
+                localStorage.setItem('favoriteGenre', favoriteGenre);
+                achievements.push({ id: Date.now(), name: `Wishlist: ${game.name}` });
+                showNotification('Thêm vào wishlist thành công!', 'success');
+            }
+            localStorage.setItem('wishlist', JSON.stringify(wishlist));
+            localStorage.setItem('achievements', JSON.stringify(achievements));
+            document.getElementById('wishlistCount').textContent = wishlist.length;
+            document.getElementById('achievementsCount').textContent = achievements.length;
+            renderWishlist();
+            renderAchievements();
+            renderGames();
+            renderRecommendations();
+        }
+
+        function renderWishlist() {
+            document.getElementById('wishlistList').innerHTML = wishlist.map(g => `<li>${g.name}</li>`).join('') || '<li>Chưa có game yêu thích.</li>';
+        }
+
+        function renderAchievements() {
+            document.getElementById('achievementsList').innerHTML = achievements.map(a => `<li>${a.name}</li>`).join('') || '<li>Chưa có thành tựu.</li>';
+        }
+
+        // Render Transactions
+        function renderTransactions() {
+            const list = document.getElementById('transactionHistory');
+            list.innerHTML = transactions.slice(0, 5).map(t => `<li>${t.type}: ${t.amount > 0 ? '+' : ''}${t.amount}k - ${t.date} ${t.method ? `(${t.method})` : ''}</li>`).join('') || '<li>Chưa có giao dịch.</li>';
+        }
+
+        // Render Recommendations - Use same grid
+        function renderRecommendations() {
+            const recGames = mockGames.filter(g => g.genre === favoriteGenre).slice(0, 3);
+            const div = document.getElementById('recGames');
+            div.innerHTML = recGames.map(g => {
+                return `
+                    <div class="game-card" style="height: auto;">
+                        <img src="${g.image}" alt="${g.name}" style="height: 150px;" onerror="this.src='https://via.placeholder.com/200?text=${g.name}'" />
+                        <div class="game-content">
+                            <h3>${g.name}</h3>
+                            <p>${g.genre}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('recommendations').classList.toggle('hidden', recGames.length === 0);
+        }
+
+        // Upgrade Storage with Notification
+        function upgradeStorage() {
+            if (balance >= 50) {
+                balance -= 50;
+                storageUsed += 50;
+                localStorage.setItem('balance', balance);
+                localStorage.setItem('storageUsed', storageUsed);
+                document.getElementById('currentBalance').textContent = balance;
+                document.getElementById('currentStorage').textContent = `${storageUsed}`;
+                updateStorageBar();
+                document.getElementById('storageDetails').style.display = 'block';
+                showNotification('Nâng cấp lưu trữ thành công! Dung lượng mới: ' + storageUsed + 'GB', 'success');
+            } else {
+                showNotification('Số dư không đủ! Cần 50k để nâng cấp. Vui lòng nạp thêm tiền.', 'danger');
+            }
+        }
+
+        // Intelligent Chat Bot
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim().toLowerCase();
+            if (!message) return;
+            const chatBox = document.getElementById('chatBox');
+            chatBox.innerHTML += `<p><strong>You:</strong> ${input.value}</p>`;
+            input.value = '';
+
+            let botResponse = '';
+            let showImage = false;
+            let gameImage = '';
+
+            if (message.includes('nạp') || message.includes('recharge') || message.includes('qr')) {
+                botResponse = 'Để nạp qua QR: Vào Hồ Sơ > Nạp Tiền, quét QR Vietinbank (TK: 106882688024), nhập số tiền và ghi chú email của bạn. Cập nhật tự động sau 1-2 phút!';
+            } else if (message.includes('gói') || message.includes('package')) {
+                botResponse = 'Các gói: Basic (100k/10h, 720p), Standard (150k/30h, 1080p), Pro (250k/unlimited, 4K), Family (400k/4 users, 500GB lưu trữ). Vào Gói Dịch Vụ để mua!';
+            } else if (message.includes('hot') || message.includes('mới') || message.includes('2025')) {
+                botResponse = 'Game hot tháng 11/2025: Battlefield 6 (Action), Ghost of Yotei (Samurai), GTA 5 (Open-world), Black Myth: Wukong (RPG). Xem chi tiết trong Thư Viện!';
+                showImage = true;
+                gameImage = 'https://via.placeholder.com/100?text=Hot+Games+2025';
+            } else if (message.includes('lag') || message.includes('chậm')) {
+                botResponse = 'Cloud gaming không lag với server Việt Nam. Kiểm tra kết nối WiFi > 10Mbps và cập nhật app!';
+            } else if (message.includes('lưu') || message.includes('storage')) {
+                botResponse = 'Lưu trữ tài khoản: 50GB miễn phí, tự động sao lưu. Nâng cấp trong Hồ Sơ để có thêm dung lượng!';
+            } else if (message.includes('pubg') || message.includes('genshin') || message.includes('battlefield') || message.includes('ghost') || message.includes('gta') || message.includes('wukong')) {
+                const keyword = message.includes('pubg') ? 'pubg' : message.includes('genshin') ? 'genshin' : message.includes('battlefield') ? 'battlefield' : message.includes('ghost') ? 'ghost' : message.includes('gta') ? 'gta' : 'wukong';
+                const game = mockGames.find(g => g.name.toLowerCase().includes(keyword));
+                botResponse = `${game.name}: ${game.desc} Rating: ${game.rating}/5. Chơi ngay với gói ${currentPackage}!`;
+                showImage = true;
+                gameImage = game.image;
+            } else if (message.includes('giúp') || message.includes('help')) {
+                botResponse = 'Tôi hỗ trợ: nạp tiền QR, gói dịch vụ chi tiết (cấu hình 4K, lưu trữ), game hot 2025, troubleshooting lag. Hỏi cụ thể nhé!';
+            } else {
+                botResponse = 'Cảm ơn! Nếu cần hỗ trợ, thử hỏi "nạp QR" hoặc "game hot". Xem FAQ bên phải.';
+            }
+
+            chatBox.innerHTML += `<p><strong>Bot:</strong> ${botResponse}`;
+            if (showImage) {
+                chatBox.innerHTML += `<br><img src="${gameImage}" alt="Game Image" class="chat-message img" onerror="this.style.display='none'" />`;
+            }
+            chatBox.innerHTML += '</p>';
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Share Referral
+        function shareReferral() {
+            if (navigator.share) {
+                navigator.share({ title: 'Tham gia Limore Cloud!', text: 'Sử dụng mã LIMORE123 để nhận 50k!' });
+            } else {
+                showNotification('Mã referral: LIMORE123 – Chia sẻ để nhận thưởng! (Sao chép và gửi cho bạn bè)', 'info');
+            }
+        }
+
+        // FAQ Toggle
+        function toggleFAQ(element) {
+            const answer = element.nextElementSibling;
+            answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Dark Mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.querySelector('.dark-toggle');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+            showNotification('Chế độ tối đã ' + (document.body.classList.contains('dark-mode') ? 'bật' : 'tắt') + '!', 'info');
+        }
+
+        // Load dark mode from storage
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            document.querySelector('.dark-toggle').classList.remove('fa-moon');
+            document.querySelector('.dark-toggle').classList.add('fa-sun');
+        }
+
+        // Save State on Unload
+        window.addEventListener('beforeunload', function() {
+            if (user) {
+                localStorage.setItem('user', JSON.stringify(user));
+                localStorage.setItem('balance', balance);
+                localStorage.setItem('wishlist', JSON.stringify(wishlist));
+                localStorage.setItem('achievements', JSON.stringify(achievements));
+                localStorage.setItem('transactions', JSON.stringify(transactions));
+                localStorage.setItem('favoriteGenre', favoriteGenre);
+                localStorage.setItem('package', currentPackage);
+                localStorage.setItem('storageUsed', storageUsed);
+            }
+        });
+
+        // Enter key for login and chat
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginPassword = document.getElementById('loginPassword');
+            loginPassword.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleLogin();
+                }
+            });
+            const registerPassword = document.getElementById('registerPassword');
+            if (registerPassword) registerPassword.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleRegister();
+                }
+            });
+        });
+
+        // Init
+        loadState();
+    </script>
+</body>
+</html>
