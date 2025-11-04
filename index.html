@@ -1,3 +1,4 @@
+<DOCUMENT filename="index.html">
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -348,6 +349,24 @@
             color: white;
             text-decoration: none;
         }
+        /* Hot Package Badge */
+        .package-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body class="loading"> <!-- Add loading class, remove on DOMContentLoaded -->
@@ -390,6 +409,7 @@
                 <option value="Standard">Gói Standard</option>
                 <option value="Pro">Gói Pro</option>
                 <option value="Family">Gói Family</option>
+                <option value="Hourly">Gói Hourly (5k/giờ - HOT & GIẢM GIÁ)</option>
             </select>
             <button class="btn-modern w-100" onclick="handleRegister()">Đăng Ký</button>
             <p class="mt-3">Đã có tài khoản? <span class="login-toggle" onclick="showLoginModal()">Đăng nhập</span></p>
@@ -450,7 +470,7 @@
         </div>
     </section>
 
-    <!-- Featured Games Carousel (Home & Games) - Expanded with more games -->
+    <!-- Featured Games Carousel (Home & Games) - Updated with new games -->
     <section id="featuredGames" class="py-5 hidden" data-aos="fade-up">
         <div class="container">
             <h2 class="text-center mb-5">Game Nổi Bật</h2>
@@ -458,34 +478,24 @@
                 <div class="carousel-inner">
                     <div class="carousel-item active">
                         <div class="row">
-                            <div class="col-md-3"><img src="https://wallpapers.com/images/high/pubg-mobile-4k-8k.jpg" class="d-block w-100" alt="PUBG" onerror="this.src='https://via.placeholder.com/300x200?text=PUBG+Mobile'"></div>
-                            <div class="col-md-3"><img src="https://images6.alphacoders.com/128/thumb-350-1289015.jpg" class="d-block w-100" alt="Genshin" onerror="this.src='https://via.placeholder.com/300x200?text=Genshin+Impact'"></div>
-                            <div class="col-md-3"><img src="https://wallpapercave.com/wp/wp18232095.jpg" class="d-block w-100" alt="COD" onerror="this.src='https://via.placeholder.com/300x200?text=Call+of+Duty+Mobile'"></div>
-                            <div class="col-md-3"><img src="https://wallpapers.com/images/featured-full/among-us-cb21ldue3llceiua.jpg" class="d-block w-100" alt="Among Us" onerror="this.src='https://via.placeholder.com/300x200?text=Among+Us'"></div>
+                            <div class="col-md-3"><img src="https://i.imgur.com/12aVxor.jpeg" class="d-block w-100" alt="GTA5VN" onerror="this.src='https://via.placeholder.com/300x200?text=GTA5VN'"></div>
+                            <div class="col-md-3"><img src="https://i.imgur.com/fEj1yYz.jpeg" class="d-block w-100" alt="League of Legends" onerror="this.src='https://via.placeholder.com/300x200?text=League+of+Legends'"></div>
+                            <div class="col-md-3"><img src="https://i.imgur.com/GtYkE3N.jpeg" class="d-block w-100" alt="Valorant" onerror="this.src='https://via.placeholder.com/300x200?text=Valorant'"></div>
+                            <div class="col-md-3"><img src="https://i.imgur.com/3p46Ya1.jpeg" class="d-block w-100" alt="Garena" onerror="this.src='https://via.placeholder.com/300x200?text=Garena'"></div>
                         </div>
                     </div>
                     <div class="carousel-item">
                         <div class="row">
-                            <div class="col-md-3"><img src="https://wallpapers.com/images/high/fortnite-battle-royale-4k-5k-7k.jpg" class="d-block w-100" alt="Fortnite" onerror="this.src='https://via.placeholder.com/300x200?text=Fortnite'"></div>
-                            <div class="col-md-3"><img src="https://images7.alphacoders.com/135/thumb-350-1357961.jpeg" class="d-block w-100" alt="ML" onerror="this.src='https://via.placeholder.com/300x200?text=Mobile+Legends'"></div>
-                            <div class="col-md-3"><img src="https://via.placeholder.com/300x200?text=Clash+of+Clans" class="d-block w-100" alt="COC"></div>
-                            <div class="col-md-3"><img src="https://via.placeholder.com/300x200?text=Roblox" class="d-block w-100" alt="Roblox"></div>
-                        </div>
-                    </div>
-                    <div class="carousel-item">
-                        <div class="row">
-                            <div class="col-md-3"><img src="https://alphacoders.com/battlefield-2042-wallpapers" class="d-block w-100" alt="Battlefield" onerror="this.src='https://via.placeholder.com/300x200?text=Battlefield+2042'"></div>
                             <div class="col-md-3"><img src="https://wallpapercave.com/wp/wp18232095.jpg" class="d-block w-100" alt="GTA 5" onerror="this.src='https://via.placeholder.com/300x200?text=GTA+5'"></div>
                             <div class="col-md-3"><img src="https://wallpapercg.com/wp-content/uploads/2024/08/Black-Myth-Wukong-Gameplay-Wallpaper.jpg" class="d-block w-100" alt="Black Myth Wukong" onerror="this.src='https://via.placeholder.com/300x200?text=Black+Myth+Wukong'"></div>
-                            <div class="col-md-3"><img src="https://alphacoders.com/planet-of-lana-wallpapers" class="d-block w-100" alt="Planet of Lana" onerror="this.src='https://via.placeholder.com/300x200?text=Planet+of+Lana'"></div>
+                            <div class="col-md-3"><img src="https://via.placeholder.com/300x200?text=Granny+Chapter+2" class="d-block w-100" alt="Granny Chapter 2"></div>
+                            <div class="col-md-3"><img src="https://via.placeholder.com/300x200?text=Supermarket+Simulator" class="d-block w-100" alt="Supermarket Simulator"></div>
                         </div>
                     </div>
                     <div class="carousel-item">
                         <div class="row">
-                            <div class="col-md-3"><img src="https://wallpapercave.com/ghost-of-yotei-wallpapers" class="d-block w-100" alt="Ghost of Yotei" onerror="this.src='https://via.placeholder.com/300x200?text=Ghost+of+Yotei'"></div>
-                            <div class="col-md-3"><img src="https://via.placeholder.com/300x200?text=Legend+of+Ymir" class="d-block w-100" alt="Legend of Ymir"></div>
-                            <div class="col-md-3"><img src="https://via.placeholder.com/300x200?text=Thrasher" class="d-block w-100" alt="Thrasher"></div>
-                            <div class="col-md-3"><img src="https://via.placeholder.com/300x200?text=Duet+Night" class="d-block w-100" alt="Duet Night"></div>
+                            <div class="col-md-3"><img src="https://via.placeholder.com/300x200?text=EA+FC+25" class="d-block w-100" alt="EA FC 25"></div>
+                            <div class="col-md-3"><img src="https://wallpapers.com/images/featured-full/minecraft-s2kxfahyg30sob8q.jpg" class="d-block w-100" alt="Minecraft" onerror="this.src='https://via.placeholder.com/300x200?text=Minecraft'"></div>
                         </div>
                     </div>
                 </div>
@@ -538,6 +548,13 @@
                         <option value="All">Tất Cả Thể Loại</option>
                         <option value="Action">Action</option>
                         <option value="RPG">RPG</option>
+                        <option value="Horror">Horror</option>
+                        <option value="Simulation">Simulation</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Sandbox">Sandbox</option>
+                        <option value="MOBA">MOBA</option>
+                        <option value="FPS">FPS</option>
+                        <option value="Platform">Platform</option>
                     </select>
                 </div>
             </div>
@@ -657,7 +674,7 @@
                     </div>
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFAQ(this)">Game hot tháng 11/2025 là gì?</div>
-                        <div class="faq-answer">PUBG Mobile, Genshin Impact, Battlefield 6, Ghost of Yotei, GTA 5, Black Myth: Wukong, Legend of Ymir, Thrasher, và nhiều hơn nữa!</div>
+                        <div class="faq-answer">GTA 5, Black Myth: Wukong, Granny Chapter 2, Supermarket Simulator, EA FC 25, Minecraft, GTA5VN, League of Legends, Valorant, Garena và nhiều hơn nữa!</div>
                     </div>
                     <div class="faq-item">
                         <div class="faq-question" onclick="toggleFAQ(this)">Lưu trữ tài khoản hoạt động thế nào?</div>
@@ -701,26 +718,21 @@
             loadState();
         });
 
-        // Updated Mock Games with more games and fixed images
+        // Updated Mock Games with new additions
         const mockGames = [
-            { id: 1, name: 'PUBG Mobile', genre: 'Action', image: 'https://wallpapers.com/images/high/pubg-mobile-4k-8k.jpg', desc: 'Battle royale game with intense multiplayer action.', rating: 4.7, reviews: 'Hàng triệu người chơi yêu thích!' },
-            { id: 2, name: 'Genshin Impact', genre: 'RPG', image: 'https://images6.alphacoders.com/128/thumb-350-1289015.jpg', desc: 'Open-world adventure with stunning graphics.', rating: 4.8, reviews: 'Khám phá thế giới rộng lớn!' },
-            { id: 3, name: 'Call of Duty Mobile', genre: 'Action', image: 'https://wallpapercave.com/wp/wp18232095.jpg', desc: 'Fast-paced FPS shooter on mobile.', rating: 4.6, reviews: 'Chiến đấu đỉnh cao!' },
-            { id: 4, name: 'Among Us', genre: 'RPG', image: 'https://wallpapers.com/images/featured-full/among-us-cb21ldue3llceiua.jpg', desc: 'Social deduction game with crewmates and impostors.', rating: 4.5, reviews: 'Vui nhộn với bạn bè!' },
-            { id: 5, name: 'Fortnite', genre: 'Action', image: 'https://wallpapers.com/images/high/fortnite-battle-royale-4k-5k-7k.jpg', desc: 'Build and battle in epic royale.', rating: 4.4, reviews: 'Sáng tạo không giới hạn!' },
-            { id: 6, name: 'Mobile Legends', genre: 'RPG', image: 'https://images7.alphacoders.com/135/thumb-350-1357961.jpeg', desc: 'MOBA with heroes and team fights.', rating: 4.6, reviews: 'Đấu trường huyền thoại!' },
-            { id: 7, name: 'Battlefield 2042', genre: 'Action', image: 'https://alphacoders.com/Battlefield-2042-wallpapers/download/110-thum', desc: 'Epic multiplayer shooter with massive battles.', rating: 4.9, reviews: 'Bom tấn FPS 2025!' },
-            { id: 8, name: 'Ghost of Yotei', genre: 'Action', image: 'https://wallpapercave.com/wp/wp18232095.jpg', desc: 'Samurai adventure sequel with beautiful open world.', rating: 4.8, reviews: 'Hot nhất tháng 11!' },
-            { id: 9, name: 'Planet of Lana', genre: 'RPG', image: 'https://alphacoders.com/Planet-of-Lana-wallpapers/download/20-thum', desc: 'Puzzle-adventure with stunning visuals.', rating: 4.7, reviews: 'Trò chơi indie đỉnh cao.' },
-            { id: 10, name: 'GTA 5', genre: 'Action', image: 'https://wallpapercave.com/wp/wp18232095.jpg', desc: 'Open-world crime saga in Los Santos with endless possibilities.', rating: 4.9, reviews: 'Iconic open-world adventure!' },
-            { id: 11, name: 'Black Myth: Wukong', genre: 'Action', image: 'https://wallpapercg.com/wp-content/uploads/2024/08/Black-Myth-Wukong-Gameplay-Wallpaper.jpg', desc: 'Epic action RPG inspired by Journey to the West mythology.', rating: 4.8, reviews: 'Stunning visuals and combat!' },
-            { id: 12, name: 'Legend of Ymir', genre: 'RPG', image: 'https://via.placeholder.com/300x200?text=Legend+of+Ymir', desc: 'Mythical RPG adventure in ancient worlds.', rating: 4.7, reviews: 'New hit of 2025!' },
-            { id: 13, name: 'Thrasher', genre: 'Action', image: 'https://via.placeholder.com/300x200?text=Thrasher', desc: 'Extreme action racing with high-speed thrills.', rating: 4.6, reviews: 'Adrenaline rush!' },
-            { id: 14, name: 'Duet Night', genre: 'RPG', image: 'https://via.placeholder.com/300x200?text=Duet+Night', desc: 'Co-op RPG with dual protagonists.', rating: 4.5, reviews: 'Perfect for couples!' },
-            { id: 15, name: 'Hyrule Warriors', genre: 'Action', image: 'https://via.placeholder.com/300x200?text=Hyrule+Warriors', desc: 'Zelda spin-off with massive battles.', rating: 4.8, reviews: 'Legendary combat!' }
+            { id: 1, name: 'GTA 5', genre: 'Action', image: 'https://i.imgur.com/TIkLLp2.jpeg', desc: 'Open-world crime saga in Los Santos with endless possibilities.', rating: 4.9, reviews: 'Iconic open-world adventure!' },
+            { id: 2, name: 'Black Myth: Wukong', genre: 'Action', image: 'https://i.imgur.com/AUsA3S3.jpeg', desc: 'Epic action RPG inspired by Journey to the West mythology.', rating: 4.8, reviews: 'Stunning visuals and combat!' },
+            { id: 3, name: 'Granny Chapter 2', genre: 'Horror', image: 'https://i.imgur.com/Xq3JJCM.jpeg', desc: 'Escape the horror house with Granny and Grandpa in this terrifying sequel.', rating: 4.2, reviews: 'Terrifying survival horror!' },
+            { id: 4, name: 'Supermarket Simulator', genre: 'Simulation', image: 'https://i.imgur.com/2RgtaMr.jpeg', desc: 'Manage your own supermarket and grow your business from scratch.', rating: 4.5, reviews: 'Addictive simulation game!' },
+            { id: 5, name: 'EA Sports FC 25', genre: 'Sports', image: 'https://i.imgur.com/reXtHGR.jpeg', desc: 'The latest soccer simulation with advanced gameplay and realistic graphics.', rating: 4.7, reviews: 'Ultimate football experience!' },
+            { id: 6, name: 'Minecraft', genre: 'Sandbox', image: 'https://wallpapers.com/images/featured-full/minecraft-s2kxfahyg30sob8q.jpg', desc: 'Build, survive, and explore infinite worlds in this creative sandbox.', rating: 4.9, reviews: 'Endless creativity!' },
+            { id: 7, name: 'GTA5VN', genre: 'Action', image: 'https://i.imgur.com/12aVxor.jpeg', desc: 'GTA 5 Server Việt Nam - Trải nghiệm mượt mà với server local.', rating: 4.8, reviews: 'Server VN siêu ping thấp!' },
+            { id: 8, name: 'League of Legends', genre: 'MOBA', image: 'https://i.imgur.com/fEj1yYz.jpeg', desc: 'Trận chiến 5v5 kinh điển với hàng trăm tướng.', rating: 4.7, reviews: 'MOBA huyền thoại!' },
+            { id: 9, name: 'Valorant', genre: 'FPS', image: 'https://i.imgur.com/GtYkE3N.jpeg', desc: 'Bắn súng chiến thuật với agent siêu năng lực.', rating: 4.6, reviews: 'FPS đỉnh cao!' },
+            { id: 10, name: 'Garena', genre: 'Platform', image: 'https://i.imgur.com/3p46Ya1.jpeg', desc: 'Nền tảng game Garena - Chơi LOL, FIFA Online và hơn thế.', rating: 4.5, reviews: 'Ứng dụng Garena tiện lợi!' }
         ];
 
-        // Enhanced Packages with Detailed Configs
+        // Enhanced Packages with Detailed Configs - Updated Hourly package
         const packages = [
             { 
                 name: 'Basic', 
@@ -772,6 +784,20 @@
                     { icon: 'fas fa-hdd', label: 'Lưu trữ', value: '500GB' },
                     { icon: 'fas fa-users', label: 'Người dùng', value: '4' },
                     { icon: 'fas fa-download', label: 'Tốc độ tải', value: '1 Gbps' }
+                ]
+            },
+            { 
+                name: 'Hourly', 
+                price: 5, 
+                hours: '5k/giờ', 
+                rec: 'HOT & GIẢM GIÁ', 
+                isHot: true,
+                configs: [
+                    { icon: 'fas fa-tv', label: 'Độ phân giải', value: '1080p' },
+                    { icon: 'fas fa-tachometer-alt', label: 'FPS', value: '60 FPS' },
+                    { icon: 'fas fa-hdd', label: 'Lưu trữ', value: '20GB' },
+                    { icon: 'fas fa-users', label: 'Người dùng', value: '16' },
+                    { icon: 'fas fa-download', label: 'Tốc độ tải', value: '50 Mbps' }
                 ]
             }
         ];
@@ -1007,13 +1033,15 @@
             }
         }
 
-        // Render Packages with Detailed Configs
+        // Render Packages with Detailed Configs - Added hot badge for Hourly
         function renderPackages() {
             const grid = document.getElementById('packagesGrid');
             grid.innerHTML = packages.map(pkg => {
                 const pkgStr = JSON.stringify(pkg);
+                const hotBadge = pkg.isHot ? '<div class="package-badge">HOT & GIẢM GIÁ!</div>' : '';
                 return `
-                    <div class="package-card" data-aos="flip-left">
+                    <div class="package-card position-relative" data-aos="flip-left">
+                        ${hotBadge}
                         <i class="fas fa-crown" style="font-size: 4rem; color: ${pkg.name === 'Pro' || pkg.name === 'Family' ? 'gold' : 'var(--primary)'} ;"></i>
                         <h4>${pkg.name}</h4>
                         <h5>${pkg.price}k / tháng</h5>
@@ -1185,7 +1213,7 @@
             }
         }
 
-        // Intelligent Chat Bot
+        // Intelligent Chat Bot - Updated for new games and package
         function sendChatMessage() {
             const input = document.getElementById('chatInput');
             const message = input.value.trim().toLowerCase();
@@ -1201,17 +1229,17 @@
             if (message.includes('nạp') || message.includes('recharge') || message.includes('qr')) {
                 botResponse = 'Để nạp qua QR: Vào Hồ Sơ > Nạp Tiền, quét QR Vietinbank (TK: 106882688024), nhập số tiền và ghi chú email của bạn. Cập nhật tự động sau 1-2 phút!';
             } else if (message.includes('gói') || message.includes('package')) {
-                botResponse = 'Các gói: Basic (100k/10h, 720p), Standard (150k/30h, 1080p), Pro (250k/unlimited, 4K), Family (400k/4 users, 500GB lưu trữ). Vào Gói Dịch Vụ để mua!';
+                botResponse = 'Các gói: Basic (100k/10h, 720p), Standard (150k/30h, 1080p), Pro (250k/unlimited, 4K), Family (400k/4 users, 500GB lưu trữ), Hourly (5k/giờ - HOT & GIẢM GIÁ, 1080p/60FPS/20GB/16 users/50Mbps). Vào Gói Dịch Vụ để mua!';
             } else if (message.includes('hot') || message.includes('mới') || message.includes('2025')) {
-                botResponse = 'Game hot tháng 11/2025: Battlefield 2042 (Action), Ghost of Yotei (Samurai), GTA 5 (Open-world), Black Myth: Wukong (RPG), Legend of Ymir, Thrasher. Xem chi tiết trong Thư Viện!';
+                botResponse = 'Game hot tháng 11/2025: GTA 5 (Action), Black Myth: Wukong (Action), Granny Chapter 2 (Horror), Supermarket Simulator (Simulation), EA FC 25 (Sports), Minecraft (Sandbox), GTA5VN (Action), League of Legends (MOBA), Valorant (FPS), Garena (Platform). Xem chi tiết trong Thư Viện!';
                 showImage = true;
                 gameImage = 'https://via.placeholder.com/100?text=Hot+Games+2025';
             } else if (message.includes('lag') || message.includes('chậm')) {
                 botResponse = 'Cloud gaming không lag với server Việt Nam. Kiểm tra kết nối WiFi > 10Mbps và cập nhật app!';
             } else if (message.includes('lưu') || message.includes('storage')) {
                 botResponse = 'Lưu trữ tài khoản: 50GB miễn phí, tự động sao lưu. Nâng cấp trong Hồ Sơ để có thêm dung lượng!';
-            } else if (message.includes('pubg') || message.includes('genshin') || message.includes('battlefield') || message.includes('ghost') || message.includes('gta') || message.includes('wukong') || message.includes('ymir') || message.includes('thrasher') || message.includes('duet')) {
-                const keyword = message.includes('pubg') ? 'pubg' : message.includes('genshin') ? 'genshin' : message.includes('battlefield') ? 'battlefield' : message.includes('ghost') ? 'ghost' : message.includes('gta') ? 'gta' : message.includes('wukong') ? 'wukong' : message.includes('ymir') ? 'ymir' : message.includes('thrasher') ? 'thrasher' : 'duet';
+            } else if (message.includes('gta') || message.includes('5') || message.includes('gta5vn') || message.includes('black') || message.includes('wukong') || message.includes('granny') || message.includes('supermarket') || message.includes('fc') || message.includes('25') || message.includes('minecraft') || message.includes('lol') || message.includes('valorant') || message.includes('garena')) {
+                const keyword = message.includes('gta5vn') ? 'gta5vn' : message.includes('gta') || message.includes('5') ? 'gta' : message.includes('black') || message.includes('wukong') ? 'wukong' : message.includes('granny') ? 'granny' : message.includes('supermarket') ? 'supermarket' : message.includes('fc') || message.includes('25') ? 'fc' : message.includes('minecraft') ? 'minecraft' : message.includes('lol') ? 'lol' : message.includes('valorant') ? 'valorant' : 'garena';
                 const game = mockGames.find(g => g.name.toLowerCase().includes(keyword));
                 botResponse = `${game.name}: ${game.desc} Rating: ${game.rating}/5. Chơi ngay với gói ${currentPackage}!`;
                 showImage = true;
@@ -1278,3 +1306,4 @@
     </script>
 </body>
 </html>
+</DOCUMENT>
