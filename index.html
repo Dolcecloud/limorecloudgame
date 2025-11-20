@@ -17,7 +17,6 @@
 </head>
 <body class="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100" x-data="{ modal: false }">
 
-  <!-- HEADER -->
   <header class="sticky top-0 z-40 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur">
     <nav class="container mx-auto flex items-center justify-between px-4 py-4">
       <div class="flex items-center gap-3">
@@ -40,7 +39,6 @@
     </nav>
   </header>
 
-  <!-- MODAL - TẤT CẢ NÚT ĐỀU KHÔNG CÓ LINK -->
   <div x-show="modal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4" @click="modal = false">
     <div class="fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 border border-slate-700 bg-slate-900 p-6 shadow-lg rounded-lg max-h-[80vh] overflow-y-auto"
          x-transition:enter="transition duration-200 ease-out"
@@ -54,18 +52,18 @@
       </div>
 
       <div class="grid gap-4 py-4">
-        <button class="flex items-center gap-4 p-4 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-700/50 transition-all text-left group cursor-default">
+        <a href="https://dolcecloud.github.io/trangchinhlimorecloud/" target="_blank" class="flex items-center gap-4 p-4 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-700/50 transition-all text-left group">
           <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-blue-500/20 border border-blue-500/30 flex items-center justify-center">
-            <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="4"></circle><path d="M10.88 21.94 15.46 14"></path><path d="M21.17 8H12"></pathointi<path d="M3.95 6.06 8.54 14"></path></svg>
+            <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="4"></circle><path d="M10.88 21.94 15.46 14"></path><path d="M21.17 8H12"></path><path d="M3.95 6.06 8.54 14"></path></svg>
           </div>
           <div class="flex-1">
             <h3 class="font-semibold text-white group-hover:text-blue-300 transition-colors">Web PC</h3>
             <p class="text-sm text-slate-400">Chơi ngay trên trình duyệt</p>
             <p class="text-xs text-slate-500 mt-1">Khuyến nghị cho trải nghiệm nhanh nhất</p>
           </div>
-        </button>
+        </a>
 
-        <button class="flex items-center gap-4 p-4 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-700/50 transition-all text-left group cursor-default">
+        <a href="https://dolcecloud.github.io/trangchinhlimorecloud/" target="_blank" class="flex items-center gap-4 p-4 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-700/50 transition-all text-left group">
           <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-green-500/20 border border-green-500/30 flex items-center justify-center">
             <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="10" height="14" x="3" y="8" rx="2"></rect><path d="M5 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2h-2.4"></path><path d="M8 18h.01"></path></svg>
           </div>
@@ -74,9 +72,9 @@
             <p class="text-sm text-slate-400">Tải ứng dụng cho điện thoại Android</p>
             <p class="text-xs text-slate-500 mt-1">Tối ưu cho thiết bị di động</p>
           </div>
-        </button>
+        </a>
 
-        <button class="flex items-center gap-4 p-4 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-700/50 transition-all text-left group cursor-default">
+        <a href="https://dolcecloud.github.io/trangchinhlimorecloud/" target="_blank" class="flex items-center gap-4 p-4 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-700/50 transition-all text-left group">
           <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-purple-500/20 border border-purple-500/30 flex items-center justify-center">
             <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="3" rx="2"></rect><line x1="8" x2="16" y1="21" y2="21"></line><line x1="12" x2="12" y1="17" y2="21"></line></svg>
           </div>
@@ -85,9 +83,9 @@
             <p class="text-sm text-slate-400">Ứng dụng desktop cho Windows</p>
             <p class="text-xs text-slate-500 mt-1">Hiệu suất ổn định nhất</p>
           </div>
-        </button>
+        </a>
 
-        <button class="flex items-center gap-4 p-4 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-700/50 transition-all text-left group cursor-default">
+        <a href="https://dolcecloud.github.io/trangchinhlimorecloud/" target="_blank" class="flex items-center gap-4 p-4 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-700/50 transition-all text-left group">
           <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-pink-500/20 border border-pink-500/30 flex items-center justify-center">
             <svg class="w-6 h-6 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
           </div>
@@ -95,7 +93,7 @@
             <h3 class="font-semibold text-white group-hover:text-pink-300 transition-colors">Cài đặt WEB APP</h3>
             <p class="text-sm text-slate-400">Thêm vào màn hình chính để truy cập nhanh</p>
           </div>
-        </button>
+        </a>
 
         <button disabled class="flex items-center gap-4 p-4 rounded-lg border border-slate-700 bg-slate-800/50 opacity-50 cursor-not-allowed text-left">
           <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-green-500/20 border border-green-500/30 flex items-center justify-center">
@@ -115,7 +113,6 @@
     </div>
   </div>
 
-  <!-- Hero Section -->
   <section class="relative overflow-hidden">
     <div class="absolute inset-x-0 -top-32 flex justify-center opacity-60"><div class="h-56 w-96 bg-blue-500/30 blur-[160px]"></div></div>
     <div class="absolute inset-x-0 top-32 flex justify-center opacity-40"><div class="h-72 w-[32rem] bg-purple-500/20 blur-[180px]"></div></div>
@@ -166,9 +163,6 @@
     </div>
   </section>
 
-  <!-- Phần 4 ảnh đã ẩn sạch -->
-
-  <!-- Features -->
   <section class="container mx-auto px-4 py-24">
     <div class="text-center space-y-4 mb-16">
       <h2 class="text-4xl font-black">Tại sao chọn Limore Cloud Game?</h2>
@@ -199,7 +193,6 @@
     </div>
   </section>
 
-  <!-- Video Demo -->
   <section class="container mx-auto px-4 py-24 text-center">
     <h2 class="text-4xl font-black mb-8">Xem trải nghiệm thực tế</h2>
     <div class="max-w-5xl mx-auto rounded-3xl overflow-hidden shadow-2xl">
@@ -207,15 +200,12 @@
     </div>
   </section>
 
-  <!-- FAQ -->
   <section class="container mx-auto px-4 py-24">
     <h2 class="text-4xl font-black text-center mb-16">Câu hỏi thường gặp</h2>
     <div class="max-w-3xl mx-auto space-y-6">
-      <!-- FAQ items giữ nguyên giống gốc -->
-    </div>
+      </div>
   </section>
 
-  <!-- CTA cuối -->
   <section class="container mx-auto px-4 py-24 text-center">
     <div class="max-w-4xl mx-auto space-y-8">
       <h2 class="text-5xl font-black">Sẵn sàng chơi game AAA ngay hôm nay?</h2>
@@ -226,14 +216,12 @@
     </div>
   </section>
 
-  <!-- Footer -->
   <footer class="border-t border-slate-800/60 bg-slate-950/80 py-12">
     <div class="container mx-auto px-4 text-center text-sm text-slate-500">
       © 2025 Limore Cloud Game • All rights reserved
     </div>
   </footer>
 
-  <!-- Tawk.to Chat -->
   <script type="text/javascript">
   var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
   (function(){
