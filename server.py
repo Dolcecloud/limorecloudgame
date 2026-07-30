@@ -27,10 +27,10 @@ def admin_test():
 def serve(path):
     target = os.path.join(root_dir, path)
     if path and os.path.isfile(target):
-        return send_from_directory(root_dir, path)
-    return send_from_directory(root_dir, 'index.html')
+        return send_from_directory(root_dir, path, cache_timeout=31536000)
+    return send_from_directory(root_dir, 'index.html', cache_timeout=0)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 10000))
     host = os.environ.get('HOST', '0.0.0.0')
-    app.run(host=host, port=port)
+    app.run(host=host, port=port, threaded=True)
