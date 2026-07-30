@@ -1,13 +1,13 @@
 services:
   - type: web
     name: cloudzone-app
-    env: node
+    env: python
     region: oregon
     plan: free
     branch: main
-    buildCommand: npm install
-    startCommand: npm start
+    buildCommand: pip install -r requirements.txt
+    startCommand: python server.py
     envVars:
-      - key: NODE_ENV
-        value: production
+      - key: PYTHONUNBUFFERED
+        value: 1
     autoDeploy: true
