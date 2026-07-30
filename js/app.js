@@ -415,29 +415,10 @@ function updateProfileData() {
     const profileName = document.getElementById('profile-username');
     const profileId = document.getElementById('profile-userid');
     const avatar = document.getElementById('profile-avatar');
-    const adminPanel = document.getElementById('admin-panel-link');
 
     if (profileName) profileName.textContent = username;
     if (profileId) profileId.textContent = `ID:${userid}`;
     if (avatar) avatar.textContent = username.charAt(0).toUpperCase();
-
-    if (adminPanel) {
-        if (role === 'admin') {
-            adminPanel.style.display = 'flex';
-            adminPanel.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 12px; padding: 12px 14px; cursor: pointer; transition: 0.2s;" onclick="switchPage('admin')" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'>
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <i class="fa-solid fa-shield-halved" style="color: #facc15; font-size: 14px; width: 16px; text-align: center;"></i>
-                        <span style="color: #e2e8f0; font-size: 12px; font-weight: 500;">Admin quản lý tài khoản</span>
-                    </div>
-                    <i class="fa-solid fa-chevron-right" style="color: #64748b; font-size: 11px;"></i>
-                </div>
-            `;
-        } else {
-            adminPanel.style.display = 'none';
-            adminPanel.innerHTML = '';
-        }
-    }
 }
 
 function deleteAdminUser(email) {
