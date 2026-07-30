@@ -1,0 +1,46 @@
+<!-- Trang đăng nhập Limore Cloud -->
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-header">
+            <img src="https://i.ibb.co/wZK1GL96/Screenshot-2026-07-30-125948.png" alt="Limore Cloud" class="auth-logo" onerror="this.src='assets/avatar.png'" />
+            <div class="auth-branding">
+                <h1>Limore Cloud Game</h1>
+                <p>Login or register to start your cloud gaming experience.</p>
+            </div>
+        </div>
+
+        <div class="auth-tabs">
+            <button id="tab-login" class="auth-tab active" onclick="setAuthTab('login')">LOGIN</button>
+            <button id="tab-register" class="auth-tab" onclick="setAuthTab('register')">REGISTER</button>
+        </div>
+
+        <div class="auth-body">
+            <div id="login-panel" class="auth-panel active">
+                <div id="auth-alert-login" class="auth-alert"></div>
+                <input id="login-email" type="text" class="auth-input" placeholder="Email Address" />
+                <input id="login-password" type="password" class="auth-input" placeholder="Password" />
+                <div class="auth-footnote"><a href="#">Forgot Password?</a></div>
+                <button class="auth-button auth-button-primary" onclick="loginWithEmailPage()">LOGIN</button>
+                <div class="auth-divider">Or login with</div>
+                <div class="auth-social-icons">
+                    <button class="auth-social-btn"><i class="fa-brands fa-google"></i></button>
+                    <button class="auth-social-btn"><i class="fa-brands fa-facebook-f"></i></button>
+                    <button class="auth-social-btn"><i class="fa-brands fa-twitter"></i></button>
+                </div>
+            </div>
+            <div id="register-panel" class="auth-panel">
+                <div id="auth-alert-register" class="auth-alert"></div>
+                <input id="register-name" type="text" class="auth-input" placeholder="Full Name" />
+                <input id="register-email" type="text" class="auth-input" placeholder="Email Address" />
+                <input id="register-password" type="password" class="auth-input" placeholder="Password" />
+                <input id="register-confirm" type="password" class="auth-input" placeholder="Confirm Password" />
+                <button class="auth-button auth-button-secondary" onclick="createAccountPage()">REGISTER</button>
+            </div>
+        </div>
+
+        <div class="auth-footer">
+            <a href="#">Terms of Service</a>
+            <a href="#">Privacy Policy</a>
+        </div>
+    </div>
+</div>

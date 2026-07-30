@@ -1,0 +1,62 @@
+<!-- Trang Admin Dashboard -->
+<div style="display: flex; flex-direction: column; gap: 18px; padding-bottom: 22px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
+        <div>
+            <h2 style="margin:0; font-size: 22px; color: #f8fafc;">Admin Dashboard</h2>
+            <p style="margin: 6px 0 0; color: #cbd5e1; font-size: 13px;">Giao diện quản lý riêng cho admin.</p>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+            <span style="background: rgba(250,204,21,0.14); color: #facc15; padding: 10px 14px; border-radius: 18px; font-size: 12px; font-weight: 700;">Admin</span>
+            <button onclick="switchPage('profile')" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); color:#fff; border:none; border-radius: 18px; padding: 10px 14px; font-size: 12px; cursor:pointer;">Quay lại Me</button>
+        </div>
+    </div>
+
+    <div style="display: grid; gap: 12px;">
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px;">
+            <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 16px;">
+                <div style="color:#94a3b8; font-size: 12px; margin-bottom: 10px;">Tổng tài khoản</div>
+                <div id="admin-total-users" style="font-size: 24px; font-weight: 700; color: #f8fafc;">0</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 16px;">
+                <div style="color:#94a3b8; font-size: 12px; margin-bottom: 10px;">Tổng admin</div>
+                <div id="admin-total-admins" style="font-size: 24px; font-weight: 700; color: #f8fafc;">0</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 16px;">
+                <div style="color:#94a3b8; font-size: 12px; margin-bottom: 10px;">Bảo trì hệ thống</div>
+                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                    <span id="admin-maintenance-status" style="font-size: 14px; font-weight: 800; color:#facc15;">OFF</span>
+                    <button id="maintenance-toggle" onclick="toggleMaintenanceMode()" style="border:none; background:#2563eb; color:#fff; border-radius:16px; padding: 10px 14px; cursor:pointer; font-size:13px;">Bật/Tắt</button>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+            <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 18px;">
+                <h3 style="margin:0 0 12px; color:#f8fafc; font-size: 16px;">Truy cập hiện tại</h3>
+                <div id="admin-current-visitor" style="display:grid; gap:10px; color:#cbd5e1; font-size:13px;">
+                    <div>IP: <span id="current-visitor-ip">Chưa có</span></div>
+                    <div>Quốc gia: <span id="current-visitor-country">Chưa có</span></div>
+                    <div>Thiết bị: <span id="current-visitor-device">Chưa có</span></div>
+                    <div>Thời gian: <span id="current-visitor-time">Chưa có</span></div>
+                </div>
+            </div>
+            <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 18px;">
+                <h3 style="margin:0 0 12px; color:#f8fafc; font-size: 16px;">Thống kê truy cập</h3>
+                <div style="display:grid; gap:10px; color:#cbd5e1; font-size:13px;">
+                    <div>Tổng lượt vào app: <span id="admin-total-visits">0</span></div>
+                    <div>Người dùng hiện tại: <span id="admin-current-users">0</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <input id="admin-search" type="text" placeholder="Tìm tài khoản theo email hoặc tên" style="flex:1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 12px 14px; color: #f1f5f9; font-size: 13px; outline:none;">
+            <button onclick="initAdminPage()" style="border:none; background:#2563eb; color:#fff; border-radius:16px; padding: 12px 14px; cursor:pointer; font-size:13px;">Làm mới</button>
+        </div>
+    </div>
+
+    <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 18px;">
+        <h3 style="margin:0 0 12px; color:#f8fafc; font-size: 16px;">Danh sách tài khoản</h3>
+        <div id="admin-user-list" style="display: grid; gap: 10px;"></div>
+    </div>
+</div>

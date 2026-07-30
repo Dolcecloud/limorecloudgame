@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cloud Gaming Mobile</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#090b14">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://i.ibb.co/wZK1GL96/Screenshot-2026-07-30-125948.png">
+    <link rel="icon" href="https://i.ibb.co/wZK1GL96/Screenshot-2026-07-30-125948.png" type="image/png">
+    <link rel="icon" href="https://i.ibb.co/wZK1GL96/Screenshot-2026-07-30-125948.png" sizes="192x192" type="image/png">
+    <link rel="shortcut icon" href="https://i.ibb.co/wZK1GL96/Screenshot-2026-07-30-125948.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+    * { box-sizing: border-box; }
+    body {
+        background: radial-gradient(circle at top, rgba(250, 204, 21, 0.12), transparent 25%),
+                    radial-gradient(circle at 20% 10%, rgba(99, 102, 241, 0.12), transparent 18%),
+                    linear-gradient(180deg, #090b14 0%, #0c101d 38%, #10162b 100%);
+        color: #fff;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        overflow: hidden;
+    }
+
+    /* Khung điện thoại giả lập */
+    .phone-frame {
+        width: min(520px, calc(100vw - 24px));
+        min-width: 420px;
+        max-width: 520px;
+        height: min(960px, calc(100vh - 24px));
+        min-height: 840px;
+        max-height: 960px;
+        background: rgba(19, 23, 34, 0.35);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 35px 90px rgba(0, 0, 0, 0.75);
+        border: none;
+        border-radius: 40px;
+        backdrop-filter: blur(18px);
+    }
+
+    /* Vùng nội dung cuộn bên trên */
+    #main-content {
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 0 20px 96px;
+        background: transparent;
+    }
+
+    /* Thanh menu điều hướng dưới cùng */
+    .bottom-nav {
+        height: 65px;
+        background: rgba(19, 20, 28, 0.95); /* Màu nền menu khớp tone mờ */
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        backdrop-filter: blur(12px);
+        padding-bottom: 5px;
+        flex-shrink: 0;
+    }
+
+    .bottom-nav.hidden {
+        display: none !important;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    .nav-item {
+        cursor: pointer;
+        text-align: center;
+        color: #94a3b8;
+        transition: 0.2s;
+        flex: 1;
+        padding: 6px 0;
+    }
+
+    .nav-item.active {
+        color: #facc15;
+    }
+
+    /* Khi xem trên điện thoại thật */
+    @media (max-width: 480px) {
+        body {
+            background: #13141c;
+        }
+        .phone-frame {
+            max-width: 100%;
+            max-height: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+        }
+    }
+</style>
+</head>
+<body>
+
+    <!-- Khung hình điện thoại -->
+    <div class="phone-frame">
+        
+        <!-- Vùng hiển thị nội dung các trang -->
+        <div id="main-content"></div>
+
+        <!-- Thanh menu dưới cùng -->
+        <div class="bottom-nav hidden">
+            <div onclick="switchPage('home')" class="nav-item active" id="nav-home">
+                <i class="fa-solid fa-house"></i>
+                <div>Trang chủ</div>
+            </div>
+            <div onclick="switchPage('games')" class="nav-item" id="nav-games">
+                <i class="fa-solid fa-gamepad"></i>
+                <div>Kho game</div>
+            </div>
+            <div onclick="switchPage('cloud')" class="nav-item" id="nav-cloud">
+                <i class="fa-solid fa-desktop"></i>
+                <div>Computers</div>
+            </div>
+            <div onclick="switchPage('profile')" class="nav-item" id="nav-profile">
+                <i class="fa-solid fa-user"></i>
+                <div>Me</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Nhúng file logic -->
+    <script src="js/app.js"></script>
+</body>
+</html>

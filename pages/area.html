@@ -1,0 +1,86 @@
+<div class="area-page">
+    
+    <!-- Header: Nút quay lại & Tiêu đề Area -->
+    <div class="area-topbar">
+        <i class="fa-solid fa-chevron-left back-btn" onclick="switchPage('cloud')"></i>
+        <h3 class="area-title">Area</h3>
+    </div>
+
+    <div class="area-section">
+        <p class="area-section-label">Experience server</p>
+        <div class="area-card selected" id="pkg-1" onclick="selectPackage(1, '99.000đ / 9 ngày', 'Pc cloud 1')">
+            <div class="area-card-header">
+                <div class="area-card-title-row">
+                    <span class="area-badge yellow">Lowest latency</span>
+                    <i class="fa-brands fa-windows area-card-icon"></i>
+                </div>
+                <div class="area-price-row">
+                    <span class="area-ms">49ms</span>
+                    <span class="area-card-price">99.000đ</span>
+                </div>
+            </div>
+            <div class="area-card-body">
+                <div>
+                    <p class="area-card-title">Pc cloud 1</p>
+                    <p class="area-card-subtitle">no need to wait</p>
+                </div>
+                <div class="area-check active" id="check-1">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+            </div>
+        </div>
+
+        <p class="area-section-label">Payment server</p>
+        <div class="area-card" id="pkg-2" onclick="selectPackage(2, '470.000đ (Gốc: 1.200.000đ)', 'Pc cloud 2')">
+            <div class="area-card-header">
+                <div class="area-card-title-row">
+                    <span class="area-badge yellow">Lowest latency</span>
+                    <i class="fa-brands fa-windows area-card-icon"></i>
+                </div>
+                <div class="area-price-row">
+                    <span class="area-ms">49ms</span>
+                    <span class="area-card-price">470.000đ</span>
+                </div>
+            </div>
+            <div class="area-card-body">
+                <div>
+                    <p class="area-card-title">Pc cloud 2</p>
+                    <p class="area-card-subtitle">no need to wait</p>
+                </div>
+                <div class="area-check" id="check-2">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="area-bottom">
+        <span class="area-summary-text" id="price-display">SoutheastAsia-2 : <strong>120 coins/hour</strong></span>
+        <div class="area-wallet-pill">
+            <div class="area-wallet-info">
+                <span class="area-wallet-label">Payment coins</span>
+                <span class="area-wallet-value">Remaining: 0 coins</span>
+            </div>
+        </div>
+        <button type="button" class="area-primary-btn" onclick="openQRModal()">Play now</button>
+    </div>
+
+    <!-- Cửa sổ nhỏ (Modal) hiển thị mã QR chuyển khoản tự động -->
+    <div id="qr-modal" style="display: none; position: absolute; inset: 0; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(4px); z-index: 99; align-items: center; justify-content: center; padding: 16px;">
+        <div style="background: #1e293b; border: 1px solid #334155; border-radius: 14px; padding: 14px; width: 100%; max-width: 240px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+            <h4 style="color: #fff; font-size: 12px; margin: 0 0 3px 0;">Quét mã QR thanh toán</h4>
+            <p id="modal-package-name" style="color: #94a3b8; font-size: 9px; margin: 0 0 10px 0;">Pc cloud 1</p>
+            
+            <div style="background: #fff; padding: 6px; border-radius: 8px; display: inline-block; margin-bottom: 8px;">
+                <img src="https://api.vietqr.io/image/970422-0382838383-d97X3J9.jpg?accountName=CLOUD%20GAMING&amount=99000&addInfo=Thanh%20toan%20Pc%20cloud" id="qr-image" style="width: 120px; height: 120px; object-fit: contain; display: block;" alt="QR Code">
+            </div>
+
+            <p style="color: #facc15; font-size: 11px; font-weight: bold; margin: 0 0 10px 0;" id="modal-price">99.000đ</p>
+
+            <button type="button" onclick="closeQRModal()" style="background: #334155; color: #fff; border: none; border-radius: 10px; padding: 6px; font-size: 10px; font-weight: 600; cursor: pointer; width: 100%;">
+                Đóng
+            </button>
+        </div>
+    </div>
+
+</div>

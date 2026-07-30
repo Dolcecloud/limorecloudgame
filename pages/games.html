@@ -1,0 +1,29 @@
+<div style="display: flex; gap: 16px; padding-bottom: 20px; height: 100%;">
+    
+    <!-- CỘT BÊN TRÁI: Thanh tìm kiếm và Menu danh mục thể loại -->
+    <div style="width: 130px; display: flex; flex-direction: column; gap: 12px; flex-shrink: 0;">
+        
+        <!-- Ô tìm kiếm -->
+        <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 6px 10px; display: flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8; font-size: 11px;"></i>
+            <input type="text" id="game-search-input" placeholder="Search..." style="background: transparent; border: none; color: #fff; outline: none; font-size: 11px; width: 100%;">
+        </div>
+
+        <!-- Danh sách menu danh mục dọc bên trái -->
+        <div style="display: flex; flex-direction: column; gap: 6px; font-size: 12px;">
+            <div class="cat-btn active" data-category="recent" style="color: #facc15; font-weight: bold; cursor: pointer; padding: 8px 10px; border-radius: 8px; background: rgba(250,204,21,0.1); transition: 0.2s;">Recent</div>
+            <div class="cat-btn" data-category="act" style="color: #94a3b8; font-weight: 500; cursor: pointer; padding: 8px 10px; border-radius: 8px; transition: 0.2s;">Action</div>
+            <div class="cat-btn" data-category="fps" style="color: #94a3b8; font-weight: 500; cursor: pointer; padding: 8px 10px; border-radius: 8px; transition: 0.2s;">FPS</div>
+            <div class="cat-btn" data-category="sport" style="color: #94a3b8; font-weight: 500; cursor: pointer; padding: 8px 10px; border-radius: 8px; transition: 0.2s;">Sports</div>
+        </div>
+
+    </div>
+
+    <!-- CỘT BÊN PHẢI: Vùng hiển thị danh sách game kèm hình ảnh -->
+    <div style="flex: 1; overflow-y: auto;">
+        <div id="game-list-container" style="display: flex; flex-direction: column; gap: 10px;">
+            <!-- Danh sách game kèm hình ảnh sẽ được tự động đổ vào đây -->
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: cloudzone-app
+    env: node
+    region: oregon
+    plan: free
+    branch: main
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+    autoDeploy: true
