@@ -110,8 +110,8 @@ def delete_user(email):
 def serve(path):
     target = os.path.join(root_dir, path)
     if path and os.path.isfile(target):
-        return send_from_directory(root_dir, path, cache_timeout=31536000)
-    return send_from_directory(root_dir, 'index.html', cache_timeout=0)
+        return send_from_directory(root_dir, path, max_age=31536000)
+    return send_from_directory(root_dir, 'index.html', max_age=0)
 
 
 if __name__ == '__main__':
