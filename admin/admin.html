@@ -292,11 +292,11 @@
             if (typeof initAdminPage === 'function') initAdminPage();
         }
 
-        function initAdminApp() {
+        async function initAdminApp() {
             if (typeof ensureDefaultAdmin === 'function') {
-                ensureDefaultAdmin();
+                await ensureDefaultAdmin();
             }
-            const currentUser = window.getCurrentUser ? getCurrentUser() : null;
+            const currentUser = window.getCurrentUser ? await getCurrentUser() : null;
             if (currentUser && currentUser.role === 'admin') {
                 showAdmin();
             } else {
@@ -304,16 +304,20 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (typeof ensureDefaultAdmin === 'function') {
+                await ensureDefaultAdmin();
+            }
+
             const loginForm = document.getElementById('admin-login-form');
             const loginError = document.getElementById('admin-login-error');
 
             if (loginForm) {
-                loginForm.addEventListener('submit', (event) => {
+                loginForm.addEventListener('submit', async (event) => {
                     event.preventDefault();
                     const email = document.getElementById('admin-login-email')?.value.trim();
                     const password = document.getElementById('admin-login-password')?.value;
-                    const user = window.findUserByEmail ? findUserByEmail(email) : null;
+                    const user = window.findUserByEmail ? await findUserByEmail(email) : null;
 
                     if (!user || user.password !== password) {
                         if (loginError) loginError.textContent = '邮箱或密码不正确。';
