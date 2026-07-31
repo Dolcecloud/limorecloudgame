@@ -18,9 +18,7 @@
     <style>
     * { box-sizing: border-box; }
     body {
-        background: radial-gradient(circle at 16% 16%, rgba(91, 124, 240, 0.12), transparent 18%),
-                    radial-gradient(circle at 82% 10%, rgba(88, 113, 229, 0.08), transparent 14%),
-                    linear-gradient(180deg, #03050b 0%, #060811 40%, #090e16 100%);
+        background: #05070f;
         color: #eef2ff;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         margin: 0;
@@ -31,16 +29,14 @@
         min-height: 100dvh;
         overflow: hidden;
         overflow-x: hidden;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
     }
 
     /* Khung điện thoại giả lập */
     .phone-frame {
-        width: min(680px, calc(100vw - 16px));
-        max-width: 680px;
+        width: min(960px, calc(100vw - 32px));
+        max-width: 960px;
         min-width: 0;
-        height: min(1080px, calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 16px));
+        height: min(1260px, calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 32px));
         min-height: 0;
         max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
         background: rgba(10, 14, 24, 0.96);
@@ -153,11 +149,11 @@
     /* Tablet / iPad style */
     @media (min-width: 481px) and (max-width: 1024px) {
         .phone-frame {
-            width: min(920px, calc(100vw - 40px));
-            max-width: 920px;
-            height: min(1160px, calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 40px));
+            width: min(980px, calc(100vw - 40px));
+            max-width: 980px;
+            height: min(1220px, calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 40px));
             max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 40px);
-            border-radius: 40px;
+            border-radius: 42px;
             border: 1px solid rgba(255,255,255,0.1);
             box-shadow: 0 42px 120px rgba(0,0,0,0.35);
         }
@@ -171,12 +167,21 @@
         }
     }
 
-    /* iPad-specific frame */
+    @media (min-width: 1025px) {
+        .phone-frame {
+            width: calc(100vw - 32px);
+            max-width: 1240px;
+            height: min(1400px, calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 32px));
+        }
+    }
+
+    /* Tablet / large tablet frame */
+    body.tablet .phone-frame,
     body.ipad .phone-frame {
-        width: min(1060px, calc(100vw - 48px));
-        max-width: 1060px;
-        height: min(1280px, calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 48px));
-        max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 48px);
+        width: min(1220px, calc(100vw - 24px));
+        max-width: 1220px;
+        height: min(1380px, calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 24px));
+        max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 24px);
         border-radius: 56px;
         border: 1px solid rgba(255,255,255,0.12);
         background-image: linear-gradient(180deg, rgba(12, 18, 36, 0.96), rgba(8, 12, 22, 0.96));
@@ -195,14 +200,6 @@
         border: 1px dashed rgba(255,255,255,0.12);
         box-shadow: 0 38px 110px rgba(0, 0, 0, 0.45);
         background-image: linear-gradient(180deg, rgba(15, 18, 28, 0.96), rgba(9, 13, 22, 0.94));
-    }
-
-    /* iPad-specific frame */
-    body.ipad .phone-frame {
-        border-radius: 56px;
-        border: 1px solid rgba(255,255,255,0.12);
-        background-image: linear-gradient(180deg, rgba(12, 18, 36, 0.96), rgba(8, 12, 22, 0.96));
-        box-shadow: 0 54px 150px rgba(0,0,0,0.35);
     }
 </style>
 </head>
@@ -242,11 +239,19 @@
     <script>
         function detectDeviceClass() {
             const ua = navigator.userAgent || navigator.vendor || window.opera;
+            const isTouch = 'ontouchend' in document;
+            const minSide = Math.min(window.screen.width, window.screen.height);
+            const isTablet = minSide >= 700;
+            const isGalaxyTab = /SM-T|SM-P|Galaxy Tab|SC-01C|SC-02E|SM-T5/i.test(ua);
+
+            if (/iPad|Macintosh/i.test(ua) && isTouch) {
+                return 'ipad';
+            }
+            if (/Android/i.test(ua) && (isGalaxyTab || isTablet)) {
+                return 'tablet';
+            }
             if (/Android/i.test(ua)) {
                 return 'android';
-            }
-            if (/iPad|Macintosh/i.test(ua) && 'ontouchend' in document) {
-                return 'ipad';
             }
             if (/iPhone|iPod/i.test(ua)) {
                 return 'ios';
