@@ -1,0 +1,309 @@
+﻿/* --- GIAO DIỆN PHẲNG - TÔNG MÀU ĐEN TUYỆT --- */
+.auth-root {
+    --bg-main: #151c2a;
+    --bg-input: #0f172a;
+    --accent-blue: #1e498d;
+    --accent-glow: rgba(106, 141, 197, 0.3);
+    --text-main: #f3f4f6;
+    --text-muted: #9ca3af;
+    --border-color: #222222;
+}
+
+.auth-root,
+.auth-root * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.auth-root {
+    width: 100%;
+    min-height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 8px 26px;
+}
+
+#main-content.centered {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 8px 34px;
+}
+
+.auth-container {
+    width: calc(100% - 8px);
+    max-width: none;
+    background: rgba(10, 14, 28, 0.96);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.35);
+    border-radius: 28px;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+@media (max-width: 420px) {
+    .auth-root {
+        padding: 10px 6px 22px;
+    }
+
+    .auth-container {
+        width: calc(100vw - 16px);
+        max-width: calc(100vw - 16px);
+        padding: 18px 12px;
+        border-radius: 22px;
+        gap: 14px;
+    }
+
+    .auth-header h1 {
+        font-size: 20px;
+    }
+
+    .auth-header p {
+        font-size: 11px;
+    }
+
+    .auth-tabs {
+        gap: 6px;
+    }
+
+    .tab-btn {
+        padding: 9px 10px;
+        font-size: 13px;
+    }
+
+    .input-field input {
+        padding: 10px 12px 10px 36px;
+    }
+
+    .auth-btn {
+        padding: 14px;
+        font-size: 14px;
+    }
+}
+
+/* --- HEADER & LOGO --- */
+.auth-header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.brand-logo {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.4));
+    border: 1px solid var(--accent-blue);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 0 15px var(--accent-glow);
+    margin-bottom: 2px;
+}
+
+.brand-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.auth-header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    background: linear-gradient(45deg, #fff, var(--accent-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.5px;
+}
+
+.auth-header p {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+/* --- TABS SWITCHER --- */
+.auth-tabs {
+    display: flex;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 4px;
+}
+
+.tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+    background: var(--accent-blue);
+    color: white;
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* --- FORMS WRAPPER --- */
+.forms-wrapper {
+    position: relative;
+}
+
+.auth-form {
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+    animation: fadeIn 0.4s ease forwards;
+}
+
+.auth-form.active {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.input-group label {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.input-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-field i {
+    position: absolute;
+    left: 14px;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.input-field input {
+    width: 100%;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-color);
+    padding: 11px 14px 11px 40px;
+    border-radius: 9px;
+    color: var(--text-main);
+    font-size: 13px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.input-field input:focus {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* --- OPTIONS --- */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.remember-me input {
+    accent-color: var(--accent-blue);
+    cursor: pointer;
+}
+
+.terms-check a {
+    color: var(--accent-blue);
+    text-decoration: none;
+}
+
+.forgot-pass {
+    color: var(--accent-blue);
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.forgot-pass:hover {
+    text-decoration: underline;
+}
+
+/* --- BUTTON --- */
+.auth-btn {
+    background: linear-gradient(135deg, var(--accent-blue), #2563eb);
+    color: white;
+    border: none;
+    padding: 13px;
+    border-radius: 9px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px var(--accent-glow);
+    margin-top: 2px;
+}
+
+.auth-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+}
+
+.auth-btn i {
+    transition: transform 0.2s;
+}
+
+.auth-btn:hover i {
+    transform: translateX(3px);
+}
+
+/* --- FOOTER --- */
+.auth-footer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-color);
+    padding-top: 12px;
+}
+
+.auth-footer a {
+    color: var(--accent-blue);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}

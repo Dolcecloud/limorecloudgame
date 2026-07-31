@@ -1,28 +1,107 @@
-<div style="display: flex; gap: 16px; padding-bottom: 20px; height: 100%;">
+﻿<div style="display: flex; gap: 16px; padding-bottom: 20px; height: 100%;">
     
-    <!-- CỘT BÊN TRÁI: Thanh tìm kiếm và Menu danh mục thể loại -->
+    <!-- 左侧栏：搜索和分类菜单 -->
     <div style="width: 130px; display: flex; flex-direction: column; gap: 12px; flex-shrink: 0;">
         
-        <!-- Ô tìm kiếm -->
-        <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 6px 10px; display: flex; align-items: center; gap: 6px;">
+        <!-- 搜索框 -->
+        <div style="background: rgba(14, 18, 32, 0.9); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 6px 10px; display: flex; align-items: center; gap: 6px;">
             <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8; font-size: 11px;"></i>
-            <input type="text" id="game-search-input" placeholder="Search..." style="background: transparent; border: none; color: #fff; outline: none; font-size: 11px; width: 100%;">
+            <input type="text" id="game-search-input" placeholder="搜索..." style="background: transparent; border: none; color: #fff; outline: none; font-size: 11px; width: 100%;">
         </div>
 
-        <!-- Danh sách menu danh mục dọc bên trái -->
+        <!-- 分类菜单 -->
         <div style="display: flex; flex-direction: column; gap: 6px; font-size: 12px;">
-            <div class="cat-btn active" data-category="recent" style="color: #facc15; font-weight: bold; cursor: pointer; padding: 8px 10px; border-radius: 8px; background: rgba(250,204,21,0.1); transition: 0.2s;">Recent</div>
-            <div class="cat-btn" data-category="act" style="color: #94a3b8; font-weight: 500; cursor: pointer; padding: 8px 10px; border-radius: 8px; transition: 0.2s;">Action</div>
-            <div class="cat-btn" data-category="fps" style="color: #94a3b8; font-weight: 500; cursor: pointer; padding: 8px 10px; border-radius: 8px; transition: 0.2s;">FPS</div>
-            <div class="cat-btn" data-category="sport" style="color: #94a3b8; font-weight: 500; cursor: pointer; padding: 8px 10px; border-radius: 8px; transition: 0.2s;">Sports</div>
+            <div class="cat-btn active" data-category="recent" style="color: #facc15; font-weight: bold; cursor: pointer; padding: 8px 10px; border-radius: 8px; background: rgba(250,204,21,0.12); transition: 0.2s;">最新</div>
+            <div class="cat-btn" data-category="act" style="color: #94a3b8; font-weight: 500; cursor: pointer; padding: 8px 10px; border-radius: 8px; transition: 0.2s;">动作</div>
+            <div class="cat-btn" data-category="fps" style="color: #94a3b8; font-weight: 500; cursor: pointer; padding: 8px 10px; border-radius: 8px; transition: 0.2s;">射击</div>
+            <div class="cat-btn" data-category="sport" style="color: #94a3b8; font-weight: 500; cursor: pointer; padding: 8px 10px; border-radius: 8px; transition: 0.2s;">体育</div>
+            <div class="cat-btn" data-category="rpg" style="color: #94a3b8; font-weight: 500; cursor: pointer; padding: 8px 10px; border-radius: 8px; transition: 0.2s;">角色扮演</div>
+            <div class="cat-btn" data-category="adventure" style="color: #94a3b8; font-weight: 500; cursor: pointer; padding: 8px 10px; border-radius: 8px; transition: 0.2s;">冒险</div>
+            <div class="cat-btn" data-category="sim" style="color: #94a3b8; font-weight: 500; cursor: pointer; padding: 8px 10px; border-radius: 8px; transition: 0.2s;">模拟</div>
         </div>
 
     </div>
 
-    <!-- CỘT BÊN PHẢI: Vùng hiển thị danh sách game kèm hình ảnh -->
+    <!-- 右侧栏：游戏列表显示区域 -->
     <div style="flex: 1; overflow-y: auto;">
         <div id="game-list-container" style="display: flex; flex-direction: column; gap: 10px;">
-            <!-- Danh sách game kèm hình ảnh sẽ được tự động đổ vào đây -->
+            <div style="display: flex; gap: 10px; align-items: center; background: rgba(255, 255, 255, 0.03); padding: 8px; border-radius: 10px; cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.06); transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.07)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">
+                <img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/271590/header.jpg" style="width: 90px; height: 50px; border-radius: 6px; object-fit: cover; flex-shrink: 0;" alt="侠盗猎车手5">
+                <div style="flex: 1; overflow: hidden;">
+                    <h4 style="color: #f1f5f9; font-size: 12px; font-weight: 600; margin: 0 0 3px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">侠盗猎车手5</h4>
+                    <p style="color: #94a3b8; font-size: 10px; margin: 0; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">洛圣都中的开放世界动作与抢劫冒险。</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; background: rgba(255, 255, 255, 0.03); padding: 8px; border-radius: 10px; cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.06); transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.07)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">
+                <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/header.jpg" style="width: 90px; height: 50px; border-radius: 6px; object-fit: cover; flex-shrink: 0;" alt="艾尔登法环">
+                <div style="flex: 1; overflow: hidden;">
+                    <h4 style="color: #f1f5f9; font-size: 12px; font-weight: 600; margin: 0 0 3px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">艾尔登法环</h4>
+                    <p style="color: #94a3b8; font-size: 10px; margin: 0; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">来自黑暗之魂团队的开放世界奇幻冒险。</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; background: rgba(255, 255, 255, 0.03); padding: 8px; border-radius: 10px; cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.06); transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.07)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">
+                <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1091500/header.jpg" style="width: 90px; height: 50px; border-radius: 6px; object-fit: cover; flex-shrink: 0;" alt="赛博朋克2077">
+                <div style="flex: 1; overflow: hidden;">
+                    <h4 style="color: #f1f5f9; font-size: 12px; font-weight: 600; margin: 0 0 3px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">赛博朋克2077</h4>
+                    <p style="color: #94a3b8; font-size: 10px; margin: 0; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">在夜城体验赛博朋克风格的动作冒险。</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; background: rgba(255, 255, 255, 0.03); padding: 8px; border-radius: 10px; cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.06); transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.07)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">
+                <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/2358720/header.jpg" style="width: 90px; height: 50px; border-radius: 6px; object-fit: cover; flex-shrink: 0;" alt="黯黑神话：悟空">
+                <div style="flex: 1; overflow: hidden;">
+                    <h4 style="color: #f1f5f9; font-size: 12px; font-weight: 600; margin: 0 0 3px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">黯黑神话：悟空</h4>
+                    <p style="color: #94a3b8; font-size: 10px; margin: 0; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">基于中国神话与西游的动作角色扮演。</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; background: rgba(255, 255, 255, 0.03); padding: 8px; border-radius: 10px; cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.06); transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.07)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">
+                <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/346110/header.jpg" style="width: 90px; height: 50px; border-radius: 6px; object-fit: cover; flex-shrink: 0;" alt="方舟">
+                <div style="flex: 1; overflow: hidden;">
+                    <h4 style="color: #f1f5f9; font-size: 12px; font-weight: 600; margin: 0 0 3px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">方舟</h4>
+                    <p style="color: #94a3b8; font-size: 10px; margin: 0; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">在恐龙世界求生、驯养与建造你的基地。</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; background: rgba(255, 255, 255, 0.03); padding: 8px; border-radius: 10px; cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.06); transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.07)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">
+                <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1938090/header.jpg" style="width: 90px; height: 50px; border-radius: 6px; object-fit: cover; flex-shrink: 0;" alt="蜘蛛侠2">
+                <div style="flex: 1; overflow: hidden;">
+                    <h4 style="color: #f1f5f9; font-size: 12px; font-weight: 600; margin: 0 0 3px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">蜘蛛侠2</h4>
+                    <p style="color: #94a3b8; font-size: 10px; margin: 0; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">在纽约天际线上体验超级英雄动作。</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; background: rgba(255, 255, 255, 0.03); padding: 8px; border-radius: 10px; cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.06); transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.07)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">
+                <img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2381590/header.jpg" style="width: 90px; height: 50px; border-radius: 6px; object-fit: cover; flex-shrink: 0;" alt="只要向上">
+                <div style="flex: 1; overflow: hidden;">
+                    <h4 style="color: #f1f5f9; font-size: 12px; font-weight: 600; margin: 0 0 3px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">只要向上</h4>
+                    <p style="color: #94a3b8; font-size: 10px; margin: 0; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">考验反应速度的攀爬挑战。</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; background: rgba(255, 255, 255, 0.03); padding: 8px; border-radius: 10px; cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.06); transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.07)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">
+                <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1868140/header.jpg" style="width: 90px; height: 50px; border-radius: 6px; object-fit: cover; flex-shrink: 0;" alt="深潜员戴夫">
+                <div style="flex: 1; overflow: hidden;">
+                    <h4 style="color: #f1f5f9; font-size: 12px; font-weight: 600; margin: 0 0 3px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">深潜员戴夫</h4>
+                    <p style="color: #94a3b8; font-size: 10px; margin: 0; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">探索海底遗迹并经营你的餐厅。</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; background: rgba(255, 255, 255, 0.03); padding: 8px; border-radius: 10px; cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.06); transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.07)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">
+                <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1751830/header.jpg" style="width: 90px; height: 50px; border-radius: 6px; object-fit: cover; flex-shrink: 0;" alt="艾伦·维克2">
+                <div style="flex: 1; overflow: hidden;">
+                    <h4 style="color: #f1f5f9; font-size: 12px; font-weight: 600; margin: 0 0 3px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">艾伦·维克2</h4>
+                    <p style="color: #94a3b8; font-size: 10px; margin: 0; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">Remedy的心理惊悚续作。</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; background: rgba(255, 255, 255, 0.03); padding: 8px; border-radius: 10px; cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.06); transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.07)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">
+                <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1938090/header.jpg" style="width: 90px; height: 50px; border-radius: 6px; object-fit: cover; flex-shrink: 0;" alt="荒野大镖客2">
+                <div style="flex: 1; overflow: hidden;">
+                    <h4 style="color: #f1f5f9; font-size: 12px; font-weight: 600; margin: 0 0 3px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">荒野大镖客2</h4>
+                    <p style="color: #94a3b8; font-size: 10px; margin: 0; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">活力四射的西部冒险世界。</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; background: rgba(255, 255, 255, 0.03); padding: 8px; border-radius: 10px; cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.06); transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.07)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">
+                <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1174180/header.jpg" style="width: 90px; height: 50px; border-radius: 6px; object-fit: cover; flex-shrink: 0;" alt="荒野大镖客2">
+                <div style="flex: 1; overflow: hidden;">
+                    <h4 style="color: #f1f5f9; font-size: 12px; font-weight: 600; margin: 0 0 3px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">荒野大镖客2</h4>
+                    <p style="color: #94a3b8; font-size: 10px; margin: 0; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">活力四射的西部冒险世界。</p>
+                </div>
+            </div>
         </div>
     </div>
 

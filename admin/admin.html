@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Game 管理后台</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Link file CSS riêng biệt -->
+    <link rel="stylesheet" href="skin.css">
+</head>
+<body>
+
+    <div id="admin-login" class="admin-login-panel">
+        <div class="admin-login-card">
+            <h2>管理员登录</h2>
+            <form id="admin-login-form" class="admin-login-form">
+                <input id="admin-login-email" type="email" placeholder="管理员邮箱" value="admin@cloudzone.com" required>
+                <input id="admin-login-password" type="password" placeholder="密码" value="admin123" required>
+                <div id="admin-login-error" class="admin-login-error"></div>
+                <button type="submit">登录</button>
+            </form>
+            <p style="color:#94a3b8; font-size:13px; margin-top:12px;">如果未修改，使用 admin@cloudzone.com / admin123 登录。</p>
+        </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fa-solid fa-cloud-bolt"></i>
+                <span>CloudPlay 管理</span>
+            </div>
+            <button class="toggle-btn" id="toggleBtn" title="折叠 / 展开">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li class="active">
+                <a href="#" onclick="switchTab('dashboard', this)">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>总览</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="switchTab('apps', this)">
+                    <i class="fa-solid fa-gamepad"></i>
+                    <span>应用/游戏库管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="switchTab('servers', this)">
+                    <i class="fa-solid fa-server"></i>
+                    <span>服务器 & GPU 节点</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="switchTab('users', this)">
+                    <i class="fa-solid fa-users"></i>
+                    <span>用户管理</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="switchTab('sessions', this)">
+                    <i class="fa-solid fa-tower-broadcast"></i>
+                    <span>实时流会话</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="switchTab('packages', this)">
+                    <i class="fa-solid fa-ticket"></i>
+                    <span>套餐与支付</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="switchTab('settings', this)">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>系统配置</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- MAIN VIEW -->
+    <main>
+        <header class="topbar">
+            <div class="topbar-title">
+                <h1 id="pageTitle">总览</h1>
+            </div>
+            <div class="user-profile">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" alt="Avatar">
+                <span>管理员</span>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <div id="tab-dashboard" class="section-view active">
+                <div class="content-panel">
+                    <div class="panel-header">
+                        <h3>总览面板</h3>
+                        <div class="panel-actions">
+                            <button class="action-btn" id="maintenance-toggle">开启维护</button>
+                            <button class="action-btn secondary" id="registration-toggle">关闭注册</button>
+                            <button class="action-btn secondary" id="reset-visits">重置访问次数</button>
+                        </div>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">总用户</div>
+                            <div class="stat-value" id="dashboard-users">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">管理员总数</div>
+                            <div class="stat-value" id="dashboard-admins">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">访问次数</div>
+                            <div class="stat-value" id="dashboard-visits">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">维护</div>
+                            <div class="stat-value" id="dashboard-maintenance">关闭</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">管理游戏</div>
+                            <div class="stat-value" id="dashboard-games">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">流会话</div>
+                            <div class="stat-value" id="dashboard-sessions">0</div>
+                        </div>
+                    </div>
+                    <div class="sub-grid">
+                        <div class="sub-card">
+                            <h4>最近活动</h4>
+                            <div id="dashboard-recent"></div>
+                        </div>
+                        <div class="sub-card">
+                            <h4>系统通知</h4>
+                            <p>从这里管理用户、游戏、服务器、套餐和配置。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-apps" class="section-view">
+                <div class="content-panel">
+                    <div class="panel-header">
+                        <h3>应用/游戏库管理</h3>
+                    </div>
+                    <form id="game-form" class="admin-form">
+                        <input type="text" name="gameTitle" placeholder="游戏名称" required>
+                        <input type="text" name="gameDesc" placeholder="描述" required>
+                        <input type="text" name="gameImg" placeholder="图片链接（可选）">
+                        <select name="gameCategory">
+                            <option value="recent">最新</option>
+                            <option value="act">动作</option>
+                            <option value="fps">射击</option>
+                            <option value="sport">体育</option>
+                        </select>
+                        <button type="submit">添加游戏</button>
+                    </form>
+                    <div id="game-list" class="admin-list"></div>
+                </div>
+            </div>
+
+            <div id="tab-servers" class="section-view">
+                <div class="content-panel">
+                    <div class="panel-header">
+                        <h3>服务器 & GPU 节点管理</h3>
+                    </div>
+                    <form id="server-form" class="admin-form">
+                        <input type="text" name="serverName" placeholder="节点名称" required>
+                        <input type="text" name="serverGpu" placeholder="GPU / 配置" required>
+                        <select name="serverStatus">
+                            <option value="Active">运行中</option>
+                            <option value="Maintenance">维护中</option>
+                        </select>
+                        <button type="submit">添加节点</button>
+                    </form>
+                    <div id="server-list" class="admin-list"></div>
+                </div>
+            </div>
+
+            <div id="tab-users" class="section-view">
+                <div class="content-panel">
+                    <div class="panel-header">
+                        <h3>玩家管理</h3>
+                    </div>
+                    <form id="user-form" class="admin-form">
+                        <input type="text" name="userName" placeholder="名称" required>
+                        <input type="email" name="userEmail" placeholder="邮箱" required>
+                        <input type="password" name="userPassword" placeholder="密码" required>
+                        <select name="userRole">
+                            <option value="user">用户</option>
+                            <option value="admin">管理员</option>
+                        </select>
+                        <button type="submit">添加用户</button>
+                    </form>
+                    <div id="user-list" class="admin-list"></div>
+                </div>
+            </div>
+
+            <div id="tab-sessions" class="section-view">
+                <div class="content-panel">
+                    <div class="panel-header">
+                        <h3>实时流会话</h3>
+                    </div>
+                    <form id="session-form" class="admin-form">
+                        <input type="text" name="sessionName" placeholder="会话名称" required>
+                        <input type="text" name="sessionUser" placeholder="用户" required>
+                        <select name="sessionStatus">
+                            <option value="Live">直播</option>
+                            <option value="Queued">排队</option>
+                        </select>
+                        <button type="submit">添加会话</button>
+                    </form>
+                    <div id="session-list" class="admin-list"></div>
+                </div>
+            </div>
+
+            <div id="tab-packages" class="section-view">
+                <div class="content-panel">
+                    <div class="panel-header">
+                        <h3>套餐与支付</h3>
+                    </div>
+                    <form id="package-form" class="admin-form">
+                        <input type="text" name="packageName" placeholder="套餐名称" required>
+                        <input type="text" name="packagePrice" placeholder="价格" required>
+                        <select name="packageStatus">
+                            <option value="Active">启用</option>
+                            <option value="Inactive">禁用</option>
+                        </select>
+                        <button type="submit">添加套餐</button>
+                    </form>
+                    <div id="package-list" class="admin-list"></div>
+                </div>
+            </div>
+
+            <div id="tab-settings" class="section-view">
+                <div class="content-panel">
+                    <div class="panel-header">
+                        <h3>系统设置</h3>
+                    </div>
+                    <p>从这里管理维护状态和新用户注册。</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/app.js"></script>
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('toggleBtn');
+
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+        });
+
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
+            element.parentElement.classList.add('active');
+            document.querySelectorAll('.section-view').forEach(view => view.classList.remove('active'));
+            const targetView = document.getElementById(`tab-${tabId}`);
+            if(targetView) targetView.classList.add('active');
+            const pageTitle = document.getElementById('pageTitle');
+            const titles = {
+                dashboard: '总览',
+                apps: '应用/游戏库管理',
+                servers: '服务器 & GPU 节点管理',
+                users: '玩家管理',
+                sessions: '实时流会话',
+                packages: '套餐与支付',
+                settings: '系统设置'
+            };
+            if(pageTitle) pageTitle.innerText = titles[tabId] || 'Admin';
+        }
+
+        function showLogin() {
+            const loginPanel = document.getElementById('admin-login');
+            const mainView = document.querySelector('main');
+            if (loginPanel) loginPanel.classList.remove('hidden');
+            if (mainView) mainView.classList.add('hidden');
+        }
+
+        function showAdmin() {
+            const loginPanel = document.getElementById('admin-login');
+            const mainView = document.querySelector('main');
+            if (loginPanel) loginPanel.classList.add('hidden');
+            if (mainView) mainView.classList.remove('hidden');
+            if (typeof initAdminPage === 'function') initAdminPage();
+        }
+
+        function initAdminApp() {
+            if (typeof ensureDefaultAdmin === 'function') {
+                ensureDefaultAdmin();
+            }
+            const currentUser = window.getCurrentUser ? getCurrentUser() : null;
+            if (currentUser && currentUser.role === 'admin') {
+                showAdmin();
+            } else {
+                showLogin();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('admin-login-form');
+            const loginError = document.getElementById('admin-login-error');
+
+            if (loginForm) {
+                loginForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    const email = document.getElementById('admin-login-email')?.value.trim();
+                    const password = document.getElementById('admin-login-password')?.value;
+                    const user = window.findUserByEmail ? findUserByEmail(email) : null;
+
+                    if (!user || user.password !== password) {
+                        if (loginError) loginError.textContent = '邮箱或密码不正确。';
+                        return;
+                    }
+                    if (user.role !== 'admin') {
+                        if (loginError) loginError.textContent = '仅管理员可访问。';
+                        return;
+                    }
+                    if (typeof setLoggedInSession === 'function') {
+                        setLoggedInSession(user);
+                    }
+                    showAdmin();
+                });
+            }
+
+            initAdminApp();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+﻿<link rel="stylesheet" href="login/skin.css">
+
+<div class="auth-root">
+    <div class="auth-container">
+    <div class="auth-header">
+        <div class="brand-logo">
+            <img src="https://via.placeholder.com/150" alt="Limore Cloud Logo" id="logo-img">
+        </div>
+        <div>
+            <h1>Limore Cloud</h1>
+            <p>新一代云游戏系统</p>
+        </div>
+    </div>
+
+    <div class="auth-tabs">
+        <button id="tab-login" class="tab-btn active" type="button" onclick="setAuthTab('login')">登录</button>
+        <button id="tab-register" class="tab-btn" type="button" onclick="setAuthTab('register')">注册</button>
+    </div>
+
+    <div class="forms-wrapper">
+        <form id="login-form" class="auth-form active" onsubmit="event.preventDefault(); loginWithEmailPage();">
+            <div id="auth-alert-login" class="auth-alert"></div>
+
+            <div class="input-group">
+                <label for="login-email">邮箱或用户名</label>
+                <div class="input-field">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="login-email" placeholder="输入邮箱或用户名" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="login-password">密码</label>
+                <div class="input-field">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="login-password" placeholder="输入密码" required>
+                </div>
+            </div>
+
+            <div class="form-options">
+                <label class="remember-me">
+                    <input type="checkbox"> 记住我
+                </label>
+                <a href="#" class="forgot-pass">忘记密码？</a>
+            </div>
+
+            <button type="submit" class="auth-btn">
+                <span>立即登录</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </form>
+
+        <form id="register-form" class="auth-form" onsubmit="event.preventDefault(); createAccountPage();">
+            <div id="auth-alert-register" class="auth-alert"></div>
+
+            <div class="input-group">
+                <label for="register-name">用户名</label>
+                <div class="input-field">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <input type="text" id="register-name" placeholder="输入用户名" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="register-email">联系邮箱</label>
+                <div class="input-field">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" id="register-email" placeholder="输入邮箱" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="register-password">密码</label>
+                <div class="input-field">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="register-password" placeholder="设置密码" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="register-confirm">确认密码</label>
+                <div class="input-field">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <input type="password" id="register-confirm" placeholder="再次输入密码" required>
+                </div>
+            </div>
+
+            <div class="form-options">
+                <label class="remember-me terms-check">
+                    <input type="checkbox" required> 同意 <a href="#">服务条款</a>
+                </label>
+            </div>
+
+            <button type="submit" class="auth-btn">
+                <span>创建账号</span>
+                <i class="fa-solid fa-user-check"></i>
+            </button>
+        </form>
+    </div>
+
+    <div class="auth-footer">
+        <p id="footer-text">还没有账号？ <a href="#" onclick="setAuthTab('register'); return false;">立即注册</a></p>
+    </div>
+    </div>
+</div>

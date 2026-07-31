@@ -1,143 +1,189 @@
-<!-- Thanh tìm kiếm & Nút Get Game Time -->
+﻿<!-- 搜索框和游戏时长按钮 -->
 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 22px;">
-    <!-- Ô tìm kiếm bo tròn -->
-    <div style="flex: 1; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 24px; padding: 10px 16px; display: flex; align-items: center; gap: 10px; backdrop-filter: blur(10px);">
+    <!-- 搜索框 -->
+    <div style="flex: 1; background: rgba(15, 20, 34, 0.92); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px; padding: 10px 16px; display: flex; align-items: center; gap: 10px; backdrop-filter: blur(10px);">
         <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8; font-size: 14px;"></i>
-        <input type="text" placeholder="Search favorite games" style="background: transparent; border: none; color: #fff; outline: none; font-size: 13px; width: 100%;">
+        <input type="text" placeholder="搜索喜欢的游戏" style="background: transparent; border: none; color: #fff; outline: none; font-size: 13px; width: 100%;">
     </div>
-    <!-- Nút Get game time vàng nổi bật -->
+    <!-- 游戏时长按钮 -->
     <button style="background: linear-gradient(135deg, #facc15, #eab308); border: none; border-radius: 20px; padding: 9px 14px; display: flex; align-items: center; gap: 6px; cursor: pointer; white-space: nowrap; box-shadow: 0 4px 15px rgba(250, 204, 21, 0.35);">
-        <span style="font-size: 14px;">🪙</span>
-        <span style="color: #1e1b4b; font-weight: 700; font-size: 12px;">Get game time</span>
+        <i class="fa-solid fa-clock" style="color: #1e1b4b; font-size: 14px;"></i>
+        <span style="color: #1e1b4b; font-weight: 700; font-size: 12px;">获取游戏时间</span>
     </button>
 </div>
 
-<!-- Mục Recent Releases -->
+<!-- 最新发布 -->
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-    <h3 style="color: #f1f5f9; font-size: 15px; font-weight: 600; letter-spacing: 0.3px;">Recent Releases</h3>
-    <span style="background: rgba(255, 255, 255, 0.1); color: #e2e8f0; font-size: 11px; padding: 3px 12px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-        More <i class="fa-solid fa-chevron-right" style="font-size: 8px;"></i>
+    <h3 style="color: #f1f5f9; font-size: 15px; font-weight: 600; letter-spacing: 0.3px;">最新发布</h3>
+    <span style="background: rgba(255, 255, 255, 0.06); color: #e2e8f0; font-size: 11px; padding: 3px 12px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+        更多 <i class="fa-solid fa-chevron-right" style="font-size: 8px;"></i>
     </span>
 </div>
 
-<!-- Danh sách cuộn ngang Recent Releases (Đã thêm 5 game mới) -->
+<!-- 最近发布的游戏列表 -->
 <div style="display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 24px; scrollbar-width: none;">
-    <!-- Only Up -->
+    <!-- 只要向上 -->
     <div style="min-width: 80px; text-align: center; cursor: pointer;">
-        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/2381590/header.jpg" onerror="this.onerror=null; this.src='/assets/games/gta5.jpg';" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);" alt="Only Up">
-        <p style="color: #cbd5e1; font-size: 11px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Only Up</p>
+        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/2381590/header.jpg" onerror="this.onerror=null; this.src='/assets/games/gta5.jpg';" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; border: 1px solid rgba(255,255,255,0.08);" alt="只要向上">
+        <p style="color: #cbd5e1; font-size: 11px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">只要向上</p>
     </div>
-    <!-- Dave the Diver -->
+    <!-- 深潜员戴夫 -->
     <div style="min-width: 80px; text-align: center; cursor: pointer;">
-        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1868140/header.jpg" onerror="this.onerror=null; this.src='/assets/games/gta5.jpg';" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);" alt="Dave the Diver">
-        <p style="color: #cbd5e1; font-size: 11px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Dave the...</p>
+        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1868140/header.jpg" onerror="this.onerror=null; this.src='/assets/games/gta5.jpg';" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; border: 1px solid rgba(255,255,255,0.08);" alt="深潜员戴夫">
+        <p style="color: #cbd5e1; font-size: 11px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">深潜员戴夫</p>
     </div>
-    <!-- ARK -->
+    <!-- 方舟 -->
     <div style="min-width: 80px; text-align: center; cursor: pointer;">
-        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/346110/header.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/200x200/111827/ffffff?text=No+Image';" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);" alt="ARK">
-        <p style="color: #cbd5e1; font-size: 11px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">ARK</p>
+        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/346110/header.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/200x200/111827/ffffff?text=No+Image';" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; border: 1px solid rgba(255,255,255,0.08);" alt="方舟">
+        <p style="color: #cbd5e1; font-size: 11px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">方舟</p>
     </div>
-    <!-- Resident Evil 4 -->
+    <!-- 生化危机4 -->
     <div style="min-width: 80px; text-align: center; cursor: pointer;">
-        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/2050650/header.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/200x200/111827/ffffff?text=No+Image';" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);" alt="Resident Evil 4">
-        <p style="color: #cbd5e1; font-size: 11px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Resident...</p>
+        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/2050650/header.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/200x200/111827/ffffff?text=No+Image';" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; border: 1px solid rgba(255,255,255,0.08);" alt="生化危机4">
+        <p style="color: #cbd5e1; font-size: 11px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">生化危机4</p>
     </div>
-    <!-- Call of Duty -->
+    <!-- 使命召唤 -->
     <div style="min-width: 80px; text-align: center; cursor: pointer;">
-        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1938090/header.jpg" onerror="this.onerror=null; this.src='/assets/games/gta5.jpg';" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);" alt="COD">
-        <p style="color: #cbd5e1; font-size: 11px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">COD</p>
+        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1938090/header.jpg" onerror="this.onerror=null; this.src='/assets/games/gta5.jpg';" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; border: 1px solid rgba(255,255,255,0.08);" alt="使命召唤">
+        <p style="color: #cbd5e1; font-size: 11px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">使命召唤</p>
     </div>
 
-    <!-- ===== 5 GAME MỚI THÊM TỪ STEAM ===== -->
-    <!-- Baldur's Gate 3 -->
+    <!-- ===== 5 款新加入的 Steam 游戏 ===== -->
+    <!-- 博德之门3 -->
     <div style="min-width: 80px; text-align: center; cursor: pointer;">
-        <img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/header.jpg" onerror="this.onerror=null; this.src='/assets/games/gta5.jpg';" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);" alt="Baldur's Gate 3">
-        <p style="color: #cbd5e1; font-size: 11px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Baldur's...</p>
+        <img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/header.jpg" onerror="this.onerror=null; this.src='/assets/games/gta5.jpg';" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; border: 1px solid rgba(255,255,255,0.08);" alt="博德之门3">
+        <p style="color: #cbd5e1; font-size: 11px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">博德之门3</p>
     </div>
-    <!-- Elden Ring -->
+    <!-- 艾尔登法环 -->
     <div style="min-width: 80px; text-align: center; cursor: pointer;">
-        <img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/header.jpg" onerror="this.onerror=null; this.src='/assets/games/gta5.jpg';" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);" alt="Elden Ring">
-        <p style="color: #cbd5e1; font-size: 11px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Elden Ring</p>
+        <img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/header.jpg" onerror="this.onerror=null; this.src='/assets/games/gta5.jpg';" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; border: 1px solid rgba(255,255,255,0.08);" alt="艾尔登法环">
+        <p style="color: #cbd5e1; font-size: 11px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">艾尔登法环</p>
     </div>
-    <!-- Cyberpunk 2077 -->
+    <!-- 赛博朋克2077 -->
     <div style="min-width: 80px; text-align: center; cursor: pointer;">
-        <img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/header.jpg" onerror="this.onerror=null; this.src='/assets/games/gta5.jpg';" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);" alt="Cyberpunk 2077">
-        <p style="color: #cbd5e1; font-size: 11px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Cyberpunk</p>
+        <img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/header.jpg" onerror="this.onerror=null; this.src='/assets/games/gta5.jpg';" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; border: 1px solid rgba(255,255,255,0.08);" alt="赛博朋克2077">
+        <p style="color: #cbd5e1; font-size: 11px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">赛博朋克2077</p>
     </div>
-    <!-- Black Myth: Wukong -->
+    <!-- 黯黑神话：悟空 -->
     <div style="min-width: 80px; text-align: center; cursor: pointer;">
-        <img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2358720/header.jpg" onerror="this.onerror=null; this.src='/assets/games/gta5.jpg';" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);" alt="Black Myth Wukong">
-        <p style="color: #cbd5e1; font-size: 11px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Wukong</p>
+        <img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2358720/header.jpg" onerror="this.onerror=null; this.src='/assets/games/gta5.jpg';" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; border: 1px solid rgba(255,255,255,0.08);" alt="黯黑神话：悟空">
+        <p style="color: #cbd5e1; font-size: 11px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">黯黑神话：悟空</p>
     </div>
-    <!-- GTA V -->
+    <!-- 侠盗猎车手5 -->
     <div style="min-width: 80px; text-align: center; cursor: pointer;">
-        <img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/271590/header.jpg" onerror="this.onerror=null; this.src='/assets/games/gta5.jpg';" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);" alt="GTA V">
-        <p style="color: #cbd5e1; font-size: 11px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">GTA V</p>
+        <img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/271590/header.jpg" onerror="this.onerror=null; this.src='/assets/games/gta5.jpg';" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; border: 1px solid rgba(255,255,255,0.08);" alt="侠盗猎车手5">
+        <p style="color: #cbd5e1; font-size: 11px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">侠盗猎车手5</p>
+    </div>
+    <!-- 蜘蛛侠2 -->
+    <div style="min-width: 80px; text-align: center; cursor: pointer;">
+        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1938090/header.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/200x200/111827/ffffff?text=No+Image';" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; border: 1px solid rgba(255,255,255,0.08);" alt="蜘蛛侠2">
+        <p style="color: #cbd5e1; font-size: 11px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">蜘蛛侠2</p>
+    </div>
+    <!-- 艾伦·维克2 -->
+    <div style="min-width: 80px; text-align: center; cursor: pointer;">
+        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1751830/header.jpg" onerror="this.onerror=null; this.src='https://via.placeholder.com/200x200/111827/ffffff?text=No+Image';" style="width: 80px; height: 80px; border-radius: 16px; object-fit: cover; border: 1px solid rgba(255,255,255,0.08);" alt="艾伦·维克2">
+        <p style="color: #cbd5e1; font-size: 11px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">艾伦·维克2</p>
     </div>
 </div>
 
-<!-- Nút tiêu đề TOP 10 (Huy hiệu vàng bo tròn) -->
+<!-- TOP 10 标题 -->
 <div style="text-align: center; margin-bottom: 16px;">
     <span style="background: linear-gradient(135deg, #fef08a, #facc15); color: #1e1b4b; font-weight: 700; font-size: 11px; padding: 5px 22px; border-radius: 20px; box-shadow: 0 0 15px rgba(250,204,21,0.4); display: inline-flex; align-items: center; gap: 6px;">
-        <i class="fa-solid fa-trophy" style="color: #1e1b4b;"></i> TOP 10
+        <i class="fa-solid fa-trophy" style="color: #1e1b4b;"></i> 前十
     </span>
 </div>
 
-<!-- Lưới danh sách Top Game (2 cột giống hệt ảnh) -->
+<!-- TOP 游戏列表网格（2 列，与图片相同） -->
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;">
     
-    <!-- No.1: GTA 5 -->
+    <!-- 第1名：侠盗猎车手5 -->
     <div style="cursor: pointer;">
-        <div style="position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: #131722;">
-            <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/271590/header.jpg" style="width: 100%; height: 95px; object-fit: cover; display: block;" alt="GTA5" onerror="this.onerror=null; this.src='https://via.placeholder.com/380x190/111827/ffffff?text=No+Image';">
-            <span style="position: absolute; top: 6px; left: 6px; background: rgba(0, 0, 0, 0.75); color: #facc15; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; backdrop-filter: blur(4px);">No.1</span>
+        <div style="position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: rgba(15, 22, 38, 0.94);">
+            <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/271590/header.jpg" style="width: 100%; height: 95px; object-fit: cover; display: block;" alt="侠盗猎车手5" onerror="this.onerror=null; this.src='https://via.placeholder.com/380x190/111827/ffffff?text=No+Image';">
+            <span style="position: absolute; top: 6px; left: 6px; background: rgba(0, 0, 0, 0.75); color: #facc15; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; backdrop-filter: blur(4px);">第1名</span>
         </div>
-        <p style="color: #f1f5f9; font-size: 12px; font-weight: 500; margin-top: 6px;">GTA5</p>
+        <p style="color: #f1f5f9; font-size: 12px; font-weight: 500; margin-top: 6px;">侠盗猎车手5</p>
     </div>
 
-    <!-- No.2: RDR2 -->
+    <!-- 第2名：荒野大镖客2 -->
     <div style="cursor: pointer;">
-        <div style="position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: #131722;">
-            <img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1174180/header.jpg" style="width: 100%; height: 95px; object-fit: cover; display: block;" alt="RDR2" onerror="this.onerror=null; this.src='https://via.placeholder.com/380x190/111827/ffffff?text=No+Image';">
-            <span style="position: absolute; top: 6px; left: 6px; background: rgba(0, 0, 0, 0.75); color: #38bdf8; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; backdrop-filter: blur(4px);">No.2</span>
+        <div style="position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: rgba(15, 22, 38, 0.94);">
+            <img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1174180/header.jpg" style="width: 100%; height: 95px; object-fit: cover; display: block;" alt="荒野大镖客2" onerror="this.onerror=null; this.src='https://via.placeholder.com/380x190/111827/ffffff?text=No+Image';">
+            <span style="position: absolute; top: 6px; left: 6px; background: rgba(0, 0, 0, 0.75); color: #38bdf8; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; backdrop-filter: blur(4px);">第2名</span>
         </div>
-        <p style="color: #f1f5f9; font-size: 12px; font-weight: 500; margin-top: 6px;">RDR2</p>
+        <p style="color: #f1f5f9; font-size: 12px; font-weight: 500; margin-top: 6px;">荒野大镖客2</p>
     </div>
 
-    <!-- No.3: Ghostwire: Tokyo -->
+    <!-- 第3名：神秘幽灵：东京 -->
     <div style="cursor: pointer;">
-        <div style="position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: #131722;">
-            <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1475810/header.jpg" onerror="this.onerror=null; this.src='/assets/games/gta5.jpg';" style="width: 100%; height: 95px; object-fit: cover; display: block;" alt="Ghostwire Tokyo">
-            <span style="position: absolute; top: 6px; left: 6px; background: rgba(0, 0, 0, 0.75); color: #fb923c; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; backdrop-filter: blur(4px);">No.3</span>
+        <div style="position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: rgba(15, 22, 38, 0.94);">
+            <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1475810/header.jpg" onerror="this.onerror=null; this.src='/assets/games/gta5.jpg';" style="width: 100%; height: 95px; object-fit: cover; display: block;" alt="心灵杀手：东京">
+            <span style="position: absolute; top: 6px; left: 6px; background: rgba(0, 0, 0, 0.75); color: #fb923c; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; backdrop-filter: blur(4px);">第3名</span>
         </div>
-        <p style="color: #f1f5f9; font-size: 12px; font-weight: 500; margin-top: 6px;">Ghostwire: Tokyo</p>
+        <p style="color: #f1f5f9; font-size: 12px; font-weight: 500; margin-top: 6px;">心灵杀手：东京</p>
     </div>
 
-    <!-- No.4: TABS -->
+    <!-- 第4名：戏剧战争模拟 -->
     <div style="cursor: pointer;">
-        <div style="position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: #131722;">
-            <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/508440/header.jpg" onerror="this.onerror=null; this.src='/assets/games/gta5.jpg';" style="width: 100%; height: 95px; object-fit: cover; display: block;" alt="TABS">
-            <span style="position: absolute; top: 6px; left: 6px; background: rgba(0, 0, 0, 0.75); color: #a78bfa; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; backdrop-filter: blur(4px);">No.4</span>
+        <div style="position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: rgba(15, 22, 38, 0.94);">
+            <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/508440/header.jpg" onerror="this.onerror=null; this.src='/assets/games/gta5.jpg';" style="width: 100%; height: 95px; object-fit: cover; display: block;" alt="戏剧战争模拟">
+            <span style="position: absolute; top: 6px; left: 6px; background: rgba(0, 0, 0, 0.75); color: #a78bfa; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; backdrop-filter: blur(4px);">第4名</span>
         </div>
-        <p style="color: #f1f5f9; font-size: 12px; font-weight: 500; margin-top: 6px;">TABS</p>
+        <p style="color: #f1f5f9; font-size: 12px; font-weight: 500; margin-top: 6px;">戏剧战争模拟</p>
     </div>
 
-    <!-- No.5: GTA: Vice City -->
+    <!-- 第5名：侠盗猎车手：罪恶都市 -->
     <div style="cursor: pointer;">
-        <div style="position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: #131722;">
-            <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1216810/header.jpg" style="width: 100%; height: 95px; object-fit: cover; display: block;" alt="GTA Vice City" onerror="this.onerror=null; this.src='https://via.placeholder.com/380x190/111827/ffffff?text=No+Image';">
-            <span style="position: absolute; top: 6px; left: 6px; background: rgba(0, 0, 0, 0.75); color: #34d399; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; backdrop-filter: blur(4px);">No.5</span>
+        <div style="position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: rgba(15, 22, 38, 0.94);">
+            <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1216810/header.jpg" style="width: 100%; height: 95px; object-fit: cover; display: block;" alt="侠盗猎车手：罪恶都市" onerror="this.onerror=null; this.src='https://via.placeholder.com/380x190/111827/ffffff?text=No+Image';">
+            <span style="position: absolute; top: 6px; left: 6px; background: rgba(0, 0, 0, 0.75); color: #34d399; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; backdrop-filter: blur(4px);">第5名</span>
         </div>
-        <p style="color: #f1f5f9; font-size: 12px; font-weight: 500; margin-top: 6px;">GTA: Vice City</p>
+        <p style="color: #f1f5f9; font-size: 12px; font-weight: 500; margin-top: 6px;">侠盗猎车手：罪恶都市</p>
     </div>
 
-    <!-- No.6: Cyberpunk 2077 -->
+    <!-- 第6名：赛博朋克2077 -->
     <div style="cursor: pointer;">
-        <div style="position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: #131722;">
-            <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1091500/header.jpg" style="width: 100%; height: 95px; object-fit: cover; display: block;" alt="Cyberpunk 2077">
-            <span style="position: absolute; top: 6px; left: 6px; background: rgba(0, 0, 0, 0.75); color: #f472b6; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; backdrop-filter: blur(4px);">No.6</span>
+        <div style="position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: rgba(15, 22, 38, 0.94);">
+            <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1091500/header.jpg" style="width: 100%; height: 95px; object-fit: cover; display: block;" alt="赛博朋克2077">
+            <span style="position: absolute; top: 6px; left: 6px; background: rgba(0, 0, 0, 0.75); color: #f472b6; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; backdrop-filter: blur(4px);">第6名</span>
         </div>
-        <p style="color: #f1f5f9; font-size: 12px; font-weight: 500; margin-top: 6px;">Cyberpunk 2077</p>
+        <p style="color: #f1f5f9; font-size: 12px; font-weight: 500; margin-top: 6px;">赛博朋克2077</p>
+    </div>
+
+    <!-- 第7名：霍格沃茨：遗产 -->
+    <div style="cursor: pointer;">
+        <div style="position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: rgba(15, 22, 38, 0.94);">
+            <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/990080/header.jpg" style="width: 100%; height: 95px; object-fit: cover; display: block;" alt="霍格沃茨：遗产" onerror="this.onerror=null; this.src='https://via.placeholder.com/380x190/111827/ffffff?text=No+Image';">
+            <span style="position: absolute; top: 6px; left: 6px; background: rgba(0, 0, 0, 0.75); color: #a78bfa; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; backdrop-filter: blur(4px);">第7名</span>
+        </div>
+        <p style="color: #f1f5f9; font-size: 12px; font-weight: 500; margin-top: 6px;">霍格沃茨：遗产</p>
+    </div>
+
+    <!-- 第8名：塞尔达传说：荒野之息 -->
+    <div style="cursor: pointer;">
+        <div style="position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: rgba(15, 22, 38, 0.94);">
+            <img src="https://upload.wikimedia.org/wikipedia/en/c/c6/The_Legend_of_Zelda_Breath_of_the_Wild.jpg" style="width: 100%; height: 95px; object-fit: cover; display: block;" alt="塞尔达：荒野之息" onerror="this.onerror=null; this.src='https://via.placeholder.com/380x190/111827/ffffff?text=Zelda+BOTW';">
+            <span style="position: absolute; top: 6px; left: 6px; background: rgba(0, 0, 0, 0.75); color: #34d399; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; backdrop-filter: blur(4px);">第8名</span>
+        </div>
+        <p style="color: #f1f5f9; font-size: 12px; font-weight: 500; margin-top: 6px;">塞尔达：荒野之息</p>
+    </div>
+
+    <!-- 第9名：艾尔登法环 -->
+    <div style="cursor: pointer;">
+        <div style="position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: rgba(15, 22, 38, 0.94);">
+            <img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/header.jpg" style="width: 100%; height: 95px; object-fit: cover; display: block;" alt="艾尔登法环" onerror="this.onerror=null; this.src='https://via.placeholder.com/380x190/111827/ffffff?text=No+Image';">
+            <span style="position: absolute; top: 6px; left: 6px; background: rgba(0, 0, 0, 0.75); color: #facc15; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; backdrop-filter: blur(4px);">第9名</span>
+        </div>
+        <p style="color: #f1f5f9; font-size: 12px; font-weight: 500; margin-top: 6px;">艾尔登法环</p>
+    </div>
+
+    <!-- 第10名：地平线：西之禁域 -->
+    <div style="cursor: pointer;">
+        <div style="position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: rgba(15, 22, 38, 0.94);">
+            <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1240440/header.jpg" style="width: 100%; height: 95px; object-fit: cover; display: block;" alt="地平线：西之禁域" onerror="this.onerror=null; this.src='https://via.placeholder.com/380x190/111827/ffffff?text=No+Image';">
+            <span style="position: absolute; top: 6px; left: 6px; background: rgba(0, 0, 0, 0.75); color: #38bdf8; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; backdrop-filter: blur(4px);">第10名</span>
+        </div>
+        <p style="color: #f1f5f9; font-size: 12px; font-weight: 500; margin-top: 6px;">地平线：西之禁域</p>
     </div>
 
 </div>
