@@ -153,13 +153,13 @@
     /* Tablet / iPad style */
     @media (min-width: 481px) and (max-width: 1024px) {
         .phone-frame {
-            width: min(900px, calc(100vw - 24px));
-            max-width: 900px;
-            height: min(1160px, calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 24px));
-            max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 24px);
-            border-radius: 46px;
+            width: min(920px, calc(100vw - 40px));
+            max-width: 920px;
+            height: min(1160px, calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 40px));
+            max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 40px);
+            border-radius: 40px;
             border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 50px 140px rgba(0,0,0,0.4);
+            box-shadow: 0 42px 120px rgba(0,0,0,0.35);
         }
 
         .bottom-nav {
@@ -169,6 +169,18 @@
         .nav-item div {
             font-size: 11px;
         }
+    }
+
+    /* iPad-specific frame */
+    body.ipad .phone-frame {
+        width: min(960px, calc(100vw - 48px));
+        max-width: 960px;
+        height: min(1220px, calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 48px));
+        max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 48px);
+        border-radius: 56px;
+        border: 1px solid rgba(255,255,255,0.12);
+        background-image: linear-gradient(180deg, rgba(12, 18, 36, 0.96), rgba(8, 12, 22, 0.96));
+        box-shadow: 0 54px 150px rgba(0,0,0,0.35);
     }
 
     /* iOS-specific frame */
