@@ -5,6 +5,9 @@ import json
 app = Flask(__name__, static_folder='.', static_url_path='')
 root_dir = os.path.abspath(os.path.dirname(__file__))
 USER_STORE = os.path.join(root_dir, 'users.json')
+NOTIF_STORE = os.path.join(root_dir, 'notifications.json')
+PACKAGES_STORE = os.path.join(root_dir, 'packages.json')
+SETTINGS_STORE = os.path.join(root_dir, 'settings.json')
 
 
 def load_users():
@@ -22,6 +25,55 @@ def save_users(users):
         json.dump(users, f, ensure_ascii=False, indent=2)
 
 
+def load_notifications():
+    if not os.path.isfile(NOTIF_STORE):
+        return []
+    try:
+        with open(NOTIF_STORE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception:
+        return []
+
+
+def save_notifications(notifs):
+    with open(NOTIF_STORE, 'w', encoding='utf-8') as f:
+        json.dump(notifs, f, ensure_ascii=False, indent=2)
+
+
+def load_packages():
+    if not os.path.isfile(PACKAGES_STORE):
+        # default two packages
+        return [
+            { 'id': 'pkg1', 'name': '云端电脑 1', 'price': '99000', 'label': '99.000đ / 9 ngày' },
+            { 'id': 'pkg2', 'name': '云端电脑 2', 'price': '470000', 'label': '470.000đ' }
+        ]
+    try:
+        with open(PACKAGES_STORE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception:
+        return []
+
+
+def save_packages(pkgs):
+    with open(PACKAGES_STORE, 'w', encoding='utf-8') as f:
+        json.dump(pkgs, f, ensure_ascii=False, indent=2)
+
+
+def load_settings():
+    if not os.path.isfile(SETTINGS_STORE):
+        return {}
+    try:
+        with open(SETTINGS_STORE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
+def save_settings(settings):
+    with open(SETTINGS_STORE, 'w', encoding='utf-8') as f:
+        json.dump(settings, f, ensure_ascii=False, indent=2)
+
+
 @app.route('/api/status')
 def status():
     return jsonify({
@@ -34,10 +86,12 @@ def status():
 
 @app.route('/api/admin-test')
 def admin_test():
+    country = request.headers.get('CF-IPCountry') or request.headers.get('X-Country') or request.headers.get('X-AppEngine-Country') or 'Unknown'
     return jsonify({
         'message': 'Admin network test endpoint is active.',
         'remoteAddress': request.remote_addr or '',
         'userAgent': request.headers.get('User-Agent', ''),
+        'country': country,
         'timestamp': os.environ.get('TIMESTAMP', '') or '',
     })
 
@@ -45,6 +99,75 @@ def admin_test():
 @app.route('/api/users', methods=['GET'])
 def get_users():
     return jsonify(load_users())
+
+
+@app.route('/api/notifications', methods=['GET'])
+def get_notifications():
+    try:
+        notifs = load_notifications()
+        # return newest first
+        return jsonify(list(reversed(notifs)))
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
+@app.route('/api/notifications', methods=['POST'])
+def post_notification():
+    try:
+        payload = request.get_json(force=True)
+        if not isinstance(payload, dict):
+            return jsonify({'error': 'Invalid payload'}), 400
+        notifs = load_notifications()
+        notifs.append(payload)
+        save_notifications(notifs)
+        return jsonify({'status': 'ok'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
+@app.route('/api/packages', methods=['GET'])
+def get_packages():
+    try:
+        pkgs = load_packages()
+        return jsonify(pkgs)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
+@app.route('/api/packages', methods=['PUT'])
+def put_packages():
+    try:
+        payload = request.get_json(force=True)
+        pkgs = payload.get('packages') if isinstance(payload, dict) else None
+        if not isinstance(pkgs, list):
+            return jsonify({'error': 'Invalid packages payload'}), 400
+        save_packages(pkgs)
+        return jsonify({'status': 'ok'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
+@app.route('/api/maintenance', methods=['GET'])
+def get_maintenance():
+    try:
+        settings = load_settings() or {}
+        return jsonify({ 'maintenance': bool(settings.get('maintenance', False)) })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
+@app.route('/api/maintenance', methods=['PUT'])
+def put_maintenance():
+    try:
+        payload = request.get_json(force=True)
+        if not isinstance(payload, dict) or 'maintenance' not in payload:
+            return jsonify({'error': 'Invalid payload'}), 400
+        settings = load_settings() or {}
+        settings['maintenance'] = bool(payload.get('maintenance'))
+        save_settings(settings)
+        return jsonify({'status': 'ok', 'maintenance': settings['maintenance']})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 
 @app.route('/api/users', methods=['PUT'])

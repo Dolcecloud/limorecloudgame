@@ -934,6 +934,10 @@ function getMaintenanceMode() {
 
 function setMaintenanceMode(value) {
     localStorage.setItem('appMaintenanceMode', value ? 'true' : 'false');
+    // Persist to server when available so maintenance affects all clients
+    if (supportsRemoteUsers()) {
+        apiPut('/maintenance', { maintenance: !!value }).catch(err => console.warn('Failed to update server maintenance:', err));
+    }
 }
 
 function toggleMaintenanceMode() {
@@ -1037,6 +1041,44 @@ async function recordVisitorData(pageName) {
         user: getCurrentUserEmail() || '游客'
     };
     logVisit(visitor);
+}
+
+// Try to synchronize maintenance state from server into localStorage
+async function syncMaintenanceFromServer() {
+    if (!supportsRemoteUsers()) return;
+    try {
+        const res = await apiGet('/maintenance');
+        if (res && typeof res.maintenance !== 'undefined') {
+            localStorage.setItem('appMaintenanceMode', res.maintenance ? 'true' : 'false');
+        }
+    } catch (e) {
+        // ignore network errors
+    }
+}
+
+// Start polling server maintenance every 8 seconds and enforce maintenance UI
+function startMaintenancePolling() {
+    // initial sync
+    syncMaintenanceFromServer();
+    setInterval(async () => {
+        try {
+            await syncMaintenanceFromServer();
+            const maintenanceOn = getMaintenanceMode();
+            const currentUser = getCurrentUser();
+            if (maintenanceOn && (!currentUser || currentUser.role !== 'admin')) {
+                // show maintenance page
+                document.getElementById('main-content').innerHTML = `
+                    <div style="padding: 28px; text-align: center; color: #e2e8f0;">
+                        <h2 style="margin-bottom: 12px;">系统正在维护中</h2>
+                        <p style="margin-bottom: 16px; color: #94a3b8; font-size: 14px;">请稍后再试。只有管理员在维护期间可访问。</p>
+                        <button onclick="switchPage('login')" style="border:none; background:#2563eb; color:#fff; border-radius:16px; padding: 12px 18px; cursor:pointer; font-size:14px;">返回登录</button>
+                    </div>
+                `;
+            }
+        } catch (e) {
+            // ignore
+        }
+    }, 8000);
 }
 
 function generateRandomId() {
@@ -1439,7 +1481,25 @@ function closeQRModal() {
 window.onload = function() {
     ensureDefaultAdmin();
     setupNotificationModal();
+    try { startMaintenancePolling(); } catch(e) { console.warn('Maintenance polling failed', e); }
     const currentUser = getCurrentUser();
+    // If maintenance active on server and user is not admin, force show maintenance
+    try {
+        syncMaintenanceFromServer().then(() => {
+            const maintenanceOn = getMaintenanceMode();
+            const nowUser = getCurrentUser();
+            if (maintenanceOn && (!nowUser || nowUser.role !== 'admin')) {
+                switchPage('login');
+                document.getElementById('main-content').innerHTML = `
+                    <div style="padding: 28px; text-align: center; color: #e2e8f0;">
+                        <h2 style="margin-bottom: 12px;">系统正在维护中</h2>
+                        <p style="margin-bottom: 16px; color: #94a3b8; font-size: 14px;">请稍后再试。只有管理员在维护期间可访问。</p>
+                        <button onclick="switchPage('login')" style="border:none; background:#2563eb; color:#fff; border-radius:16px; padding: 12px 18px; cursor:pointer; font-size:14px;">返回登录</button>
+                    </div>
+                `;
+            }
+        }).catch(()=>{});
+    } catch(e) {}
     if (currentUser) {
         setLoggedInSession(currentUser);
         enterApp();
