@@ -256,7 +256,13 @@ function getCurrentUserEmail() {
 
 function getCurrentUser() {
     const email = getCurrentUserEmail();
-    return email ? findUserByEmail(email) : null;
+    if (!email) return null;
+    return {
+        id: localStorage.getItem('limoreUserId') || generateRandomId(),
+        name: localStorage.getItem('limoreUsername') || '',
+        email,
+        role: getCurrentUserRole()
+    };
 }
 
 function clearCurrentUserSession() {
@@ -544,7 +550,7 @@ function initAreaPage() {
     }
 }
 
-function initAdminPage() {
+async function initAdminPage() {
     const currentUser = getCurrentUser();
     if (!currentUser || currentUser.role !== 'admin') return;
 
@@ -573,7 +579,7 @@ function initAdminPage() {
         });
     });
 
-    const users = getStoredUsers();
+    const users = await loadUsers();
     const adminsCount = users.filter(user => user.role === 'admin').length;
     const visits = getVisitLog();
     const maintenanceOn = getMaintenanceMode();
@@ -740,7 +746,7 @@ function initAdminPage() {
         initAdminPage();
     });
 
-    document.getElementById('user-form')?.addEventListener('submit', (event) => {
+    document.getElementById('user-form')?.addEventListener('submit', async (event) => {
         event.preventDefault();
         const form = event.currentTarget;
         const name = form.userName.value.trim();
@@ -754,7 +760,7 @@ function initAdminPage() {
             return;
         }
         const updated = [...users, { id: generateRandomId(), name, email, password, role }];
-        saveStoredUsers(updated);
+        await persistUsers(updated);
         form.reset();
         initAdminPage();
     });
@@ -795,7 +801,7 @@ function initAdminPage() {
     });
 
     document.querySelectorAll('[data-delete-user]').forEach(button => {
-        button.addEventListener('click', () => {
+        button.addEventListener('click', async () => {
             const email = button.getAttribute('data-delete-user');
             if (email === currentUser.email) {
                 alert('无法删除当前登录账户。');
@@ -803,13 +809,13 @@ function initAdminPage() {
                 return;
             }
             const updated = users.filter(user => user.email.toLowerCase() !== email.toLowerCase());
-            saveStoredUsers(updated);
+            await persistUsers(updated);
             initAdminPage();
         });
     });
 
     document.querySelectorAll('[data-toggle-role]').forEach(button => {
-        button.addEventListener('click', () => {
+        button.addEventListener('click', async () => {
             const email = button.getAttribute('data-toggle-role');
             if (email === currentUser.email) {
                 alert('无法更改自己的角色。');
@@ -821,7 +827,7 @@ function initAdminPage() {
                 }
                 return user;
             });
-            saveStoredUsers(updated);
+            await persistUsers(updated);
             initAdminPage();
         });
     });
@@ -1000,7 +1006,7 @@ function openQRModal() {
 
     if (modalName) modalName.innerText = currentPkgName;
     if (modalPrice) modalPrice.innerText = currentPriceText;
-    if (qrImg) qrImg.src = `https://api.vietqr.io/image/970422-0382838383-d97X3J9.jpg?accountName=CLOUD%20GAMING&amount=${currentRawPrice}&addInfo=${encodeURIComponent('支付 ' + currentPkgName)}`;
+    if (qrImg) qrImg.src = 'https://i.imgur.com/jIqj4Y9.png';
     if (modal) modal.style.display = 'flex';
 }
 

@@ -17,18 +17,19 @@
     <link rel="stylesheet" href="css/style.css">
     <style>
     * { box-sizing: border-box; }
+    html, body {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
     body {
         background: #05070f;
         color: #eef2ff;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        margin: 0;
-        padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px) 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100dvh;
-        overflow: hidden;
-        overflow-x: hidden;
+        display: block !important;
+        min-height: 100vh;
     }
 
     /* Khung điện thoại giả lập */
@@ -53,12 +54,16 @@
 
     /* Vùng nội dung cuộn bên trên */
     #main-content {
-        flex: 1;
+        width: 100vw;
+        max-width: 100vw;
+        min-height: 100vh;
+        margin: 0;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
-        padding: 0 16px 96px;
+        padding: 0;
         background: linear-gradient(180deg, rgba(8, 12, 24, 0.92), rgba(10, 14, 25, 0.95));
-        border-radius: 0 0 32px 32px;
+        border-radius: 0;
+        box-sizing: border-box;
     }
 
     /* Thanh menu điều hướng dưới cùng */
@@ -205,32 +210,29 @@
 </head>
 <body>
 
-    <!-- Khung hình điện thoại -->
-    <div class="phone-frame">
-        
-        <!-- Vùng hiển thị nội dung các trang -->
-        <div id="main-content"></div>
+    <!-- Nội dung chính không còn khung điện thoại -->
 
-        <!-- Thanh menu dưới cùng -->
-        <div class="bottom-nav hidden">
-            <div onclick="switchPage('home')" class="nav-item active" id="nav-home">
-                <i class="fa-solid fa-house"></i>
-                <div>首页</div>
-            </div>
-            <div onclick="switchPage('games')" class="nav-item" id="nav-games">
-                <i class="fa-solid fa-gamepad"></i>
-                <div>游戏库</div>
-            </div>
-            <div onclick="switchPage('cloud')" class="nav-item" id="nav-cloud">
-                <i class="fa-solid fa-desktop"></i>
-                <div>电脑</div>
-            </div>
-            <div onclick="switchPage('profile')" class="nav-item" id="nav-profile">
-                <i class="fa-solid fa-user"></i>
-                <div>我的</div>
-            </div>
+    <!-- Vùng hiển thị nội dung các trang -->
+    <div id="main-content"></div>
+
+    <!-- Thanh menu dưới cùng -->
+    <div class="bottom-nav hidden">
+        <div onclick="switchPage('home')" class="nav-item active" id="nav-home">
+            <i class="fa-solid fa-house"></i>
+            <div>首页</div>
         </div>
-
+        <div onclick="switchPage('games')" class="nav-item" id="nav-games">
+            <i class="fa-solid fa-gamepad"></i>
+            <div>游戏库</div>
+        </div>
+        <div onclick="switchPage('cloud')" class="nav-item" id="nav-cloud">
+            <i class="fa-solid fa-desktop"></i>
+            <div>电脑</div>
+        </div>
+        <div onclick="switchPage('profile')" class="nav-item" id="nav-profile">
+            <i class="fa-solid fa-user"></i>
+            <div>我的</div>
+        </div>
     </div>
 
     <!-- Nhúng file logic -->
