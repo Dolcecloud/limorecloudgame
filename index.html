@@ -9,10 +9,10 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://i.ibb.co/wZK1GL96/Screenshot-2026-07-30-125948.png">
-    <link rel="icon" href="https://i.ibb.co/wZK1GL96/Screenshot-2026-07-30-125948.png" type="image/png">
-    <link rel="icon" href="https://i.ibb.co/wZK1GL96/Screenshot-2026-07-30-125948.png" sizes="192x192" type="image/png">
-    <link rel="shortcut icon" href="https://i.ibb.co/wZK1GL96/Screenshot-2026-07-30-125948.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://i.imgur.com/wfJugJr.png">
+    <link rel="icon" href="https://i.imgur.com/wfJugJr.png" type="image/png">
+    <link rel="icon" href="https://i.imgur.com/wfJugJr.png" sizes="192x192" type="image/png">
+    <link rel="shortcut icon" href="https://i.imgur.com/wfJugJr.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
@@ -23,6 +23,8 @@
         margin: 0;
         padding: 0;
         overflow-x: hidden;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
     }
     body {
         background: #05070f;
@@ -56,11 +58,11 @@
     #main-content {
         width: 100vw;
         max-width: 100vw;
-        min-height: 100vh;
+        height: calc(100vh - 65px);
         margin: 0;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
-        padding: 0;
+        padding: 0 0 80px 0;
         background: linear-gradient(180deg, rgba(8, 12, 24, 0.92), rgba(10, 14, 25, 0.95));
         border-radius: 0;
         box-sizing: border-box;

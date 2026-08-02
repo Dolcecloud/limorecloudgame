@@ -27,6 +27,8 @@ body {
     min-height: 100dvh;
     overflow: hidden;
     overflow-x: hidden;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* Khung giả lập mobile hoặc full màn hình */
