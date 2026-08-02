@@ -55,6 +55,8 @@ const adminStorageKeys = {
     packages: 'cloudzoneAdminPackages'
 };
 
+const pageCache = {};
+
 function readAdminStorage(key, fallback) {
     try {
         const raw = localStorage.getItem(key);
@@ -420,6 +422,13 @@ function switchPage(pageName) {
         }
     }
 
+    const currentUser = getCurrentUser();
+    const maintenanceOn = getMaintenanceMode();
+    if (maintenanceOn && (!currentUser || currentUser.role !== 'admin')) {
+        showMaintenanceScreen();
+        return;
+    }
+
     const navs = ['home', 'games', 'cloud', 'profile'];
     
     navs.forEach(nav => {
@@ -429,8 +438,6 @@ function switchPage(pageName) {
         }
     });
 
-    const currentUser = getCurrentUser();
-    const maintenanceOn = getMaintenanceMode();
     const bottomNav = document.querySelector('.bottom-nav');
     if (bottomNav) {
         const showNav = pageName !== 'login';
@@ -469,12 +476,39 @@ function switchPage(pageName) {
     const pageUrl = pageName === 'login'
         ? new URL('login/login.html', location.href).href
         : new URL(`pages/${pageName}.html`, location.href).href;
+
+    const loadingHtml = `
+        <div style="padding: 24px; text-align: center; color: #eef2ff;">
+            <div style="margin: 0 auto 14px; width: 30px; height: 30px; border: 3px solid rgba(255,255,255,0.18); border-top-color:#facc15; border-radius:50%; animation: spin 0.8s linear infinite;"></div>
+            <div style="font-size: 14px; color: #cbd5e1;">Đang tải...</div>
+        </div>
+    `;
+
+    if (pageCache[pageName]) {
+        document.getElementById('main-content').innerHTML = pageCache[pageName];
+        if (pageName === 'games' || pageName === 'home') {
+            initGameInterface();
+        } else if (pageName === 'area') {
+            initAreaPage();
+        }
+        if (pageName === 'profile') {
+            updateProfileData();
+        }
+        if (pageName === 'admin') {
+            initAdminPage();
+        }
+        return;
+    }
+
+    document.getElementById('main-content').innerHTML = loadingHtml;
+
     fetch(pageUrl)
         .then(response => {
             if (!response.ok) throw new Error("无法加载页面");
             return response.text();
         })
         .then(html => {
+            pageCache[pageName] = html;
             document.getElementById('main-content').innerHTML = html;
             if (pageName === 'games' || pageName === 'home') {
                 initGameInterface();
@@ -496,6 +530,11 @@ function switchPage(pageName) {
                 : `<div style="color: #ef4444; text-align:center; padding: 20px; font-size: 13px;">内容正在更新... 如果问题仍然存在，请检查页面路径和服务器配置。</div>`;
         });
 }
+
+// page loading animation
+const style = document.createElement('style');
+style.innerHTML = `@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`;
+document.head.appendChild(style);
 
 // Khởi tạo giao diện game, menu danh mục bên trái và tìm kiếm
 function initGameInterface() {
@@ -938,6 +977,33 @@ function setMaintenanceMode(value) {
     if (supportsRemoteUsers()) {
         apiPut('/maintenance', { maintenance: !!value }).catch(err => console.warn('Failed to update server maintenance:', err));
     }
+    if (value) enforceMaintenanceUI();
+}
+
+function showMaintenanceScreen() {
+    const mainContent = document.getElementById('main-content');
+    if (!mainContent) return;
+    const bottomNav = document.querySelector('.bottom-nav');
+    if (bottomNav) {
+        bottomNav.classList.add('hidden');
+        bottomNav.style.display = 'none';
+    }
+    mainContent.classList.add('centered');
+    mainContent.innerHTML = `
+        <div style="padding: 28px; text-align: center; color: #e2e8f0; max-width:560px; margin:0 auto;">
+            <h2 style="margin-bottom: 12px;">系统正在维护中</h2>
+            <p style="margin-bottom: 16px; color: #94a3b8; font-size: 14px;">请稍后再试。只有管理员在维护期间可访问。</p>
+            <button onclick="switchPage('login')" style="border:none; background:#2563eb; color:#fff; border-radius:16px; padding: 12px 18px; cursor:pointer; font-size:14px;">返回登录</button>
+        </div>
+    `;
+}
+
+function enforceMaintenanceUI() {
+    const currentUser = getCurrentUser();
+    const maintenanceOn = getMaintenanceMode();
+    if (!maintenanceOn || (currentUser && currentUser.role === 'admin')) return false;
+    showMaintenanceScreen();
+    return true;
 }
 
 function toggleMaintenanceMode() {
@@ -1063,18 +1129,7 @@ function startMaintenancePolling() {
     setInterval(async () => {
         try {
             await syncMaintenanceFromServer();
-            const maintenanceOn = getMaintenanceMode();
-            const currentUser = getCurrentUser();
-            if (maintenanceOn && (!currentUser || currentUser.role !== 'admin')) {
-                // show maintenance page
-                document.getElementById('main-content').innerHTML = `
-                    <div style="padding: 28px; text-align: center; color: #e2e8f0;">
-                        <h2 style="margin-bottom: 12px;">系统正在维护中</h2>
-                        <p style="margin-bottom: 16px; color: #94a3b8; font-size: 14px;">请稍后再试。只有管理员在维护期间可访问。</p>
-                        <button onclick="switchPage('login')" style="border:none; background:#2563eb; color:#fff; border-radius:16px; padding: 12px 18px; cursor:pointer; font-size:14px;">返回登录</button>
-                    </div>
-                `;
-            }
+            enforceMaintenanceUI();
         } catch (e) {
             // ignore
         }
@@ -1380,20 +1435,17 @@ let currentRawPrice = '99000';
 function selectPackage(id, priceStr, pkgName) {
     currentPkgName = pkgName;
     currentPriceText = priceStr;
-    currentRawPrice = id === 1 ? '99000' : id === 2 ? '470000' : '0';
+    currentRawPrice = id === 1 ? '99000' : '470000';
 
     const pkg1 = document.getElementById('pkg-1');
     const pkg2 = document.getElementById('pkg-2');
-    const pkg3 = document.getElementById('pkg-3');
     const check1 = document.getElementById('check-1');
     const check2 = document.getElementById('check-2');
-    const check3 = document.getElementById('check-3');
     const priceDisplay = document.getElementById('price-display');
 
     if (id === 1) {
         if (pkg1) pkg1.style.border = '2px solid #6366f1';
         if (pkg2) pkg2.style.border = '1px solid #334155';
-        if (pkg3) pkg3.style.border = '1px dashed rgba(250, 204, 21, 0.06)';
         if (check1) {
             check1.style.background = '#6366f1';
             const icon = check1.querySelector('i');
@@ -1404,61 +1456,22 @@ function selectPackage(id, priceStr, pkgName) {
             const icon = check2.querySelector('i');
             if (icon) icon.style.color = 'transparent';
         }
-        if (check3) {
-            check3.style.background = 'transparent';
-            const icon = check3.querySelector('i');
+        if (priceDisplay) priceDisplay.innerHTML = '云端电脑 1：<strong style="color: #facc15;">99.000đ / 9 ngày</strong>';
+    } else if (id === 2) {
+        if (pkg2) pkg2.style.border = '2px solid #6366f1';
+        if (pkg1) pkg1.style.border = '1px solid #334155';
+        if (check2) {
+            check2.style.background = '#6366f1';
+            const icon = check2.querySelector('i');
+            if (icon) icon.style.color = '#fff';
+        }
+        if (check1) {
+            check1.style.background = 'transparent';
+            const icon = check1.querySelector('i');
             if (icon) icon.style.color = 'transparent';
         }
-        if (priceDisplay) priceDisplay.innerHTML = '云端电脑 1：<strong style="color: #facc15;">99.000đ / 9 ngày</strong>';
-    } else {
-        if (id === 2) {
-            if (pkg2) pkg2.style.border = '2px solid #6366f1';
-            if (pkg1) pkg1.style.border = '1px solid #334155';
-            if (pkg3) pkg3.style.border = '1px dashed rgba(250, 204, 21, 0.06)';
-            if (check2) {
-                check2.style.background = '#6366f1';
-                const icon = check2.querySelector('i');
-                if (icon) icon.style.color = '#fff';
-            }
-            if (check1) {
-                check1.style.background = 'transparent';
-                const icon = check1.querySelector('i');
-                if (icon) icon.style.color = 'transparent';
-            }
-            if (check3) {
-                check3.style.background = 'transparent';
-                const icon = check3.querySelector('i');
-                if (icon) icon.style.color = 'transparent';
-            }
-            if (priceDisplay) priceDisplay.innerHTML = '云端电脑 2：<strong style="color: #facc15;">470.000đ (Gốc: 1.200.000đ)</strong>';
-        } else if (id === 3) {
-            // Free package selected
-            if (pkg3) pkg3.style.border = '2px dashed #facc15';
-            if (pkg1) pkg1.style.border = '1px solid #334155';
-            if (pkg2) pkg2.style.border = '1px solid #334155';
-            if (check3) {
-                check3.style.background = '#facc15';
-                const icon = check3.querySelector('i');
-                if (icon) icon.style.color = '#0f172a';
-            }
-            if (check1) {
-                check1.style.background = 'transparent';
-                const icon = check1.querySelector('i');
-                if (icon) icon.style.color = 'transparent';
-            }
-            if (check2) {
-                check2.style.background = 'transparent';
-                const icon = check2.querySelector('i');
-                if (icon) icon.style.color = 'transparent';
-            }
-            if (priceDisplay) priceDisplay.innerHTML = 'Gói Miễn Phí：<strong style="color: #facc15;">Miễn phí</strong>';
-        }
+        if (priceDisplay) priceDisplay.innerHTML = '云端电脑 2：<strong style="color: #facc15;">470.000đ (Gốc: 1.200.000đ)</strong>';
     }
-}
-
-function showBypassGuide() {
-    const modal = document.getElementById('bypass-modal');
-    if (modal) modal.style.display = 'flex';
 }
 
 function openQRModal() {
@@ -1478,28 +1491,23 @@ function closeQRModal() {
     if (modal) modal.style.display = 'none';
 }
 
-window.onload = function() {
+window.onload = async function() {
     ensureDefaultAdmin();
     setupNotificationModal();
     try { startMaintenancePolling(); } catch(e) { console.warn('Maintenance polling failed', e); }
-    const currentUser = getCurrentUser();
     // If maintenance active on server and user is not admin, force show maintenance
     try {
-        syncMaintenanceFromServer().then(() => {
-            const maintenanceOn = getMaintenanceMode();
-            const nowUser = getCurrentUser();
-            if (maintenanceOn && (!nowUser || nowUser.role !== 'admin')) {
-                switchPage('login');
-                document.getElementById('main-content').innerHTML = `
-                    <div style="padding: 28px; text-align: center; color: #e2e8f0;">
-                        <h2 style="margin-bottom: 12px;">系统正在维护中</h2>
-                        <p style="margin-bottom: 16px; color: #94a3b8; font-size: 14px;">请稍后再试。只有管理员在维护期间可访问。</p>
-                        <button onclick="switchPage('login')" style="border:none; background:#2563eb; color:#fff; border-radius:16px; padding: 12px 18px; cursor:pointer; font-size:14px;">返回登录</button>
-                    </div>
-                `;
-            }
-        }).catch(()=>{});
-    } catch(e) {}
+        await syncMaintenanceFromServer();
+    } catch (e) {
+        console.warn('Initial maintenance sync failed', e);
+    }
+
+    const currentUser = getCurrentUser();
+    if (getMaintenanceMode() && (!currentUser || currentUser.role !== 'admin')) {
+        showMaintenanceScreen();
+        return;
+    }
+
     if (currentUser) {
         setLoggedInSession(currentUser);
         enterApp();
