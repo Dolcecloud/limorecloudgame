@@ -159,25 +159,44 @@ function saveStoredUsersLocal(users) {
     localStorage.setItem(ACCOUNT_STORAGE_KEY, JSON.stringify(users));
 }
 
+function mergeUserLists(remoteUsers, localUsers) {
+    const merged = [...remoteUsers];
+    const emails = new Set(remoteUsers.map(u => u.email?.toLowerCase()));
+    localUsers.forEach(user => {
+        const email = user.email?.toLowerCase();
+        if (email && !emails.has(email)) {
+            merged.push(user);
+        }
+    });
+    return merged;
+}
+
 function supportsRemoteUsers() {
     return typeof apiGet === 'function' && typeof apiPut === 'function' && typeof apiPost === 'function' && typeof apiDelete === 'function';
 }
 
 async function loadUsers() {
+    const localUsers = getStoredUsersLocal();
     if (supportsRemoteUsers()) {
         try {
-            return await apiGet('/users');
+            const remoteUsers = await apiGet('/users');
+            const mergedUsers = mergeUserLists(remoteUsers || [], localUsers || []);
+            if (mergedUsers.length !== (remoteUsers || []).length) {
+                await persistUsers(mergedUsers);
+            }
+            return mergedUsers;
         } catch (error) {
             console.warn('Remote user API unavailable, using local fallback.', error);
         }
     }
-    return getStoredUsersLocal();
+    return localUsers;
 }
 
 async function persistUsers(users) {
     if (supportsRemoteUsers()) {
         try {
             await apiPut('/users', { users });
+            saveStoredUsersLocal(users);
             return;
         } catch (error) {
             console.warn('Remote persist users failed, using local fallback.', error);
@@ -868,14 +887,14 @@ function updateProfileData() {
     if (avatar) avatar.textContent = username.charAt(0).toUpperCase();
 }
 
-function deleteAdminUser(email) {
+async function deleteAdminUser(email) {
     const currentEmail = getCurrentUserEmail();
     if (email === currentEmail) {
         alert('无法删除当前登录账户。');
         return;
     }
-    const users = getStoredUsers().filter(user => user.email.toLowerCase() !== email.toLowerCase());
-    saveStoredUsers(users);
+    const users = (await loadUsers()).filter(user => user.email.toLowerCase() !== email.toLowerCase());
+    await persistUsers(users);
     initAdminPage();
 }
 
