@@ -45,9 +45,14 @@
             </li>
             <li>
                 <a href="#" onclick="switchTab('apps', this)">
+                    <div style="margin-top:18px;">
+                        <h4>Quản lý gói</h4>
+                    </div>
                     <i class="fa-solid fa-gamepad"></i>
                     <span>Quản lý ứng dụng/game</span>
                 </a>
+
+                    
             </li>
             <li>
                 <a href="#" onclick="switchTab('servers', this)">
@@ -97,13 +102,44 @@
         <div class="dashboard-content">
             <div id="tab-dashboard" class="section-view active">
                 <div class="content-panel">
-                    <div class="panel-header">
+                    <div class="panel-header" style="position:relative;">
                         <h3>Bảng tổng quan</h3>
-                        <div class="panel-actions">
-                            <button class="action-btn" id="maintenance-toggle">Bật bảo trì</button>
-                            <button class="action-btn secondary" id="registration-toggle">Tắt đăng ký</button>
-                            <button class="action-btn secondary" id="reset-visits">Đặt lại lượt truy cập</button>
+                        <div class="panel-actions" style="display:flex;gap:8px;align-items:center;">
+                            <div style="display:flex;gap:8px;align-items:center;flex:1;">
+                                <button class="action-btn" id="maintenance-toggle">Bật bảo trì</button>
+                                <button class="action-btn secondary" id="registration-toggle">Tắt đăng ký</button>
+                                <button class="action-btn secondary" id="reset-visits">Đặt lại lượt truy cập</button>
+                            </div>
+                            <div style="display:flex;gap:8px;align-items:center;">
+                                <button id="edit-prices-btn" class="action-btn" style="display:none;">Sửa giá</button>
+                                <button id="admin-send-notif-btn" class="action-btn" style="display:none;">Gửi</button>
+                                <button class="action-btn" id="admin-notif-btn" title="Thông báo" style="position:relative;margin-left:0;">
+                                    <i class="fa fa-bell"></i>
+                                    <span id="admin-notif-count" style="position:absolute;top:-6px;right:-6px;background:#ef4444;border-radius:999px;color:#fff;padding:2px 6px;font-size:11px;display:none;">0</span>
+                                </button>
+                            </div>
                         </div>
+                        <div id="admin-notifications-dropdown" style="display:none;position:absolute;right:12px;top:56px;z-index:40;width:320px;max-height:420px;overflow:auto;background:rgba(8,12,24,0.98);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:8px;box-shadow:0 12px 40px rgba(0,0,0,0.5);">
+                            <div style="font-weight:600;padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.03);">Thông báo</div>
+                            <div id="admin-notifications-list" style="padding:8px 4px;display:flex;flex-direction:column;gap:8px;">
+                                <div style="color:#94a3b8;font-size:13px;padding:12px;text-align:center;">Chưa có thông báo.</div>
+                            </div>
+                        </div>
+                        <!-- Admin send notification modal -->
+                            <div id="admin-send-notif-modal" style="display:none;position:fixed;inset:0;background:rgba(10,14,24,0.86);align-items:center;justify-content:center;z-index:9999;padding:20px;">
+                                <div style="width:min(560px,100%);background:rgba(8,12,24,0.98);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
+                                    <h3 style="margin:0 0 8px;">Gửi thông báo đến người dùng</h3>
+                                    <div style="display:flex;flex-direction:column;gap:8px;">
+                                        <input id="admin-notif-title" placeholder="Tiêu đề" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#eef2ff;">
+                                        <textarea id="admin-notif-body" placeholder="Nội dung" rows="4" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#eef2ff;"></textarea>
+                                        <div style="display:flex;gap:8px;justify-content:flex-end;">
+                                            <button id="admin-notif-cancel" class="action-btn secondary">Hủy</button>
+                                            <button id="admin-notif-send" class="action-btn">Gửi</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
                     </div>
                     <div class="stats-grid">
                         <div class="stat-card">
@@ -117,6 +153,10 @@
                         <div class="stat-card">
                             <div class="stat-label">Lượt truy cập</div>
                             <div class="stat-value" id="dashboard-visits">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Truy cập riêng</div>
+                            <div class="stat-value" id="dashboard-unique-visits">0</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-label">Bảo trì</div>
@@ -251,6 +291,26 @@
 
     <script src="../js/api.js"></script>
     <script src="../js/app.js"></script>
+    <!-- Admin edit prices modal (moved out of sidebar to avoid layout issues) -->
+    <div id="admin-edit-prices-modal" style="display:none;position:fixed;inset:0;background:rgba(10,14,24,0.86);align-items:center;justify-content:center;z-index:9999;padding:20px;">
+        <div style="width:min(520px,100%);background:rgba(8,12,24,0.98);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
+            <h3 style="margin:0 0 8px;">Chỉnh sửa giá gói</h3>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+                <label>Gói 1 - Giá hiển thị</label>
+                <input id="pkg1-label" placeholder="Ví dụ: 99.000đ / 9 ngày" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#eef2ff;">
+                <label>Gói 1 - Giá thô (số)</label>
+                <input id="pkg1-price" placeholder="99000" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#eef2ff;">
+                <label>Gói 2 - Giá hiển thị</label>
+                <input id="pkg2-label" placeholder="Ví dụ: 470.000đ" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#eef2ff;">
+                <label>Gói 2 - Giá thô (số)</label>
+                <input id="pkg2-price" placeholder="470000" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#eef2ff;">
+                <div style="display:flex;gap:8px;justify-content:flex-end;">
+                    <button id="pkg-edit-cancel" class="action-btn secondary">Hủy</button>
+                    <button id="pkg-edit-save" class="action-btn">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         const sidebar = document.getElementById('sidebar');
         const toggleBtn = document.getElementById('toggleBtn');

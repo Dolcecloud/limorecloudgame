@@ -343,7 +343,10 @@ async function loginWithEmailPage() {
     }
     setLoggedInSession(user);
     showAlert('auth-alert-login', '登录成功！', 'success');
-    setTimeout(enterApp, 700);
+    setTimeout(() => {
+        enterApp();
+        promptNotificationPermission();
+    }, 700);
 }
 
 function openRegisterPage() {
@@ -386,9 +389,13 @@ async function createAccountPage() {
     };
     users.push(newUser);
     await persistUsers(users);
+    try { await createServerNotification('New registration', `${name} (${email}) vừa đăng ký tài khoản.`); } catch(e) { /* ignore */ }
     setLoggedInSession(newUser);
     showAlert('auth-alert-register', '注册成功！您已登录。', 'success');
-    setTimeout(enterApp, 700);
+    setTimeout(() => {
+        enterApp();
+        promptNotificationPermission();
+    }, 700);
 }
 
 function continueAsGuest() {
@@ -575,6 +582,10 @@ async function initAdminPage() {
 
     const pageTitle = document.getElementById('pageTitle');
     if (pageTitle) pageTitle.textContent = '总览';
+    // start polling server notifications for admin
+    try { startNotificationPolling(); } catch (e) { console.warn('Notification polling failed to start', e); }
+    try { setupAdminSendUI(); } catch (e) { console.warn('Admin send UI init failed', e); }
+    try { setupPackageEditor(); } catch (e) { console.warn('Package editor init failed', e); }
 
     const navButtons = document.querySelectorAll('.admin-nav-btn');
     navButtons.forEach(btn => {
@@ -619,17 +630,23 @@ async function initAdminPage() {
     setText('dashboard-games', games.length);
     setText('dashboard-sessions', sessions.length);
 
+    const uniqueCount = new Set(visits.map(v => `${v.ip}-${v.user}`)).size;
     const recentList = document.getElementById('dashboard-recent');
     if (recentList) {
         recentList.innerHTML = visits.slice(0, 5).map(item => `
             <div class="admin-list-item">
                 <div>
                     <strong>${item.user || '游客'}</strong>
-                    <p>${item.device || '未知'} • ${item.time || ''}</p>
+                    <p>${item.device || 'Unknown'} • ${item.time || ''}</p>
+                    <p style="font-size:10px; color:#94a3b8; margin:4px 0 0 0;">${item.ip || '0.0.0.0'} • ${item.country || 'Unknown'}</p>
                 </div>
-                <span>${item.country || '未知'}</span>
+                <span>${item.page || 'unknown'}</span>
             </div>
         `).join('');
+    }
+    const uniqueVisitsText = document.getElementById('dashboard-unique-visits');
+    if (uniqueVisitsText) {
+        uniqueVisitsText.textContent = uniqueCount;
     }
 
     const gameList = document.getElementById('game-list');
@@ -730,11 +747,24 @@ async function initAdminPage() {
 
     const resetVisitsBtn = document.getElementById('reset-visits');
     if (resetVisitsBtn) {
-        resetVisitsBtn.onclick = () => {
-            if (!confirm('是否确定将访问计数重置为0？')) return;
+        resetVisitsBtn.onclick = async () => {
+            const ok = confirm('Bạn có chắc muốn đặt lại toàn bộ lượt truy cập và danh sách người dùng về 0? (Mặc định tài khoản admin sẽ được giữ lại)');
+            if (!ok) return;
+            // Clear visit log
             saveVisitLog([]);
+            // Clear users, but ensure default admin exists afterwards to avoid lockout
+            try {
+                await persistUsers([]);
+                if (typeof ensureDefaultAdmin === 'function') {
+                    await ensureDefaultAdmin();
+                }
+            } catch (e) {
+                console.warn('Failed to reset users remotely, falling back to local clear.', e);
+                saveStoredUsersLocal([]);
+                if (typeof ensureDefaultAdmin === 'function') await ensureDefaultAdmin();
+            }
             initAdminPage();
-            alert('访问计数已重置为0。');
+            alert('Lượt truy cập và người dùng đã được đặt lại (admin mặc định được giữ).');
         };
     }
 
@@ -931,12 +961,8 @@ function saveVisitLog(log) {
 
 function logVisit(visitor) {
     const log = getVisitLog();
-    const existingIndex = log.findIndex(entry => entry.ip === visitor.ip);
-    if (existingIndex !== -1) {
-        log.splice(existingIndex, 1);
-    }
     log.unshift(visitor);
-    saveVisitLog(log.slice(0, 50));
+    saveVisitLog(log.slice(0, 200));
 }
 
 function getCurrentVisitor() {
@@ -949,15 +975,63 @@ function getCurrentSessionCount() {
     return user ? 1 : 0;
 }
 
-function recordVisitorData(pageName) {
+function detectDeviceModel(userAgent) {
+    const ua = userAgent.toLowerCase();
+    if (/iphone/.test(ua)) {
+        const match = ua.match(/iphone\s*([0-9]+)?/);
+        return match && match[1] ? `iPhone ${match[1]}` : 'iPhone';
+    }
+    if (/ipad/.test(ua)) return 'iPad';
+    if (/samsung|sm-/.test(ua)) return 'Samsung';
+    if (/pixel/.test(ua)) return 'Google Pixel';
+    if (/huawei/.test(ua)) return 'Huawei';
+    if (/mi\s|redmi/.test(ua)) return 'Xiaomi';
+    if (/oneplus/.test(ua)) return 'OnePlus';
+    if (/android/.test(ua)) return 'Android Device';
+    return 'Desktop';
+}
+
+function detectCountry(headers) {
+    if (!headers) return 'Unknown';
+    return headers['cf-ipcountry'] || headers['x-country'] || headers['x-appengine-country'] || 'Unknown';
+}
+
+async function fetchVisitorInfo() {
+    const result = {
+        ip: '127.0.0.1',
+        country: 'Unknown',
+        userAgent: navigator.userAgent || '',
+    };
+    if (!supportsRemoteUsers()) {
+        return result;
+    }
+    try {
+        const response = await apiGet('/admin-test');
+        if (response && response.remoteAddress) {
+            result.ip = response.remoteAddress;
+        }
+        if (response && response.userAgent) {
+            result.userAgent = response.userAgent;
+        }
+        if (response && response.country) {
+            result.country = response.country;
+        }
+    } catch (error) {
+        console.warn('Không lấy được thông tin truy cập từ server:', error);
+    }
+    return result;
+}
+
+async function recordVisitorData(pageName) {
     if (getMaintenanceMode()) return;
     const now = new Date();
     const time = now.toLocaleString('zh-CN');
-    const device = navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop';
+    const info = await fetchVisitorInfo();
+    const deviceModel = detectDeviceModel(info.userAgent);
     const visitor = {
-        ip: '127.0.0.1',
-        country: '中国',
-        device,
+        ip: info.ip || '127.0.0.1',
+        country: info.country || 'Unknown',
+        device: deviceModel,
         time,
         page: pageName || 'unknown',
         user: getCurrentUserEmail() || '游客'
@@ -969,6 +1043,292 @@ function generateRandomId() {
     const now = Date.now();
     const rand = Math.floor(Math.random() * 90000) + 10000;
     return `${now.toString().slice(-5)}${rand.toString().slice(0, 3)}`;
+}
+
+function isNotificationSupported() {
+    return 'Notification' in window;
+}
+
+function showNotificationModal() {
+    const modal = document.getElementById('notification-permission-modal');
+    if (modal) modal.classList.add('active');
+}
+
+function hideNotificationModal() {
+    const modal = document.getElementById('notification-permission-modal');
+    if (modal) modal.classList.remove('active');
+}
+
+async function requestNotificationPermission() {
+    hideNotificationModal();
+    if (!isNotificationSupported()) {
+        console.warn('Trình duyệt không hỗ trợ thông báo.');
+        return;
+    }
+    try {
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+            showSampleNotification('CloudZone đã bật thông báo', {
+                body: 'Bạn sẽ nhận được cập nhật và ưu đãi trực tiếp từ ứng dụng.',
+                icon: 'https://i.imgur.com/wfJugJr.png'
+            });
+        }
+    } catch (error) {
+        console.warn('Không thể yêu cầu quyền thông báo:', error);
+    }
+}
+
+function showSampleNotification(title, options = {}) {
+    if (!isNotificationSupported() || Notification.permission !== 'granted') return;
+    try {
+        new Notification(title, options);
+    } catch (error) {
+        console.warn('Hiển thị thông báo thất bại:', error);
+    }
+}
+
+function promptNotificationPermission() {
+    if (!isNotificationSupported()) return;
+    if (Notification.permission === 'default') {
+        showNotificationModal();
+    }
+}
+
+function setupNotificationModal() {
+    const allowBtn = document.getElementById('notification-allow-btn');
+    const denyBtn = document.getElementById('notification-deny-btn');
+    if (allowBtn) {
+        allowBtn.addEventListener('click', requestNotificationPermission);
+    }
+    if (denyBtn) {
+        denyBtn.addEventListener('click', hideNotificationModal);
+    }
+}
+
+// --- Admin notifications: server-backed, polled by admin client ---
+async function createServerNotification(title, body) {
+    if (!supportsRemoteUsers()) return;
+    try {
+        const payload = { id: generateRandomId(), title, body, time: new Date().toISOString() };
+        await apiPost('/notifications', payload);
+    } catch (error) {
+        console.warn('Failed to create server notification:', error);
+    }
+}
+
+async function fetchServerNotifications() {
+    if (!supportsRemoteUsers()) return [];
+    try {
+        const data = await apiGet('/notifications');
+        return Array.isArray(data) ? data : [];
+    } catch (error) {
+        console.warn('Failed to fetch notifications:', error);
+        return [];
+    }
+}
+
+function renderAdminNotifications(notifs) {
+    const list = document.getElementById('admin-notifications-list');
+    const countEl = document.getElementById('admin-notif-count');
+    if (!list) return;
+    if (!notifs || notifs.length === 0) {
+        list.innerHTML = '<div style="color:#94a3b8;font-size:13px;padding:12px;text-align:center;">Chưa có thông báo.</div>';
+        if (countEl) countEl.style.display = 'none';
+        return;
+    }
+    list.innerHTML = notifs.map(n => `
+        <div style="padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);">
+            <div style="font-weight:600;color:#eef2ff;">${n.title}</div>
+            <div style="color:#94a3b8;font-size:13px;margin-top:6px;">${n.body || ''}</div>
+            <div style="font-size:11px;color:#64748b;margin-top:8px;">${new Date(n.time || '').toLocaleString() || ''}</div>
+        </div>
+    `).join('');
+    if (countEl) {
+        countEl.textContent = notifs.length;
+        countEl.style.display = notifs.length ? 'inline-block' : 'none';
+    }
+}
+
+let _notifPollId = null;
+async function pollAdminNotificationsOnce() {
+    const notifs = await fetchServerNotifications();
+    if (!notifs) return;
+    renderAdminNotifications(notifs.slice(0, 30));
+    // show browser notifications for newest one if allowed and unseen
+    try {
+        const lastSeen = localStorage.getItem('adminLastNotifTime') || '';
+        const newest = notifs[0];
+        if (newest && newest.time && newest.time !== lastSeen) {
+            if (Notification && Notification.permission === 'granted') {
+                showSampleNotification(newest.title, { body: newest.body || '', icon: 'https://i.imgur.com/wfJugJr.png' });
+            }
+            localStorage.setItem('adminLastNotifTime', newest.time);
+        }
+    } catch (e) { /* ignore */ }
+}
+
+function startNotificationPolling() {
+    if (_notifPollId) return;
+    pollAdminNotificationsOnce();
+    _notifPollId = setInterval(pollAdminNotificationsOnce, 10000);
+    const btn = document.getElementById('admin-notif-btn');
+    const dropdown = document.getElementById('admin-notifications-dropdown');
+    if (btn && dropdown) {
+        btn.addEventListener('click', () => {
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        });
+        document.addEventListener('click', (ev) => {
+            if (!btn.contains(ev.target) && !dropdown.contains(ev.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+    }
+}
+
+function stopNotificationPolling() {
+    if (_notifPollId) {
+        clearInterval(_notifPollId);
+        _notifPollId = null;
+    }
+}
+
+// Global polling for all clients to receive server notifications
+let _globalNotifPoll = null;
+async function pollGlobalNotificationsOnce() {
+    const notifs = await fetchServerNotifications();
+    if (!notifs || notifs.length === 0) return;
+    try {
+        const lastSeen = localStorage.getItem('lastNotifTime') || '';
+        const newest = notifs[0];
+        if (newest && newest.time && newest.time !== lastSeen) {
+            if (Notification && Notification.permission === 'granted') {
+                showSampleNotification(newest.title, { body: newest.body || '', icon: 'https://i.imgur.com/wfJugJr.png' });
+            } else {
+                // show in-app toast if permission not granted
+                showInAppToast(newest.title + (newest.body ? (': ' + newest.body) : ''));
+            }
+            localStorage.setItem('lastNotifTime', newest.time);
+        }
+    } catch (e) { /* ignore */ }
+}
+
+function startGlobalNotificationPolling() {
+    if (_globalNotifPoll) return;
+    pollGlobalNotificationsOnce();
+    _globalNotifPoll = setInterval(pollGlobalNotificationsOnce, 15000);
+}
+
+function stopGlobalNotificationPolling() {
+    if (_globalNotifPoll) { clearInterval(_globalNotifPoll); _globalNotifPoll = null; }
+}
+
+function showInAppToast(text) {
+    try {
+        let el = document.getElementById('inapp-toast');
+        if (!el) {
+            el = document.createElement('div');
+            el.id = 'inapp-toast';
+            el.style.position = 'fixed';
+            el.style.right = '16px';
+            el.style.top = '16px';
+            el.style.zIndex = '99999';
+            document.body.appendChild(el);
+        }
+        const item = document.createElement('div');
+        item.style.background = 'rgba(15,23,42,0.95)';
+        item.style.color = '#e6eef8';
+        item.style.padding = '10px 14px';
+        item.style.borderRadius = '10px';
+        item.style.boxShadow = '0 10px 30px rgba(2,6,23,0.6)';
+        item.style.marginTop = '8px';
+        item.textContent = text;
+        el.appendChild(item);
+        setTimeout(() => { item.style.opacity = '0'; setTimeout(() => item.remove(), 400); }, 6000);
+    } catch (e) { console.warn(e); }
+}
+
+function setupAdminSendUI() {
+    const sendBtn = document.getElementById('admin-send-notif-btn');
+    const modal = document.getElementById('admin-send-notif-modal');
+    const cancel = document.getElementById('admin-notif-cancel');
+    const send = document.getElementById('admin-notif-send');
+    const titleInput = document.getElementById('admin-notif-title');
+    const bodyInput = document.getElementById('admin-notif-body');
+    if (sendBtn) sendBtn.style.display = 'inline-block';
+    if (sendBtn && modal) sendBtn.addEventListener('click', () => { modal.style.display = 'flex'; });
+    if (cancel && modal) cancel.addEventListener('click', () => { modal.style.display = 'none'; });
+    if (send && modal) send.addEventListener('click', async () => {
+        const title = titleInput?.value?.trim();
+        const body = bodyInput?.value?.trim();
+        if (!title) { alert('Vui lòng nhập tiêu đề.'); return; }
+        await createServerNotification(title, body);
+        modal.style.display = 'none';
+        titleInput.value = '';
+        bodyInput.value = '';
+        // refresh admin list
+        try { await pollAdminNotificationsOnce(); } catch (e) {}
+    });
+}
+
+// Packages: fetch from server and allow admin to edit two package prices
+async function fetchPackages() {
+    if (supportsRemoteUsers()) {
+        try {
+            const pkgs = await apiGet('/packages');
+            if (Array.isArray(pkgs) && pkgs.length) {
+                saveAdminStorage(adminStorageKeys.packages, pkgs);
+                return pkgs;
+            }
+        } catch (e) {
+            console.warn('fetchPackages failed', e);
+        }
+    }
+    return readAdminStorage(adminStorageKeys.packages, []);
+}
+
+async function savePackagesToServer(pkgs) {
+    try {
+        if (supportsRemoteUsers()) {
+            await apiPut('/packages', { packages: pkgs });
+        }
+    } catch (e) {
+        console.warn('savePackagesToServer failed', e);
+    }
+    saveAdminStorage(adminStorageKeys.packages, pkgs);
+}
+
+function setupPackageEditor() {
+    const editBtn = document.getElementById('edit-prices-btn');
+    const modal = document.getElementById('admin-edit-prices-modal');
+    const cancel = document.getElementById('pkg-edit-cancel');
+    const saveBtn = document.getElementById('pkg-edit-save');
+    const p1Label = document.getElementById('pkg1-label');
+    const p1Price = document.getElementById('pkg1-price');
+    const p2Label = document.getElementById('pkg2-label');
+    const p2Price = document.getElementById('pkg2-price');
+
+    if (!editBtn || !modal) return;
+    editBtn.style.display = 'inline-block';
+    editBtn.addEventListener('click', async () => {
+        const pkgs = await fetchPackages();
+        const pkg1 = pkgs[0] || {};
+        const pkg2 = pkgs[1] || {};
+        if (p1Label) p1Label.value = pkg1.label || pkg1.name || '';
+        if (p1Price) p1Price.value = pkg1.price || '';
+        if (p2Label) p2Label.value = pkg2.label || pkg2.name || '';
+        if (p2Price) p2Price.value = pkg2.price || '';
+        modal.style.display = 'flex';
+    });
+    if (cancel) cancel.addEventListener('click', () => { modal.style.display = 'none'; });
+    if (saveBtn) saveBtn.addEventListener('click', async () => {
+        const pkg1 = { id: 'pkg1', name: '云端电脑 1', label: p1Label.value.trim() || '云端电脑 1', price: (p1Price.value || '').trim() };
+        const pkg2 = { id: 'pkg2', name: '云端电脑 2', label: p2Label.value.trim() || '云端电脑 2', price: (p2Price.value || '').trim() };
+        const pkgs = [pkg1, pkg2];
+        await savePackagesToServer(pkgs);
+        modal.style.display = 'none';
+        // update UI displays
+        try { const priceDisplay = document.getElementById('price-display'); if (priceDisplay) priceDisplay.innerHTML = `${pkg1.label ? pkg1.label : '' ? pkg1.label : ''}`; } catch(e){}
+    });
 }
 
 let currentPkgName = '云端电脑 1';
@@ -1036,10 +1396,24 @@ function closeQRModal() {
 
 window.onload = function() {
     ensureDefaultAdmin();
+    setupNotificationModal();
     const currentUser = getCurrentUser();
     if (currentUser) {
         setLoggedInSession(currentUser);
         enterApp();
+        promptNotificationPermission();
+        try { startGlobalNotificationPolling(); } catch(e) { console.warn(e); }
+        try {
+            fetchPackages().then(pkgs => {
+                if (pkgs && pkgs[0]) {
+                    currentPkgName = pkgs[0].name || currentPkgName;
+                    currentPriceText = pkgs[0].label || currentPriceText;
+                    currentRawPrice = pkgs[0].price || currentRawPrice;
+                    const priceDisplay = document.getElementById('price-display');
+                    if (priceDisplay) priceDisplay.innerHTML = `${pkgs[0].label || currentPriceText}`;
+                }
+            }).catch(()=>{});
+        } catch(e) { console.warn('fetchPackages init failed', e); }
     } else {
         switchPage('login');
     }
