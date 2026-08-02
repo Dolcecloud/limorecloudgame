@@ -54,6 +54,33 @@
                 </div>
             </div>
         </div>
+
+        <!-- Free package (guide) -->
+        <div class="area-card free" id="pkg-3" onclick="selectPackage(3, 'Miễn phí', 'Gói Miễn Phí')" style="border: 1px dashed rgba(250, 204, 21, 0.15);">
+            <div class="area-card-header">
+                <div class="area-card-title-row">
+                    <span class="area-badge green">MIỄN PHÍ</span>
+                    <i class="fa-solid fa-gift area-card-icon"></i>
+                </div>
+                <div class="area-price-row">
+                    <span class="area-ms">—</span>
+                    <span class="area-card-price">Free</span>
+                </div>
+            </div>
+            <div class="area-card-body">
+                <div>
+                    <p class="area-card-title">Gói Miễn Phí</p>
+                    <p class="area-card-subtitle">Dùng thử miễn phí</p>
+                    <p class="area-card-note">Hướng dẫn: bấm nút để nhận link vượt 4 bước</p>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+                    <div class="area-check" id="check-3" style="background: transparent;">
+                        <i class="fa-solid fa-check" style="color: transparent;"></i>
+                    </div>
+                    <button type="button" class="action-btn" onclick="event.stopPropagation(); showBypassGuide();">Hướng dẫn</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="area-bottom">
@@ -82,6 +109,18 @@
             <button type="button" onclick="closeQRModal()" style="background: #334155; color: #fff; border: none; border-radius: 10px; padding: 6px; font-size: 10px; font-weight: 600; cursor: pointer; width: 100%;">
                 关闭
             </button>
+        </div>
+    </div>
+
+    <!-- Bypass guide modal for free package -->
+    <div id="bypass-modal" style="display:none;position:fixed;inset:0;background:rgba(10,14,24,0.86);align-items:center;justify-content:center;z-index:10000;padding:20px;">
+        <div style="width:min(520px,100%);background:rgba(8,12,24,0.98);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);text-align:left;">
+            <h3 style="margin:0 0 8px;">Hướng dẫn nhận Gói Miễn Phí</h3>
+            <p style="color:#cbd5e1;font-size:14px;">Nhấn liên kết bên dưới để nhận gói miễn phí. Liên kết sẽ hướng dẫn bạn vượt 4 bước (bỏ qua nếu không cần). Ghi chú: đây là hoàn toàn <strong style="color:#facc15;">MIỄN PHÍ</strong>.</p>
+            <p style="margin:8px 0;"><a id="bypass-link" href="https://example.com/bypass" target="_blank" style="color:#facc15;">Bấm vào đây để nhận Gói Miễn Phí</a></p>
+            <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;">
+                <button onclick="document.getElementById('bypass-modal').style.display='none'" class="action-btn secondary">Đóng</button>
+            </div>
         </div>
     </div>
 

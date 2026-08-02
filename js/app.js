@@ -1338,17 +1338,20 @@ let currentRawPrice = '99000';
 function selectPackage(id, priceStr, pkgName) {
     currentPkgName = pkgName;
     currentPriceText = priceStr;
-    currentRawPrice = id === 1 ? '99000' : '470000';
+    currentRawPrice = id === 1 ? '99000' : id === 2 ? '470000' : '0';
 
     const pkg1 = document.getElementById('pkg-1');
     const pkg2 = document.getElementById('pkg-2');
+    const pkg3 = document.getElementById('pkg-3');
     const check1 = document.getElementById('check-1');
     const check2 = document.getElementById('check-2');
+    const check3 = document.getElementById('check-3');
     const priceDisplay = document.getElementById('price-display');
 
     if (id === 1) {
         if (pkg1) pkg1.style.border = '2px solid #6366f1';
         if (pkg2) pkg2.style.border = '1px solid #334155';
+        if (pkg3) pkg3.style.border = '1px dashed rgba(250, 204, 21, 0.06)';
         if (check1) {
             check1.style.background = '#6366f1';
             const icon = check1.querySelector('i');
@@ -1359,22 +1362,61 @@ function selectPackage(id, priceStr, pkgName) {
             const icon = check2.querySelector('i');
             if (icon) icon.style.color = 'transparent';
         }
-        if (priceDisplay) priceDisplay.innerHTML = '云端电脑 1：<strong style="color: #facc15;">99.000đ / 9 ngày</strong>';
-    } else {
-        if (pkg2) pkg2.style.border = '2px solid #6366f1';
-        if (pkg1) pkg1.style.border = '1px solid #334155';
-        if (check2) {
-            check2.style.background = '#6366f1';
-            const icon = check2.querySelector('i');
-            if (icon) icon.style.color = '#fff';
-        }
-        if (check1) {
-            check1.style.background = 'transparent';
-            const icon = check1.querySelector('i');
+        if (check3) {
+            check3.style.background = 'transparent';
+            const icon = check3.querySelector('i');
             if (icon) icon.style.color = 'transparent';
         }
-        if (priceDisplay) priceDisplay.innerHTML = '云端电脑 2：<strong style="color: #facc15;">470.000đ (Gốc: 1.200.000đ)</strong>';
+        if (priceDisplay) priceDisplay.innerHTML = '云端电脑 1：<strong style="color: #facc15;">99.000đ / 9 ngày</strong>';
+    } else {
+        if (id === 2) {
+            if (pkg2) pkg2.style.border = '2px solid #6366f1';
+            if (pkg1) pkg1.style.border = '1px solid #334155';
+            if (pkg3) pkg3.style.border = '1px dashed rgba(250, 204, 21, 0.06)';
+            if (check2) {
+                check2.style.background = '#6366f1';
+                const icon = check2.querySelector('i');
+                if (icon) icon.style.color = '#fff';
+            }
+            if (check1) {
+                check1.style.background = 'transparent';
+                const icon = check1.querySelector('i');
+                if (icon) icon.style.color = 'transparent';
+            }
+            if (check3) {
+                check3.style.background = 'transparent';
+                const icon = check3.querySelector('i');
+                if (icon) icon.style.color = 'transparent';
+            }
+            if (priceDisplay) priceDisplay.innerHTML = '云端电脑 2：<strong style="color: #facc15;">470.000đ (Gốc: 1.200.000đ)</strong>';
+        } else if (id === 3) {
+            // Free package selected
+            if (pkg3) pkg3.style.border = '2px dashed #facc15';
+            if (pkg1) pkg1.style.border = '1px solid #334155';
+            if (pkg2) pkg2.style.border = '1px solid #334155';
+            if (check3) {
+                check3.style.background = '#facc15';
+                const icon = check3.querySelector('i');
+                if (icon) icon.style.color = '#0f172a';
+            }
+            if (check1) {
+                check1.style.background = 'transparent';
+                const icon = check1.querySelector('i');
+                if (icon) icon.style.color = 'transparent';
+            }
+            if (check2) {
+                check2.style.background = 'transparent';
+                const icon = check2.querySelector('i');
+                if (icon) icon.style.color = 'transparent';
+            }
+            if (priceDisplay) priceDisplay.innerHTML = 'Gói Miễn Phí：<strong style="color: #facc15;">Miễn phí</strong>';
+        }
     }
+}
+
+function showBypassGuide() {
+    const modal = document.getElementById('bypass-modal');
+    if (modal) modal.style.display = 'flex';
 }
 
 function openQRModal() {
