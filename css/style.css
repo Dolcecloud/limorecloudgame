@@ -1,13 +1,13 @@
 :root {
-    --bg-main: #071428; /* deep blue-black */
+    --bg-main: #071428; /* deep blue-black (retain) */
     --bg-card: rgba(6, 12, 24, 0.96);
     --bg-card-hover: rgba(10, 18, 34, 0.98);
-    --primary: #2563eb; /* blue */
-    --primary-glow: rgba(37, 99, 235, 0.28);
-    --accent: #06b6d4; /* cyan accent */
+    --primary: #facc15; /* restore gold/yellow primary */
+    --primary-glow: rgba(250,204,21,0.28);
+    --accent: #fef08a; /* pale gold accent */
     --text-main: #f8fafc; /* near white */
     --text-muted: #9aa7b2; /* gray */
-    --border-color: rgba(37, 99, 235, 0.12);
+    --border-color: rgba(250,204,21,0.12);
 }
 
 /* Global theme overrides and UI polish */
@@ -25,21 +25,7 @@
     mix-blend-mode: overlay;
 }
 
-/* Normalize elements that were inline-styled with yellow/gold gradients — replace with blue theme */
-span[style*="#fef08a"], span[style*="#facc15"], button[style*="#facc15"], button[style*="#facc15" i],
-span[style*="#eab308"], [style*="#facc15"] {
-    background: linear-gradient(135deg, var(--primary), var(--accent)) !important;
-    color: var(--text-main) !important;
-    box-shadow: 0 8px 22px var(--primary-glow) !important;
-}
-
-/* Trophies / badges that used yellow should instead use subtle cyan/blue accents */
-div[style*="background: linear-gradient(135deg, #fef08a"],
-span[style*="background: linear-gradient(135deg, #fef08a"] {
-    background: linear-gradient(135deg, var(--accent), var(--primary)) !important;
-    color: #071428 !important;
-    box-shadow: 0 6px 18px rgba(37,99,235,0.18) !important;
-}
+/* Keep existing trophy-specific gold rule; remove broad overrides that forced blue theme */
 
 /* Restore gold look specifically for trophy/podium badges (span containing trophy icon) */
 span:has(.fa-trophy) {
@@ -48,16 +34,7 @@ span:has(.fa-trophy) {
     box-shadow: 0 0 15px rgba(250,204,21,0.4) !important;
 }
 
-/* Replace inline golden clock/button */
-button[style*="#facc15"], button[style*="#eab308"] {
-    background: linear-gradient(135deg, var(--accent), var(--primary)) !important;
-    color: #071428 !important;
-}
-
-/* Make small pill highlights use primary color when inline sets other colors */
-[style*="#38bdf8"] {
-    color: var(--primary) !important;
-}
+/* Do not override inline clock/button or small pill colors — respect original inline gold styles */
 
 /* Ensure dark cards use the bg-card variable */
 .area-card, .area-modal-panel, .area-wallet-info {
