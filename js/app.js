@@ -606,12 +606,16 @@ function initGameInterface() {
 function initAreaPage() {
     const pkg1 = document.getElementById('pkg-1');
     const pkg2 = document.getElementById('pkg-2');
+    const startBtn = document.querySelector('.area-primary-btn');
 
     if (pkg1) {
         pkg1.onclick = () => selectPackage(1, '99.000đ / 9 ngày', '云端电脑 1');
     }
     if (pkg2) {
         pkg2.onclick = () => selectPackage(2, '470.000đ (Gốc: 1.200.000đ)', '云端电脑 2');
+    }
+    if (startBtn) {
+        startBtn.onclick = openQRModal;
     }
 }
 
@@ -1474,21 +1478,53 @@ function selectPackage(id, priceStr, pkgName) {
     }
 }
 
-function openQRModal() {
-    const modalName = document.getElementById('modal-package-name');
-    const modalPrice = document.getElementById('modal-price');
-    const qrImg = document.getElementById('qr-image');
-    const modal = document.getElementById('qr-modal');
+const QR_DATA_URI = 'https://i.imgur.com/t88KJTx.png';
 
-    if (modalName) modalName.innerText = currentPkgName;
-    if (modalPrice) modalPrice.innerText = currentPriceText;
-    if (qrImg) qrImg.src = 'https://i.imgur.com/jIqj4Y9.png';
-    if (modal) modal.style.display = 'flex';
+function ensureQRModal() {
+    let modal = document.getElementById('qr-modal');
+    if (modal) return modal;
+
+    modal = document.createElement('div');
+    modal.id = 'qr-modal';
+    modal.className = 'area-modal';
+    modal.innerHTML = `
+        <div class="area-modal-panel">
+            <h3 class="area-modal-title">Xác nhận gói</h3>
+            <p class="area-modal-subtitle">Quét mã QR để tiếp tục trải nghiệm ngay.</p>
+            <p class="area-modal-price" id="modal-package-name">云端电脑 1</p>
+            <p class="area-modal-price" id="modal-price">99.000đ / 9 ngày</p>
+            <img id="qr-image" src="${QR_DATA_URI}" alt="QR Code" style="width: 100%; max-width: 220px; margin: 0 auto 16px; display: block;" />
+            <button type="button" class="area-modal-close" onclick="closeQRModal()">Đóng</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    return modal;
+}
+
+function openQRModal() {
+    const modal = ensureQRModal();
+    const modalName = modal.querySelector('#modal-package-name');
+    const modalPrice = modal.querySelector('#modal-price');
+    const qrImg = modal.querySelector('#qr-image');
+
+    if (modalName) modalName.innerText = currentPkgName || '云端电脑 1';
+    if (modalPrice) modalPrice.innerText = currentPriceText || '99.000đ / 9 ngày';
+    if (qrImg) {
+        qrImg.src = QR_DATA_URI;
+        qrImg.onerror = () => { qrImg.src = QR_DATA_URI; };
+    }
+    modal.classList.add('active');
 }
 
 function closeQRModal() {
     const modal = document.getElementById('qr-modal');
-    if (modal) modal.style.display = 'none';
+    if (modal) {
+        modal.classList.remove('active');
+    }
+}
+
+function goToAreaWithQR() {
+    switchPage('area');
 }
 
 window.onload = async function() {
