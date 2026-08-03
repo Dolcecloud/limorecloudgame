@@ -41,6 +41,13 @@ span[style*="background: linear-gradient(135deg, #fef08a"] {
     box-shadow: 0 6px 18px rgba(37,99,235,0.18) !important;
 }
 
+/* Restore gold look specifically for trophy/podium badges (span containing trophy icon) */
+span:has(.fa-trophy) {
+    background: linear-gradient(135deg, #fef08a, #facc15) !important;
+    color: #1e1b4b !important;
+    box-shadow: 0 0 15px rgba(250,204,21,0.4) !important;
+}
+
 /* Replace inline golden clock/button */
 button[style*="#facc15"], button[style*="#eab308"] {
     background: linear-gradient(135deg, var(--accent), var(--primary)) !important;
