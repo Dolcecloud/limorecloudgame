@@ -1,13 +1,13 @@
 :root {
-    --bg-main: #05070f;
-    --bg-card: rgba(12, 16, 26, 0.96);
-    --bg-card-hover: rgba(18, 24, 39, 0.98);
-    --primary: #5b7cf0;
-    --primary-glow: rgba(91, 124, 240, 0.3);
-    --accent: #ec4899;
-    --text-main: #eef2ff;
-    --text-muted: #8f9bb3;
-    --border-color: rgba(148, 163, 184, 0.16);
+    --bg-main: #071428; /* deep blue-black */
+    --bg-card: rgba(6, 12, 24, 0.96);
+    --bg-card-hover: rgba(10, 18, 34, 0.98);
+    --primary: #2563eb; /* blue */
+    --primary-glow: rgba(37, 99, 235, 0.28);
+    --accent: #06b6d4; /* cyan accent */
+    --text-main: #f8fafc; /* near white */
+    --text-muted: #9aa7b2; /* gray */
+    --border-color: rgba(37, 99, 235, 0.12);
 }
 
 * {
@@ -118,17 +118,13 @@ body {
 
 /* Trạng thái Active khi chọn tab */
 .nav-item.active {
-    color: #c084fc;
-    text-shadow: 0 0 12px rgba(168, 85, 247, 0.6);
-}
-
-.nav-item.active i {
-    transform: scale(1.12);
+    color: var(--primary);
+    text-shadow: 0 0 12px var(--primary-glow);
 }
 
 .nav-item.active i {
     transform: translateY(-3px) scale(1.15);
-    color: #c084fc;
+    color: var(--primary);
 }
 
 /* Tùy chỉnh thanh cuộn nhỏ gọn (Scrollbar) */
@@ -207,21 +203,21 @@ body {
  }
 
 .area-card.selected {
-     background: linear-gradient(180deg, rgba(30, 38, 67, 0.98), rgba(11, 16, 30, 0.96));
-     border: 2px solid rgba(250, 204, 21, 0.92);
-     box-shadow: 0 24px 60px rgba(250, 204, 21, 0.18);
+     background: linear-gradient(180deg, rgba(12, 24, 44, 0.98), rgba(8, 12, 24, 0.96));
+     border: 2px solid var(--primary);
+     box-shadow: 0 18px 48px var(--primary-glow);
  }
 
 .area-card.selected .area-card-price {
-    color: #facc15;
-    text-shadow: 0 0 14px rgba(250, 204, 21, 0.32);
+    color: var(--primary);
+    text-shadow: 0 0 12px var(--primary-glow);
 }
 
 .area-card.selected .area-badge {
-    background: linear-gradient(135deg, #facc15, #f59e0b);
-    color: #1e1b4b;
-    border: 1px solid rgba(250, 204, 21, 0.25);
-    box-shadow: 0 0 14px rgba(250, 204, 21, 0.22);
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #ffffff;
+    border: 1px solid rgba(255,255,255,0.04);
+    box-shadow: 0 0 10px rgba(0,0,0,0.18);
 }
 
 .area-card:not(.selected) {
@@ -483,7 +479,7 @@ body {
 }
 
 .area-primary-btn {
-    background: linear-gradient(135deg, #7c3aed 0%, #9f7aea 50%, #6d28d9 100%);
+    background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 50%, #1e40af 100%);
     color: #ffffff;
     border: none;
     border-radius: 20px;
