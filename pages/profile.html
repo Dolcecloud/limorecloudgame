@@ -16,10 +16,13 @@
     </div>
 
     <!-- 邀请好友免费领取VIP -->
-    <div style="background: rgba(16, 22, 34, 0.88); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(20,28,44,0.94)'" onmouseout="this.style.background='rgba(16,22,34,0.88)'">
-        <span style="color: #cbd5e1; font-size: 11px; font-weight: 500;">邀请新用户赢取免费VIP</span>
-        <span style="color: #facc15; font-size: 12px; font-weight: bold; letter-spacing: 2px;">&gt;&gt;&gt;</span>
-    </div>
+        <div class="profile-row profile-invite-row" onclick="" role="button">
+            <div class="left">
+                <i class="fa-solid fa-gift icon"></i>
+                <span class="label">邀请新用户赢取免费VIP</span>
+            </div>
+            <div class="right"></div>
+        </div>
 
     <!-- Tháº» Cloud VIP Banner VÃ ng -->
     <div style="background: linear-gradient(135deg, #facc15, #eab308); border-radius: 12px; padding: 14px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 6px 16px rgba(250, 204, 21, 0.25);">
@@ -39,39 +42,48 @@
     <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
         
         <!-- 邀请码 -->
-        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(16, 22, 34, 0.86); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 12px; padding: 12px 14px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <i class="fa-solid fa-folder-open" style="color: #facc15; font-size: 14px; width: 16px; text-align: center;"></i>
-                <span style="color: #e2e8f0; font-size: 12px; font-weight: 500;">邀请码</span>
+            <div class="profile-row" role="button">
+                <div class="left">
+                    <i class="fa-solid fa-folder-open icon"></i>
+                    <span class="label">邀请码</span>
+                </div>
+                <div class="right"></div>
             </div>
-            <i class="fa-solid fa-chevron-right" style="color: #64748b; font-size: 11px;"></i>
-        </div>
 
         <!-- 反馈 -->
-        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(16, 22, 34, 0.86); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 12px; padding: 12px 14px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <i class="fa-solid fa-message" style="color: #facc15; font-size: 14px; width: 16px; text-align: center;"></i>
-                <span style="color: #e2e8f0; font-size: 12px; font-weight: 500;">反馈</span>
+        <div class="profile-row" role="button">
+            <div class="left">
+                <i class="fa-solid fa-message icon"></i>
+                <span class="label">反馈</span>
             </div>
-            <i class="fa-solid fa-chevron-right" style="color: #64748b; font-size: 11px;"></i>
+            <div class="right"></div>
         </div>
 
         <!-- 设置 -->
-        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(16, 22, 34, 0.86); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 12px; padding: 12px 14px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <i class="fa-solid fa-hexagon-nodes" style="color: #facc15; font-size: 14px; width: 16px; text-align: center;"></i>
-                <span style="color: #e2e8f0; font-size: 12px; font-weight: 500;">设置</span>
+        <div id="profile-settings-row" class="profile-row" role="button">
+            <div class="left">
+                <i class="fa-solid fa-hexagon-nodes icon"></i>
+                <span id="profile-settings-label" class="label">设置</span>
             </div>
-            <i class="fa-solid fa-chevron-right" style="color: #64748b; font-size: 11px;"></i>
+            <div class="right"></div>
+        </div>
+
+        <!-- 语言 -->
+        <div id="profile-language-row" class="profile-row" onclick="toggleLanguage()" role="button">
+            <div class="left">
+                <i class="fa-solid fa-language icon"></i>
+                <span id="profile-language-label" class="label">Dịch sang tiếng Việt</span>
+            </div>
+            <div class="right"></div>
         </div>
 
         <!-- 关于我们 -->
-        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(16, 22, 34, 0.86); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 12px; padding: 12px 14px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <i class="fa-solid fa-face-smile" style="color: #facc15; font-size: 14px; width: 16px; text-align: center;"></i>
-                <span style="color: #e2e8f0; font-size: 12px; font-weight: 500;">关于我们</span>
+        <div class="profile-row" role="button">
+            <div class="left">
+                <i class="fa-solid fa-face-smile icon"></i>
+                <span class="label">关于我们</span>
             </div>
-            <i class="fa-solid fa-chevron-right" style="color: #64748b; font-size: 11px;"></i>
+            <div class="right"></div>
         </div>
 
     </div>

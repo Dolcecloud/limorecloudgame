@@ -70,6 +70,119 @@ function saveAdminStorage(key, value) {
     localStorage.setItem(key, JSON.stringify(value));
 }
 
+function getAppLanguage() {
+    return localStorage.getItem('cloudzoneLanguage') || 'zh';
+}
+
+function setAppLanguage(lang) {
+    localStorage.setItem('cloudzoneLanguage', lang);
+}
+
+function toggleLanguage() {
+    const current = getAppLanguage();
+    const next = current === 'zh' ? 'vi' : 'zh';
+    setAppLanguage(next);
+    applyLanguage(next);
+}
+
+function applyLanguage(lang) {
+    const homeLabel = document.querySelector('#nav-home div');
+    const gamesLabel = document.querySelector('#nav-games div');
+    const cloudLabel = document.querySelector('#nav-cloud div');
+    const profileLabel = document.querySelector('#nav-profile div');
+    const logoutButton = document.getElementById('profile-logout-btn');
+    const settingsLabel = document.getElementById('profile-settings-label');
+    const languageLabel = document.getElementById('profile-language-label');
+    const inviteLabel = document.querySelector('#profile-language-row');
+    if (lang === 'vi') {
+        if (homeLabel) homeLabel.textContent = 'Trang chủ';
+        if (gamesLabel) gamesLabel.textContent = 'Thư viện';
+        if (cloudLabel) cloudLabel.textContent = 'Máy tính';
+        if (profileLabel) profileLabel.textContent = 'Của tôi';
+        if (logoutButton) logoutButton.textContent = 'Đăng xuất';
+        if (settingsLabel) settingsLabel.textContent = 'Cài đặt';
+        if (languageLabel) languageLabel.textContent = 'Chuyển sang tiếng Trung';
+    } else {
+        if (homeLabel) homeLabel.textContent = '首页';
+        if (gamesLabel) gamesLabel.textContent = '游戏库';
+        if (cloudLabel) cloudLabel.textContent = '电脑';
+        if (profileLabel) profileLabel.textContent = '我的';
+        if (logoutButton) logoutButton.textContent = '退出登录';
+        if (settingsLabel) settingsLabel.textContent = '设置';
+        if (languageLabel) languageLabel.textContent = 'Dịch sang tiếng Việt';
+    }
+}
+
+// Simple DOM translation helpers: map exact substrings from Chinese -> Vietnamese
+const zhToVi = {
+    '首页': 'Trang chủ',
+    '游戏库': 'Thư viện',
+    '电脑': 'Máy tính',
+    '我的': 'Của tôi',
+    '退出登录': 'Đăng xuất',
+    '设置': 'Cài đặt',
+    'Dịch sang tiếng Việt': 'Dịch sang tiếng Việt',
+    '区域': 'Khu vực',
+    '体验服务器': 'Máy chủ trải nghiệm',
+    '支付服务器': 'Máy chủ trả phí',
+    '免费服务器': 'Máy chủ miễn phí',
+    '立即体验': 'Trải nghiệm ngay',
+    '进入': 'Vào',
+    '列表': 'Danh sách',
+    '连接': 'Kết nối',
+    '说明': 'Hướng dẫn',
+    '在Android上畅玩电脑游戏': 'Trải nghiệm PC trên Android',
+    '新手专享': 'Dành cho người mới',
+    '免费': 'Miễn phí',
+    '免费体验包': 'Gói trải nghiệm miễn phí',
+    '首次用户专享': 'Dành cho người dùng mới',
+    '支付币': 'Đồng thanh toán',
+    '剩余：0 币': 'Còn: 0 đồng',
+    '正在加载...': 'Đang tải...',
+    '未找到游戏': 'Không tìm thấy trò chơi',
+    '返回登录': 'Quay lại đăng nhập',
+    '系统正在维护中': 'Hệ thống đang bảo trì',
+    '请稍后再试。只有管理员在维护期间可访问。': 'Vui lòng thử lại sau. Chỉ quản trị viên có thể truy cập trong thời gian bảo trì.'
+};
+
+function translateMainContent(lang) {
+    const root = document.getElementById('main-content');
+    if (!root) return;
+    const map = lang === 'vi' ? zhToVi : null;
+
+    // Walk element nodes and translate leaf text-containing elements.
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT, null, false);
+    const elements = [];
+    while (walker.nextNode()) elements.push(walker.currentNode);
+
+    elements.forEach(el => {
+        // only consider elements whose children are text-only (no child element nodes)
+        const hasElementChild = Array.from(el.childNodes).some(n => n.nodeType === 1);
+        if (hasElementChild) return;
+        const original = el.dataset.origText || el.textContent || '';
+        if (!el.dataset.origText) el.dataset.origText = original;
+        if (!map) {
+            // restore
+            el.textContent = el.dataset.origText || original;
+            return;
+        }
+        let translated = original;
+        Object.keys(map).forEach(k => {
+            if (!k) return;
+            // replace all occurrences
+            translated = translated.split(k).join(map[k]);
+        });
+        el.textContent = translated;
+    });
+}
+
+// integrate into applyLanguage so that fragment content is translated/ restored
+const originalApplyLanguage = applyLanguage;
+applyLanguage = function(lang) {
+    try { originalApplyLanguage(lang); } catch (e) { /* ignore */ }
+    try { translateMainContent(lang); } catch (e) { /* ignore */ }
+};
+
 function getRegistrationEnabled() {
     return localStorage.getItem('cloudzoneRegistrationEnabled') !== 'false';
 }
@@ -128,6 +241,176 @@ function getGameCatalogData() {
         }
     });
     return catalog;
+}
+
+const gameDetailData = {
+    "博德之门3": {
+        img: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/header.jpg",
+        title: "博德之门3",
+        desc: "在被遗忘国度中召集队友，重返冒险之旅。",
+        details: "踏上深邃奇幻世界，选择你的盟友并面对命运的考验。"
+    },
+    "艾尔登法环": {
+        img: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/header.jpg",
+        title: "艾尔登法环",
+        desc: "觉醒吧，褪色者，顺应恩惠的指引。",
+        details: "探索宽广的开放世界，挑战强力敌人并揭开远古秘密。"
+    },
+    "赛博朋克2077": {
+        img: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/header.jpg",
+        title: "赛博朋克2077",
+        desc: "在夜城体验开放世界动作冒险角色扮演游戏。",
+        details: "扮演义体化赏金猎人，改写命运，揭露城市中的阴谋。"
+    },
+    "黯黑神话：悟空": {
+        img: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2358720/header.jpg",
+        title: "黯黑神话：悟空",
+        desc: "基于中国神话与西游记的动作角色扮演游戏。",
+        details: "化身孙悟空，运用七十二变与神话怪物展开热血战斗。"
+    },
+    "侠盗猎车手5": {
+        img: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/271590/header.jpg",
+        title: "侠盗猎车手5",
+        desc: "在开放世界中体验抢劫、飞车与动感冒险。",
+        details: "进入洛圣都，完成任务、驾驶赛车，并与朋友在线狂欢。"
+    },
+    "荒野大镖客2": {
+        img: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1174180/header.jpg",
+        title: "荒野大镖客2",
+        desc: "美国荒野中的史诗人生与救赎故事。",
+        details: "作为亚瑟·摩根，面对帮派与时代变迁，探索广袤西部世界。"
+    },
+    "蜘蛛侠2": {
+        img: "https://cdn.cloudflare.steamstatic.com/steam/apps/1938090/header.jpg",
+        title: "蜘蛛侠2",
+        desc: "在纽约天际线上展开超级英雄冒险。",
+        details: "用蜘蛛感官、快速移动和战斗技巧保卫城市免受邪恶威胁。"
+    },
+    "艾伦·维克2": {
+        img: "https://cdn.cloudflare.steamstatic.com/steam/apps/1751830/header.jpg",
+        title: "艾伦·维克2",
+        desc: "Remedy的心理惊悚续作。",
+        details: "追寻失踪的妻子，面对超自然恐怖并揭开黑暗故事。"
+    },
+    "只要向上": {
+        img: "https://cdn.cloudflare.steamstatic.com/steam/apps/2381590/header.jpg",
+        title: "只要向上",
+        desc: "快速反应的惊险攀爬挑战。",
+        details: "在节奏紧凑的竞速关卡中冲刺，挑战极限攀爬速度。"
+    },
+    "深潜员戴夫": {
+        img: "https://cdn.cloudflare.steamstatic.com/steam/apps/1868140/header.jpg",
+        title: "深潜员戴夫",
+        desc: "探索海底遗迹并经营你的餐厅。",
+        details: "收集食材、制作料理并扩展你的海底餐厅帝国。"
+    },
+    "方舟": {
+        img: "https://cdn.cloudflare.steamstatic.com/steam/apps/346110/header.jpg",
+        title: "方舟",
+        desc: "驯服恐龙、建造基地，并在荒野求生。",
+        details: "在恐龙横行的世界中生存、探索并打造自己的部落。"
+    },
+    "生化危机4": {
+        img: "https://cdn.cloudflare.steamstatic.com/steam/apps/2050650/header.jpg",
+        title: "生化危机4",
+        desc: "现代动作风格重制的生存恐怖经典。",
+        details: "与莱昂一同深入村落，揭开邪教阴谋并生存下来。"
+    },
+    "使命召唤": {
+        img: "https://cdn.cloudflare.steamstatic.com/steam/apps/1938090/header.jpg",
+        title: "使命召唤",
+        desc: "体验震撼剧情与激烈多人对战。",
+        details: "加入现代战场，完成任务并在多人模式中击败对手。"
+    },
+    "博德之门3": {
+        img: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/header.jpg",
+        title: "博德之门3",
+        desc: "在被遗忘国度中召集队友，重返冒险之旅。",
+        details: "组队探索世界、决策影响剧情，并展开高自由度战斗。"
+    },
+    "霍格沃茨：遗产": {
+        img: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/990080/header.jpg",
+        title: "霍格沃茨：遗产",
+        desc: "进入魔法学校，解开古老魔法秘密。",
+        details: "学习咒语、培养魔法宠物，并探索霍格沃茨及其周边环境。"
+    },
+    "塞尔达：荒野之息": {
+        img: "https://upload.wikimedia.org/wikipedia/en/c/c6/The_Legend_of_Zelda_Breath_of_the_Wild.jpg",
+        title: "塞尔达：荒野之息",
+        desc: "体验开放世界中的探索与冒险。",
+        details: "弓箭、解谜与远古遗迹，重建海拉尔的传说冒险。"
+    },
+    "地平线：西之禁域": {
+        img: "https://cdn.cloudflare.steamstatic.com/steam/apps/1240440/header.jpg",
+        title: "地平线：西之禁域",
+        desc: "探索充满机兽的后末世绿野。",
+        details: "驾驶猎人机甲狩猎、探索废墟并揭示未来文明秘密。"
+    }
+};
+
+window.currentGameDetail = null;
+
+function getGameDetailInfo(title) {
+    if (!title) return null;
+    if (gameDetailData[title]) return gameDetailData[title];
+    const catalog = getGameCatalogData();
+    for (const list of Object.values(catalog)) {
+        const found = list.find(item => item.title === title || item.title?.toLowerCase() === title?.toLowerCase());
+        if (found) {
+            return {
+                img: found.img,
+                title: found.title,
+                desc: found.desc,
+                details: found.desc
+            };
+        }
+    }
+    return {
+        img: 'https://via.placeholder.com/720x405/111827/ffffff?text=No+Image',
+        title: title,
+        desc: '暂无详细介绍。',
+        details: '此游戏暂时没有更多信息，欢迎返回游戏库继续浏览其他内容。'
+    };
+}
+
+function openGameDetail(title, fromPage = 'home') {
+    window.currentGameDetail = getGameDetailInfo(title);
+    window.previousPage = fromPage || 'home';
+    switchPage('game-detail');
+}
+
+function initHomeGameLinks() {
+    const cards = document.querySelectorAll('#main-content div[style*="cursor: pointer"]');
+    cards.forEach(card => {
+        const titleEl = card.querySelector('p');
+        if (!titleEl) return;
+        const title = titleEl.textContent.trim();
+        if (!title) return;
+        card.onclick = () => openGameDetail(title);
+    });
+}
+
+function initGameDetailPage() {
+    const detail = window.currentGameDetail || {
+        img: 'https://via.placeholder.com/720x405/111827/ffffff?text=No+Image',
+        title: '未知游戏',
+        desc: '请选择一个游戏查看详情。',
+        details: '点击列表中的游戏以查看完整介绍和封面。'
+    };
+    const titleEl = document.getElementById('detail-game-title');
+    const subtitleEl = document.getElementById('detail-game-subtitle');
+    const descEl = document.getElementById('detail-game-desc');
+    const imgEl = document.getElementById('detail-game-img');
+    const badgeEl = document.getElementById('detail-game-badge');
+
+    if (titleEl) titleEl.textContent = detail.title;
+    if (subtitleEl) subtitleEl.textContent = detail.desc;
+    if (descEl) descEl.textContent = detail.details;
+    if (imgEl) {
+        imgEl.src = detail.img;
+        imgEl.alt = detail.title;
+    }
+    if (badgeEl) badgeEl.textContent = detail.title;
 }
 
 function enterApp() {
@@ -440,11 +723,11 @@ function switchPage(pageName) {
 
     const bottomNav = document.querySelector('.bottom-nav');
     if (bottomNav) {
-        const showNav = pageName !== 'login';
+        const showNav = pageName !== 'login' && pageName !== 'game-detail';
         bottomNav.classList.toggle('hidden', !showNav);
         bottomNav.style.display = showNav ? 'flex' : 'none';
     }
-    if (pageName === 'login') {
+    if (pageName === 'login' || pageName === 'game-detail') {
         navs.forEach(nav => {
             const el = document.getElementById(`nav-${nav}`);
             if (el) el.style.color = '#94a3b8';
@@ -490,6 +773,11 @@ function switchPage(pageName) {
             initGameInterface();
         } else if (pageName === 'area') {
             initAreaPage();
+        } else if (pageName === 'game-detail') {
+            initGameDetailPage();
+        }
+        if (pageName === 'home') {
+            initHomeGameLinks();
         }
         if (pageName === 'profile') {
             updateProfileData();
@@ -497,6 +785,8 @@ function switchPage(pageName) {
         if (pageName === 'admin') {
             initAdminPage();
         }
+        // áp dụng ngôn ngữ hiện tại cho nội dung vừa chèn
+        try { applyLanguage(getAppLanguage()); } catch (e) { /* ignore */ }
         return;
     }
 
@@ -514,6 +804,11 @@ function switchPage(pageName) {
                 initGameInterface();
             } else if (pageName === 'area') {
                 initAreaPage();
+            } else if (pageName === 'game-detail') {
+                initGameDetailPage();
+            }
+            if (pageName === 'home') {
+                initHomeGameLinks();
             }
             if (pageName === 'profile') {
                 updateProfileData();
@@ -521,6 +816,8 @@ function switchPage(pageName) {
             if (pageName === 'admin') {
                 initAdminPage();
             }
+            // áp dụng ngôn ngữ hiện tại cho nội dung vừa chèn
+            try { applyLanguage(getAppLanguage()); } catch (e) { /* ignore */ }
         })
         .catch(error => {
             console.error("Lỗi load trang:", error);
@@ -547,20 +844,70 @@ function initGameInterface() {
     const catalog = getGameCatalogData();
 
     function renderGameList(list) {
+        container.innerHTML = '';
         if (!list || list.length === 0) {
             container.innerHTML = `<div style="color: #94a3b8; font-size: 12px; text-align: center; padding: 20px;">未找到游戏</div>`;
             return;
         }
 
-        container.innerHTML = list.map(game => `
-            <div style="display: flex; gap: 10px; align-items: center; background: rgba(255,255,255,0.03); padding: 8px; border-radius: 10px; cursor: pointer; border: 1px solid rgba(255,255,255,0.06); transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.07)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">
-                <img src="${game.img}" style="width: 90px; height: 50px; border-radius: 6px; object-fit: cover; flex-shrink: 0;" alt="${game.title}" onerror="this.onerror=null; this.src='https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/header.jpg'">
-                <div style="flex: 1; overflow: hidden;">
-                    <h4 style="color: #f1f5f9; font-size: 12px; font-weight: 600; margin: 0 0 3px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${game.title}</h4>
-                    <p style="color: #94a3b8; font-size: 10px; margin: 0; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${game.desc}</p>
-                </div>
-            </div>
-        `).join("");
+        list.forEach(game => {
+            const card = document.createElement('div');
+            card.style.display = 'flex';
+            card.style.gap = '10px';
+            card.style.alignItems = 'center';
+            card.style.background = 'rgba(255,255,255,0.03)';
+            card.style.padding = '8px';
+            card.style.borderRadius = '10px';
+            card.style.cursor = 'pointer';
+            card.style.border = '1px solid rgba(255,255,255,0.06)';
+            card.style.transition = '0.2s';
+
+            const img = document.createElement('img');
+            img.src = game.img || 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/header.jpg';
+            img.style.width = '90px';
+            img.style.height = '50px';
+            img.style.borderRadius = '6px';
+            img.style.objectFit = 'cover';
+            img.style.flexShrink = '0';
+            img.alt = game.title || '';
+            img.onerror = function() { this.onerror = null; this.src = 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/header.jpg'; };
+
+            const right = document.createElement('div');
+            right.style.flex = '1';
+            right.style.overflow = 'hidden';
+
+            const h4 = document.createElement('h4');
+            h4.style.color = '#f1f5f9';
+            h4.style.fontSize = '12px';
+            h4.style.fontWeight = '600';
+            h4.style.margin = '0 0 3px 0';
+            h4.style.whiteSpace = 'nowrap';
+            h4.style.overflow = 'hidden';
+            h4.style.textOverflow = 'ellipsis';
+            h4.textContent = game.title || '未知游戏';
+
+            const p = document.createElement('p');
+            p.style.color = '#94a3b8';
+            p.style.fontSize = '10px';
+            p.style.margin = '0';
+            p.style.lineHeight = '1.3';
+            p.style.display = '-webkit-box';
+            p.style.webkitLineClamp = '2';
+            p.style.webkitBoxOrient = 'vertical';
+            p.style.overflow = 'hidden';
+            p.textContent = game.desc || '';
+
+            right.appendChild(h4);
+            right.appendChild(p);
+            card.appendChild(img);
+            card.appendChild(right);
+
+            card.addEventListener('click', () => openGameDetail(game.title, 'games'));
+            card.addEventListener('mouseover', () => { card.style.background = 'rgba(255,255,255,0.07)'; });
+            card.addEventListener('mouseout', () => { card.style.background = 'rgba(255,255,255,0.03)'; });
+
+            container.appendChild(card);
+        });
     }
 
     renderGameList(catalog[currentCategory]);
@@ -606,6 +953,7 @@ function initGameInterface() {
 function initAreaPage() {
     const pkg1 = document.getElementById('pkg-1');
     const pkg2 = document.getElementById('pkg-2');
+    const pkg3 = document.getElementById('pkg-3');
     const startBtn = document.querySelector('.area-primary-btn');
 
     if (pkg1) {
@@ -613,6 +961,9 @@ function initAreaPage() {
     }
     if (pkg2) {
         pkg2.onclick = () => selectPackage(2, '470.000đ (Gốc: 1.200.000đ)', '云端电脑 2');
+    }
+    if (pkg3) {
+        pkg3.onclick = () => selectPackage(3, '免费', '免费体验包');
     }
     if (startBtn) {
         startBtn.onclick = openQRModal;
@@ -1439,17 +1790,26 @@ let currentRawPrice = '99000';
 function selectPackage(id, priceStr, pkgName) {
     currentPkgName = pkgName;
     currentPriceText = priceStr;
-    currentRawPrice = id === 1 ? '99000' : '470000';
+    if (id === 1) {
+        currentRawPrice = '99000';
+    } else if (id === 2) {
+        currentRawPrice = '470000';
+    } else {
+        currentRawPrice = '0';
+    }
 
     const pkg1 = document.getElementById('pkg-1');
     const pkg2 = document.getElementById('pkg-2');
+    const pkg3 = document.getElementById('pkg-3');
     const check1 = document.getElementById('check-1');
     const check2 = document.getElementById('check-2');
+    const check3 = document.getElementById('check-3');
     const priceDisplay = document.getElementById('price-display');
 
     if (id === 1) {
         if (pkg1) pkg1.style.border = '2px solid #6366f1';
         if (pkg2) pkg2.style.border = '1px solid #334155';
+        if (pkg3) pkg3.style.border = '1px solid #334155';
         if (check1) {
             check1.style.background = '#6366f1';
             const icon = check1.querySelector('i');
@@ -1460,10 +1820,16 @@ function selectPackage(id, priceStr, pkgName) {
             const icon = check2.querySelector('i');
             if (icon) icon.style.color = 'transparent';
         }
+        if (check3) {
+            check3.style.background = 'transparent';
+            const icon = check3.querySelector('i');
+            if (icon) icon.style.color = 'transparent';
+        }
         if (priceDisplay) priceDisplay.innerHTML = '云端电脑 1：<strong style="color: #facc15;">99.000đ / 9 ngày</strong>';
     } else if (id === 2) {
         if (pkg2) pkg2.style.border = '2px solid #6366f1';
         if (pkg1) pkg1.style.border = '1px solid #334155';
+        if (pkg3) pkg3.style.border = '1px solid #334155';
         if (check2) {
             check2.style.background = '#6366f1';
             const icon = check2.querySelector('i');
@@ -1474,7 +1840,32 @@ function selectPackage(id, priceStr, pkgName) {
             const icon = check1.querySelector('i');
             if (icon) icon.style.color = 'transparent';
         }
+        if (check3) {
+            check3.style.background = 'transparent';
+            const icon = check3.querySelector('i');
+            if (icon) icon.style.color = 'transparent';
+        }
         if (priceDisplay) priceDisplay.innerHTML = '云端电脑 2：<strong style="color: #facc15;">470.000đ (Gốc: 1.200.000đ)</strong>';
+    } else if (id === 3) {
+        if (pkg3) pkg3.style.border = '2px solid #6366f1';
+        if (pkg1) pkg1.style.border = '1px solid #334155';
+        if (pkg2) pkg2.style.border = '1px solid #334155';
+        if (check3) {
+            check3.style.background = '#6366f1';
+            const icon = check3.querySelector('i');
+            if (icon) icon.style.color = '#fff';
+        }
+        if (check1) {
+            check1.style.background = 'transparent';
+            const icon = check1.querySelector('i');
+            if (icon) icon.style.color = 'transparent';
+        }
+        if (check2) {
+            check2.style.background = 'transparent';
+            const icon = check2.querySelector('i');
+            if (icon) icon.style.color = 'transparent';
+        }
+        if (priceDisplay) priceDisplay.innerHTML = '免费体验包：<strong style="color: #facc15;">免费</strong>';
     }
 }
 
@@ -1502,6 +1893,11 @@ function ensureQRModal() {
 }
 
 function openQRModal() {
+    if (currentRawPrice === '0' || currentPriceText === '免费' || currentPkgName === '免费体验包') {
+        showFreeQueueModal();
+        return;
+    }
+
     const modal = ensureQRModal();
     const modalName = modal.querySelector('#modal-package-name');
     const modalPrice = modal.querySelector('#modal-price');
@@ -1515,6 +1911,52 @@ function openQRModal() {
     }
     modal.classList.add('active');
 }
+
+function ensureFreeQueueModal() {
+    let modal = document.getElementById('free-queue-modal');
+    if (modal) return modal;
+
+    modal = document.createElement('div');
+    modal.id = 'free-queue-modal';
+    modal.className = 'free-queue-modal';
+    modal.innerHTML = `
+        <div class="free-queue-panel">
+            <div class="free-queue-title">Free Queue</div>
+            <div class="free-queue-subtext">Gói miễn phí đang chờ mở phiên chơi riêng.</div>
+            <div class="free-queue-status">Currently in line <span id="free-queue-position">55</span></div>
+            <button type="button" class="free-queue-cancel" onclick="closeFreeQueue()">Cancel queue</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    return modal;
+}
+
+function showFreeQueueModal() {
+    const modal = ensureFreeQueueModal();
+    const position = modal.querySelector('#free-queue-position');
+    if (position) {
+        const randomPosition = Math.floor(Math.random() * 18 + 28);
+        position.innerText = randomPosition > 0 ? randomPosition : 'Ready';
+    }
+    const status = modal.querySelector('.free-queue-status');
+    if (status) {
+        const currentText = status.textContent || '';
+        if ((position && position.innerText === 'Ready') || currentText.includes('Ready')) {
+            status.innerHTML = 'Ready to start your free session';
+        }
+    }
+    modal.classList.add('active');
+    
+}
+
+function closeFreeQueue() {
+    const modal = document.getElementById('free-queue-modal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+}
+
+// (animation helpers removed — restored original static position behavior)
 
 function closeQRModal() {
     const modal = document.getElementById('qr-modal');
@@ -1531,6 +1973,7 @@ window.onload = async function() {
     ensureDefaultAdmin();
     setupNotificationModal();
     try { startMaintenancePolling(); } catch(e) { console.warn('Maintenance polling failed', e); }
+    applyLanguage(getAppLanguage());
     // If maintenance active on server and user is not admin, force show maintenance
     try {
         await syncMaintenanceFromServer();
