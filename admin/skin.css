@@ -26,6 +26,38 @@ body {
     overflow: hidden;
 }
 
+.mobile-menu-btn {
+    display: none;
+    border: none;
+    background: rgba(255, 255, 255, 0.08);
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    color: var(--text-main);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-menu-btn i {
+    font-size: 18px;
+}
+
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 150;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
 /* --- SIDEBAR --- */
 aside {
     width: 280px;
@@ -349,9 +381,59 @@ header.topbar {
 
 @media (max-width: 900px) {
     body { flex-direction: column; overflow: auto; }
-    aside { width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); }
+    aside {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 280px;
+        height: 100vh;
+        transform: translateX(-100%);
+        transition: transform var(--transition-speed) ease;
+        z-index: 200;
+        border-right: 1px solid var(--border-color);
+        border-bottom: none;
+        background-color: var(--bg-sidebar);
+    }
+    aside.open-mobile {
+        transform: translateX(0);
+    }
+    aside.collapsed {
+        width: 280px;
+    }
+    .toggle-btn {
+        display: none;
+    }
+    .mobile-menu-btn {
+        display: inline-flex;
+    }
+    main {
+        margin-left: 0;
+    }
+    header.topbar {
+        position: sticky;
+        top: 0;
+        z-index: 160;
+        padding: 0 16px;
+    }
+    .topbar-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
     .stats-grid, .sub-grid { grid-template-columns: 1fr; }
     .admin-form { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 600px) {
+    body { overflow-x: hidden; }
+    .dashboard-content { padding: 16px; }
+    .content-panel { padding: 16px; }
+    .panel-header { flex-direction: column; align-items: flex-start; }
+    .admin-form { grid-template-columns: 1fr; }
+    .admin-list-item { flex-direction: column; align-items: stretch; }
+    .admin-actions { width: 100%; justify-content: space-between; flex-wrap: wrap; }
+    .topbar-title h1 { font-size: 18px; }
+    .user-profile { gap: 8px; }
 }
 
 @media (max-width: 600px) {
