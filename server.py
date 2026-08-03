@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, send_from_directory, request
+import requests
 import os
 import json
 
@@ -82,6 +83,19 @@ def status():
         'host': os.environ.get('HOST', '0.0.0.0'),
         'time': os.environ.get('TIMEZONE', '') or '',
     })
+
+
+@app.after_request
+def set_security_headers(response):
+    # Content Security Policy (relatively permissive for this app)
+    csp = "default-src 'self' https:; img-src 'self' data: https:; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline';"
+    response.headers['Content-Security-Policy'] = csp
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['Referrer-Policy'] = 'no-referrer-when-downgrade'
+    response.headers['X-Frame-Options'] = 'DENY'
+    # HSTS - only effective on HTTPS; safe to send but has effect when served over TLS
+    response.headers['Strict-Transport-Security'] = 'max-age=63072000; includeSubDomains; preload'
+    return response
 
 
 @app.route('/api/admin-test')
@@ -189,10 +203,27 @@ def post_user():
         user = request.get_json(force=True)
         if not isinstance(user, dict):
             return jsonify({'error': 'Invalid user payload'}), 400
+        # capture remote IP and resolve country (ISO2)
+        remote_ip = request.headers.get('X-Forwarded-For', request.remote_addr) or ''
+        country = 'Unknown'
+        try:
+            if remote_ip:
+                # use ipapi.co for a lightweight lookup
+                resp = requests.get(f'https://ipapi.co/{remote_ip}/country/', timeout=3)
+                if resp.status_code == 200:
+                    country = resp.text.strip() or 'Unknown'
+        except Exception:
+            country = 'Unknown'
+
+        user_record = dict(user)
+        user_record['ip'] = remote_ip
+        user_record['country'] = country
         users = load_users()
-        users.append(user)
+        users.append(user_record)
         save_users(users)
-        return jsonify(user)
+        # do not leak sensitive data unnecessarily; return safe user info
+        safe_user = {k: user_record.get(k) for k in ['email', 'name', 'ip', 'country'] if k in user_record}
+        return jsonify(safe_user)
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 

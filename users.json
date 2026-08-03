@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "email": "admin@cloudzone.com",
+    "id": "41887868",
+    "name": "Admin",
+    "password": "admin123",
+    "role": "admin"
+  },
+  {
+    "email": "minhdolcedeptraitrai@gmail.com",
+    "id": "12840967",
+    "name": "minh14",
+    "password": "123",
+    "role": "user"
+  }
+]

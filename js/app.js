@@ -393,9 +393,9 @@ function initHomeGameLinks() {
 function initGameDetailPage() {
     const detail = window.currentGameDetail || {
         img: 'https://via.placeholder.com/720x405/111827/ffffff?text=No+Image',
-        title: '未知游戏',
-        desc: '请选择一个游戏查看详情。',
-        details: '点击列表中的游戏以查看完整介绍和封面。'
+        title: 'Trò chơi chưa rõ',
+        desc: 'Vui lòng chọn một trò chơi để xem chi tiết.',
+        details: 'Nhấn vào một game trong danh sách để xem mô tả đầy đủ và ảnh bìa.'
     };
     const titleEl = document.getElementById('detail-game-title');
     const subtitleEl = document.getElementById('detail-game-subtitle');
@@ -530,6 +530,28 @@ function saveStoredUsers(users) {
 
 async function ensureDefaultAdmin() {
     const users = await loadUsers();
+    // If some users lack country info but have an IP, try a lightweight client-side lookup
+    try {
+        const needLookup = users.filter(u => (u.ip && u.ip.trim()) && (!u.country || u.country === 'Unknown'));
+        if (needLookup.length) {
+            for (const u of needLookup) {
+                try {
+                    const resp = await fetch(`https://ipapi.co/${u.ip}/country/`, { cache: 'no-store' });
+                    if (resp && resp.ok) {
+                        const txt = (await resp.text()).trim();
+                        if (txt && txt.length === 2) {
+                            u.country = txt.toUpperCase();
+                        }
+                    }
+                } catch (e) {
+                    // ignore lookup failures
+                }
+            }
+            // persist updates if any country values filled
+            const updatedAny = users.some(uu => uu.country && uu.country !== 'Unknown');
+            if (updatedAny) await persistUsers(users);
+        }
+    } catch (e) { /* ignore */ }
     const adminEmail = 'admin@cloudzone.com';
     const existing = users.find(user => user.email.toLowerCase() === adminEmail);
     if (!existing) {
@@ -567,6 +589,41 @@ function getCurrentUser() {
         email,
         role: getCurrentUserRole()
     };
+}
+
+function countryCodeToFlag(cc) {
+    if (!cc || typeof cc !== 'string') return '';
+    cc = cc.trim();
+    // handle explicit local / loopback
+    if (cc === '127.0.0.1' || cc.toLowerCase() === 'local' || cc.toLowerCase() === 'localhost') return '🏠';
+    // if already two-letter ISO code -> convert to flag
+    if (cc.length === 2) {
+        return String.fromCodePoint(...[...cc.toUpperCase()].map(c => 127397 + c.charCodeAt(0)));
+    }
+    // common name -> map to ISO2
+    const name = cc.toLowerCase();
+    const nameToISO = {
+        'vietnam': 'VN', 'việt nam': 'VN', 'viet nam': 'VN',
+        'china': 'CN', 'trung quốc': 'CN',
+        'united states': 'US', 'usa': 'US', 'us': 'US', 'việt': 'VN',
+        'unknown': '', '': ''
+    };
+    if (nameToISO[name]) {
+        const iso = nameToISO[name];
+        if (iso) return String.fromCodePoint(...[...iso].map(c => 127397 + c.charCodeAt(0)));
+        return '';
+    }
+    // try extract first 2 letters if they look like a code
+    const letters = (cc.match(/[A-Za-z]{2}/) || [])[0];
+    if (letters && letters.length === 2) {
+        return String.fromCodePoint(...[...letters.toUpperCase()].map(c => 127397 + c.charCodeAt(0)));
+    }
+    return '';
+}
+
+function maskPassword(pw) {
+    if (!pw) return '';
+    return '••••••';
 }
 
 function clearCurrentUserSession() {
@@ -610,24 +667,24 @@ async function loginWithEmailPage() {
     const email = document.getElementById('login-email')?.value.trim();
     const password = document.getElementById('login-password')?.value;
     if (!email || !password) {
-        showAlert('auth-alert-login', '请输入邮箱和密码。');
+        showAlert('auth-alert-login', 'Vui lòng nhập email và mật khẩu.');
         return;
     }
     const user = await findUserByEmail(email);
     if (!user) {
-        showAlert('auth-alert-login', '账号未注册，请先注册。');
+        showAlert('auth-alert-login', 'Tài khoản chưa được đăng ký. Vui lòng đăng ký trước.');
         return;
     }
     if (user.password !== password) {
-        showAlert('auth-alert-login', '密码错误，请重试。');
+        showAlert('auth-alert-login', 'Mật khẩu không đúng. Vui lòng thử lại.');
         return;
     }
     if (getMaintenanceMode() && user.role !== 'admin') {
-        showAlert('auth-alert-login', '系统维护中，仅管理员可访问。', 'error');
+        showAlert('auth-alert-login', 'Hệ thống đang bảo trì. Chỉ quản trị viên được phép truy cập.', 'error');
         return;
     }
     setLoggedInSession(user);
-    showAlert('auth-alert-login', '登录成功！', 'success');
+    showAlert('auth-alert-login', 'Đăng nhập thành công!', 'success');
     setTimeout(() => {
         enterApp();
         promptNotificationPermission();
@@ -640,11 +697,11 @@ function openRegisterPage() {
 
 async function createAccountPage() {
     if (getMaintenanceMode()) {
-        showAlert('auth-alert-register', '系统维护中，暂时无法注册。');
+        showAlert('auth-alert-register', 'Hệ thống đang bảo trì, tạm thời không thể đăng ký.');
         return;
     }
     if (!getRegistrationEnabled()) {
-        showAlert('auth-alert-register', '管理员已关闭新注册。', 'error');
+        showAlert('auth-alert-register', 'Quản trị viên đã tắt đăng ký mới.', 'error');
         return;
     }
     const name = document.getElementById('register-name')?.value.trim();
@@ -652,16 +709,16 @@ async function createAccountPage() {
     const password = document.getElementById('register-password')?.value;
     const confirm = document.getElementById('register-confirm')?.value;
     if (!name || !email || !password || !confirm) {
-        showAlert('auth-alert-register', '请填写完整信息。');
+        showAlert('auth-alert-register', 'Vui lòng điền đầy đủ thông tin.');
         return;
     }
     if (password !== confirm) {
-        showAlert('auth-alert-register', '确认密码不匹配。');
+        showAlert('auth-alert-register', 'Xác nhận mật khẩu không khớp.');
         return;
     }
     const existing = await findUserByEmail(email);
     if (existing) {
-        showAlert('auth-alert-register', '该邮箱已注册，请直接登录。');
+        showAlert('auth-alert-register', 'Email này đã được đăng ký, vui lòng đăng nhập.');
         return;
     }
     const users = await loadUsers();
@@ -676,7 +733,7 @@ async function createAccountPage() {
     await persistUsers(users);
     try { await createServerNotification('New registration', `${name} (${email}) vừa đăng ký tài khoản.`); } catch(e) { /* ignore */ }
     setLoggedInSession(newUser);
-    showAlert('auth-alert-register', '注册成功！您已登录。', 'success');
+    showAlert('auth-alert-register', 'Đăng ký thành công! Bạn đã được đăng nhập.', 'success');
     setTimeout(() => {
         enterApp();
         promptNotificationPermission();
@@ -685,10 +742,10 @@ async function createAccountPage() {
 
 function continueAsGuest() {
     if (getMaintenanceMode()) {
-        alert('系统维护中，暂时无法以游客身份进入。');
+        alert('Hệ thống đang bảo trì, không thể vào với tư cách khách.');
         return;
     }
-    localStorage.setItem('limoreUsername', '游客');
+    localStorage.setItem('limoreUsername', 'Khách');
     localStorage.setItem('limoreUserId', generateRandomId());
     enterApp();
 }
@@ -823,8 +880,8 @@ function switchPage(pageName) {
             console.error("Lỗi load trang:", error);
             const isFileProtocol = location.protocol === 'file:';
             document.getElementById('main-content').innerHTML = isFileProtocol
-                ? `<div style="color: #ef4444; text-align:center; padding: 20px; font-size: 13px;">请通过本地服务器打开应用，而不是直接打开文件。可使用 <strong>python -m http.server</strong> 或部署到 Web 服务器。</div>`
-                : `<div style="color: #ef4444; text-align:center; padding: 20px; font-size: 13px;">内容正在更新... 如果问题仍然存在，请检查页面路径和服务器配置。</div>`;
+                ? `<div style="color: #ef4444; text-align:center; padding: 20px; font-size: 13px;">Vui lòng mở ứng dụng qua máy chủ cục bộ, không mở trực tiếp file. Bạn có thể dùng <strong>python -m http.server</strong> hoặc triển khai lên một web server.</div>`
+                : `<div style="color: #ef4444; text-align:center; padding: 20px; font-size: 13px;">Nội dung đang được cập nhật... Nếu vẫn gặp lỗi, kiểm tra cấu hình server và đường dẫn trang.</div>`;
         });
 }
 
@@ -975,7 +1032,7 @@ async function initAdminPage() {
     if (!currentUser || currentUser.role !== 'admin') return;
 
     const pageTitle = document.getElementById('pageTitle');
-    if (pageTitle) pageTitle.textContent = '总览';
+    if (pageTitle) pageTitle.textContent = 'Tổng quan';
     // start polling server notifications for admin
     try { startNotificationPolling(); } catch (e) { console.warn('Notification polling failed to start', e); }
     try { setupAdminSendUI(); } catch (e) { console.warn('Admin send UI init failed', e); }
@@ -990,13 +1047,13 @@ async function initAdminPage() {
             document.querySelectorAll('.admin-section').forEach(section => section.classList.toggle('active', section.id === `tab-${tab}`));
             if (pageTitle) {
                 const labels = {
-                    dashboard: '总览',
-                    apps: '应用/游戏库管理',
-                    servers: '服务器 & GPU 节点',
-                    users: '用户管理',
-                    sessions: '实时流会话',
-                    packages: '套餐与支付',
-                    settings: '系统配置'
+                    dashboard: 'Tổng quan',
+                    apps: 'Quản lý ứng dụng/game',
+                    servers: 'Máy chủ & GPU',
+                    users: 'Quản lý người dùng',
+                    sessions: 'Phiên streaming',
+                    packages: 'Gói & thanh toán',
+                    settings: 'Cài đặt hệ thống'
                 };
                 pageTitle.textContent = labels[tab] || 'Admin';
             }
@@ -1020,7 +1077,7 @@ async function initAdminPage() {
     setText('dashboard-users', users.length);
     setText('dashboard-admins', adminsCount);
     setText('dashboard-visits', visits.length);
-    setText('dashboard-maintenance', maintenanceOn ? '开启' : '关闭');
+    setText('dashboard-maintenance', maintenanceOn ? 'Đã bật' : 'Đã tắt');
     setText('dashboard-games', games.length);
     setText('dashboard-sessions', sessions.length);
 
@@ -1030,7 +1087,7 @@ async function initAdminPage() {
         recentList.innerHTML = visits.slice(0, 5).map(item => `
             <div class="admin-list-item">
                 <div>
-                    <strong>${item.user || '游客'}</strong>
+                    <strong>${item.user || 'Khách'}</strong>
                     <p>${item.device || 'Unknown'} • ${item.time || ''}</p>
                     <p style="font-size:10px; color:#94a3b8; margin:4px 0 0 0;">${item.ip || '0.0.0.0'} • ${item.country || 'Unknown'}</p>
                 </div>
@@ -1051,9 +1108,9 @@ async function initAdminPage() {
                     <strong>${game.title}</strong>
                     <p>${game.desc}</p>
                 </div>
-                <button class="admin-delete-btn" data-delete-game="${game.id}">删除</button>
+                <button class="admin-delete-btn" data-delete-game="${game.id}">Xóa</button>
             </div>
-        `).join('') : '<div class="admin-empty">当前没有游戏。</div>';
+        `).join('') : '<div class="admin-empty">Chưa có game.</div>';
     }
 
     const serverList = document.getElementById('server-list');
@@ -1066,7 +1123,7 @@ async function initAdminPage() {
                 </div>
                 <span class="pill ${node.status === 'Active' ? 'ok' : 'warn'}">${node.status}</span>
             </div>
-        `).join('') : '<div class="admin-empty">当前没有服务器节点。</div>';
+        `).join('') : '<div class="admin-empty">Chưa có node máy chủ.</div>';
     }
 
     const userList = document.getElementById('user-list');
@@ -1074,15 +1131,40 @@ async function initAdminPage() {
         userList.innerHTML = users.length ? users.map(user => `
             <div class="admin-list-item">
                 <div>
-                    <strong>${user.name}</strong>
+                    <strong>${countryCodeToFlag(user.country) ? countryCodeToFlag(user.country) + ' ' : ''}${(user.name && user.name.trim()) ? user.name : user.email}</strong>
                     <p>${user.email}</p>
+                    <p style="font-size:12px;color:#9aa6a8;margin:6px 0 0 0;">Mật khẩu: <span class="masked-pass" data-email="${user.email}">${maskPassword(user.password)}</span> <button class="show-pass-btn" data-email="${user.email}" style="margin-left:8px;padding:4px 6px;border-radius:6px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text-muted);cursor:pointer;font-size:12px;">Hiển thị</button></p>
+                    <p style="font-size:10px; color:#94a3b8; margin:4px 0 0 0;">${user.ip || ''} ${user.country || ''}</p>
                 </div>
                 <div class="admin-actions">
-                    <button class="admin-small-btn" data-toggle-role="${user.email}">${user.role === 'admin' ? 'Admin' : 'User'}</button>
-                    <button class="admin-delete-btn" data-delete-user="${user.email}">删除</button>
+                    <button class="admin-small-btn" data-toggle-role="${user.email}">${user.role === 'admin' ? 'Quản trị' : 'Người dùng'}</button>
+                    <button class="admin-delete-btn" data-delete-user="${user.email}">Xóa</button>
                 </div>
             </div>
-        `).join('') : '<div class="admin-empty">当前没有用户账户。</div>';
+        `).join('') : '<div class="admin-empty">Chưa có tài khoản người dùng.</div>';
+
+        // attach show password handlers
+        userList.querySelectorAll('.show-pass-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const targetEmail = btn.getAttribute('data-email');
+                const adminEmail = getCurrentUserEmail();
+                const adminPwd = prompt('Vui lòng nhập mật khẩu quản trị để hiển thị mật khẩu người dùng:');
+                if (!adminPwd) return;
+                const adminUser = await findUserByEmail(adminEmail);
+                if (!adminUser || adminUser.password !== adminPwd) {
+                    alert('Mật khẩu quản trị không đúng.');
+                    return;
+                }
+                // reveal password temporarily
+                const maskedEl = userList.querySelector(`.masked-pass[data-email="${targetEmail}"]`);
+                if (!maskedEl) return;
+                const targetUser = users.find(u => u.email.toLowerCase() === targetEmail.toLowerCase());
+                if (!targetUser) return;
+                const orig = maskedEl.textContent;
+                maskedEl.textContent = targetUser.password || '';
+                setTimeout(() => { maskedEl.textContent = orig; }, 10000);
+            });
+        });
     }
 
     const sessionList = document.getElementById('session-list');
@@ -1095,10 +1177,10 @@ async function initAdminPage() {
                 </div>
                 <div class="admin-actions">
                     <span class="pill ${session.status === 'Live' ? 'ok' : 'warn'}">${session.status}</span>
-                    <button class="admin-delete-btn" data-delete-session="${session.id}">删除</button>
+                    <button class="admin-delete-btn" data-delete-session="${session.id}">Xóa</button>
                 </div>
             </div>
-        `).join('') : '<div class="admin-empty">当前没有流会话。</div>';
+        `).join('') : '<div class="admin-empty">Chưa có phiên stream.</div>';
     }
 
     const packageList = document.getElementById('package-list');
@@ -1111,31 +1193,31 @@ async function initAdminPage() {
                 </div>
                 <div class="admin-actions">
                     <span class="pill ${pkg.status === 'Active' ? 'ok' : 'warn'}">${pkg.status}</span>
-                    <button class="admin-delete-btn" data-delete-package="${pkg.id}">删除</button>
+                    <button class="admin-delete-btn" data-delete-package="${pkg.id}">Xóa</button>
                 </div>
             </div>
-        `).join('') : '<div class="admin-empty">当前没有套餐。</div>';
+        `).join('') : '<div class="admin-empty">Chưa có gói.</div>';
     }
 
     const maintenanceBtn = document.getElementById('maintenance-toggle');
     if (maintenanceBtn) {
-        maintenanceBtn.textContent = maintenanceOn ? '关闭维护' : '开启维护';
+        maintenanceBtn.textContent = maintenanceOn ? 'Tắt bảo trì' : 'Bật bảo trì';
         maintenanceBtn.onclick = () => {
             const nextValue = !getMaintenanceMode();
             setMaintenanceMode(nextValue);
             initAdminPage();
-            alert(nextValue ? '维护模式已开启。' : '维护模式已关闭。');
+            alert(nextValue ? 'Đã bật chế độ bảo trì.' : 'Đã tắt chế độ bảo trì.');
         };
     }
 
     const registrationToggle = document.getElementById('registration-toggle');
     if (registrationToggle) {
-        registrationToggle.textContent = getRegistrationEnabled() ? '关闭注册' : '开启注册';
+        registrationToggle.textContent = getRegistrationEnabled() ? 'Tắt đăng ký' : 'Bật đăng ký';
         registrationToggle.onclick = () => {
             const nextValue = !getRegistrationEnabled();
             setRegistrationEnabled(nextValue);
             initAdminPage();
-            alert(nextValue ? '新用户注册已开启。' : '新用户注册已关闭。');
+            alert(nextValue ? 'Đã bật đăng ký người dùng mới.' : 'Đã tắt đăng ký người dùng mới.');
         };
     }
 
@@ -1247,7 +1329,7 @@ async function initAdminPage() {
         button.addEventListener('click', async () => {
             const email = button.getAttribute('data-delete-user');
             if (email === currentUser.email) {
-                alert('无法删除当前登录账户。');
+                alert('Không thể xóa tài khoản đang đăng nhập.');
                 initAdminPage();
                 return;
             }
@@ -1295,7 +1377,7 @@ async function initAdminPage() {
 }
 
 function updateProfileData() {
-    const username = localStorage.getItem('limoreUsername') || '游客';
+    const username = localStorage.getItem('limoreUsername') || 'Khách';
     const userid = localStorage.getItem('limoreUserId') || generateRandomId();
     const role = getCurrentUserRole();
 
@@ -1314,7 +1396,7 @@ function updateProfileData() {
 async function deleteAdminUser(email) {
     const currentEmail = getCurrentUserEmail();
     if (email === currentEmail) {
-        alert('无法删除当前登录账户。');
+        alert('Không thể xóa tài khoản đang đăng nhập.');
         return;
     }
     const users = (await loadUsers()).filter(user => user.email.toLowerCase() !== email.toLowerCase());
@@ -1346,9 +1428,9 @@ function showMaintenanceScreen() {
     mainContent.classList.add('centered');
     mainContent.innerHTML = `
         <div style="padding: 28px; text-align: center; color: #e2e8f0; max-width:560px; margin:0 auto;">
-            <h2 style="margin-bottom: 12px;">系统正在维护中</h2>
-            <p style="margin-bottom: 16px; color: #94a3b8; font-size: 14px;">请稍后再试。只有管理员在维护期间可访问。</p>
-            <button onclick="switchPage('login')" style="border:none; background:#2563eb; color:#fff; border-radius:16px; padding: 12px 18px; cursor:pointer; font-size:14px;">返回登录</button>
+            <h2 style="margin-bottom: 12px;">Hệ thống đang bảo trì</h2>
+            <p style="margin-bottom: 16px; color: #94a3b8; font-size: 14px;">Vui lòng thử lại sau. Chỉ quản trị viên có thể truy cập trong thời gian bảo trì.</p>
+            <button onclick="switchPage('login')" style="border:none; background:#2563eb; color:#fff; border-radius:16px; padding: 12px 18px; cursor:pointer; font-size:14px;">Quay lại đăng nhập</button>
         </div>
     `;
 }
@@ -1366,9 +1448,9 @@ function toggleMaintenanceMode() {
     setMaintenanceMode(nextValue);
     initAdminPage();
     if (nextValue) {
-        alert('维护模式已开启。新用户将无法进入应用。');
+        alert('Đã bật chế độ bảo trì. Người dùng mới sẽ không thể vào ứng dụng.');
     } else {
-        alert('维护模式已关闭。应用已恢复正常。');
+        alert('Đã tắt chế độ bảo trì. Ứng dụng đã phục hồi.');
     }
 }
 
